@@ -42,8 +42,8 @@ problems. (UPDATE YOUR COMPILER!)
 
 Run the simulation
 
-    cd ../ebl_run
-    ./bin/ebl1  
+    cd ../c12run
+    ./bin/c12sim share/C12SIM/examples/vis.mac 
 
 Using git
 ---------
