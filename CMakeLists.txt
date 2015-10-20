@@ -85,9 +85,6 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_BINARY_DIR}/C12SI
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(exampleB1 exampleB1.cc ${sources} ${headers})
-target_link_libraries(exampleB1 ${Geant4_LIBRARIES} ${ClasDigi_LIBRARIES} ${ROOT_LIBRARIES})
-
 add_executable(c12sim c12sim.cc ${sources} ${headers})
 target_link_libraries(c12sim ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES} ${ROOT_LIBRARIES})
 
@@ -95,7 +92,7 @@ target_link_libraries(c12sim ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES} ${RO
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
-add_custom_target(C12SIM DEPENDS exampleB1 c12sim)
+add_custom_target(C12SIM DEPENDS c12sim)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -103,8 +100,6 @@ add_custom_target(C12SIM DEPENDS exampleB1 c12sim)
 # relies on these scripts being in the current working directory.
 #
 set(EXAMPLEB1_SCRIPTS
-  exampleB1.in
-  exampleB1.out
   examples/init_vis.mac
   examples/run1.mac
   examples/run2.mac
@@ -123,7 +118,6 @@ install(FILES ${EXAMPLEB1_SCRIPTS} DESTINATION "${CMAKE_INSTALL_PREFIX}/share/${
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS exampleB1 DESTINATION bin)
 install(TARGETS c12sim DESTINATION bin)
 
 # ----------------------------------------------------------------------------
@@ -141,7 +135,7 @@ endforeach()
 
 
 ## Add all targets to the build-tree export set
-export(TARGETS exampleB1 FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+export(TARGETS c12sim FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 #
 ## Export the package for use from the build-tree
 ## (this registers the build-tree with a global CMake-registry)
