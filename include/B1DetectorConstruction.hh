@@ -3,13 +3,16 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
-
+#include "DriftChamberDetectorGeometry.h"
+#include "DriftChamberSensitiveDetector.h"
+#include "G4SystemOfUnits.hh"
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 class B1DetectorMessenger;
 class G4Material;
 class G4VSolid;
 class FakeSD;
+class G4UserLimits;
 #include "G4ThreeVector.hh"
 #include "G4String.hh"
 
@@ -42,15 +45,132 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       G4double scoring2_diameter ;
       G4double scoring2_length   ;
 
+
+      //--Parameters of the magnetic field
+      G4double   fieldValue = 5*tesla;
+      G4double   acc_inter = 0.1*mm;
+      //--
+
+
+      //--Parameters of the target
+      G4double   innerRadiusOfTheTarget = 0.0*mm;
+      G4double   outerRadiusOfTheTarget = 6.*mm;
+      G4double   hightOfTheTarget = 200.*mm;
+      G4double   startAngleOfTheTarget = 0.*deg;
+      G4double   spanningAngleOfTheTarget = 360.*deg;
+      G4double   target_posX = 0.*mm;
+      G4double   target_posY = 0.*mm;
+      G4double   target_posZ = 0.*mm;
+
+      //--Kapton foil around the target
+      G4double      innerRadiusOfTheKapton = 6.0*mm;
+      G4double      outerRadiusOfTheKapton = 6.028*mm;
+      G4double      hightOfTheKapton = 200.*mm;
+      G4double      startAngleOfTheKapton = 0.*deg;
+      G4double      spanningAngleOfTheKapton = 360.*deg;
+      //--
+      //--
+
+
+      //--Parameters of space around the target
+      G4double  innerRadiusOfAround = 6.028*mm;
+      G4double  outerRadiusOfAround = 29.990*mm;
+      G4double  hightOfAround = 200.*mm;
+      G4double  startAngleOfAround = 0.*deg;
+      G4double spanningAngleOfAround = 360.*deg;
+      //--Mylar foil around the clear space
+      G4double   innerRadiusOfTheOclKapton = 29.996*mm;
+      G4double   outerRadiusOfTheOclKapton = 30.000*mm;
+      G4double   hightOfTheOclKapton = 200.*mm;
+      G4double   startAngleOfTheOclKapton = 0.*deg;
+      G4double   spanningAngleOfTheOclKapton = 360.*deg;
+      //--
+
+
+      //--Parameters of the gas detector
+      G4double  innerRadiusOfTheGasDetector = 30.00*mm;
+      G4double  outerRadiusOfTheGasDetector = 79.995*mm;
+      G4double  hightOfTheGasDetector = 200.*mm;
+      G4double  startAngleOfTheGasDetector = 0.*deg;
+      G4double  spanningAngleOfTheGasDetector = 360.*deg;
+      G4double   gasDetector_posX = 0.*mm;
+      G4double   gasDetector_posY = 0.*mm;
+      G4double   gasDetector_posZ = 0.*mm; 
+      //--
+
+      //--Parameters of the wires
+      G4double  innerRadiusOfTheWire   = 0.00*mm;
+      G4double  outerRadiusOfTheWire   = 0.04*mm;
+      G4double  lengthOfTheWire        = 30.*cm;   // not the "hight"
+      G4double  startAngleOfTheWire    = 0.*deg;
+      G4double  spanningAngleOfTheWire = 360.*deg; 
+      G4double  DeltaP                 = 2.0*mm; // wire separation around the circumference. 
+                                                 // This number is only approximate if it does not divide the circumference
+      G4double  DeltaR = 2.0*mm;
+      G4double  NTLay  = 2.0;//4.; // Number of T layers
+      G4double  NsLay  = 3.0;//5.; // Number of s layers 
+      G4double  steAng = 10.0*deg;
+      //--
+
+      //--Mylar foil around the gas detector
+      G4double     innerRadiusOfTheOKapton = 79.995*mm;
+      G4double     outerRadiusOfTheOKapton = 80.0*mm;
+      G4double     hightOfTheOKapton = 200.*mm;
+      G4double     startAngleOfTheOKapton = 0.*deg;
+      G4double     spanningAngleOfTheOKapton = 360.*deg;
+      //--
+
+      //--Parameters of the scintillators
+      G4double  innerRadiusOfTheSiDetector = 80.*mm;
+      G4double  outerRadiusOfTheSiDetector = 140.*mm;
+      G4double  hightOfTheSiDetector = 200.*mm;
+      G4double  startAngleOfTheSiDetector = 0.*deg;
+      G4double  spanningAngleOfTheSiDetector = 360.*deg;
+      G4double  SiDetector_posX = 0.*mm;
+      G4double  SiDetector_posY = 0.*mm;
+      G4double  SiDetector_posZ = 0.*mm; 
+
+      G4Material* Air;
+      G4Material* Ar;
+      G4Material* Silicon;
+      G4Material* Scinti;
+      G4Material* Lead;
+      G4Material* Kapton;
+      G4Material* He_Target;
+      G4Material* He_ClearS;
+      G4Material* Xe_varPT;
+      G4Material* isobutane;
+      G4Material* Vacuum;
+      G4Material* Deuterium;
+      G4Material* CO2;
+      G4Material* He10CO2;
+      G4Material* HeiC4H10;
+      G4Material* Tungsten; 
+      G4Material* Mylar;
+
+      G4Element* H;
+      G4Element* C;
+      G4Element* N;
+      G4Element* O;
+      G4Element* elHe;
+      G4Element* elXe;
+      G4Element* ele_D;
+      G4Element* elW;
+      G4UserLimits* fStepLimit; // pointer to user step limits
+
    protected:
       G4LogicalVolume     * fScoringVolume;
       B1DetectorMessenger * fMessenger;
       G4String    fCollimatorMatName;
-
       bool fHasBeenBuilt;
 
 
    private:
+
+      G4LogicalVolume   * drift_chamber_log   ;
+      G4VPhysicalVolume * drift_chamber_phys  ;
+      G4LogicalVolume   * htcc_log   ;
+      G4VPhysicalVolume * htcc_phys  ;
 
       FakeSD * scoring_det;
       FakeSD * scoring2_det;
@@ -100,6 +220,20 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       G4VSolid          * scoring2_solid;
       G4LogicalVolume   * scoring2_log  ;
       G4VPhysicalVolume * scoring2_phys ;
+
+   protected:
+
+      //int nCherenkovPMT;
+      //PMTArraySensitiveDetector * fCherenkov_PMTArray;
+
+      //int nDriftChamberVols;
+      //DriftChamberSensitiveDetector * fDriftChamber_SD;
+
+      DriftChamberDetectorGeometry  * fDriftChamber;
+      G4LogicalVolume   * wire_hex_log   ;
+
+   protected:
+      void DefineMaterials();
 
    public:
       B1DetectorConstruction();

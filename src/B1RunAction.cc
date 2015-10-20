@@ -81,19 +81,19 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
    const B1Run* b1Run = static_cast<const B1Run*>(run);
 
-   // Compute dose
-   //
-   G4double edep  = b1Run->GetEdep();
-   G4double edep2 = b1Run->GetEdep2();
-   G4double rms = edep2 - edep*edep/nofEvents;
-   if (rms > 0.) rms = std::sqrt(rms); else rms = 0.;
+   //// Compute dose
+   ////
+   //G4double edep  = b1Run->GetEdep();
+   //G4double edep2 = b1Run->GetEdep2();
+   //G4double rms = edep2 - edep*edep/nofEvents;
+   //if (rms > 0.) rms = std::sqrt(rms); else rms = 0.;
 
-   const B1DetectorConstruction* detectorConstruction
-      = static_cast<const B1DetectorConstruction*>
-      (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-   G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
-   G4double dose = edep/mass;
-   G4double rmsDose = rms/mass;
+   //const B1DetectorConstruction* detectorConstruction
+   //   = static_cast<const B1DetectorConstruction*>
+   //   (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+   //G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
+   //G4double dose = edep/mass;
+   //G4double rmsDose = rms/mass;
 
    // Run conditions
    //  note: There is no primary generator action object for "master"
@@ -130,16 +130,16 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
          << "--------------------End of Local Run------------------------";
    }
 
-   G4cout
-      << G4endl
-      << " The run consists of " << nofEvents << " "<< runCondition
-      << G4endl
-      << " Dose in scoring volume : " 
-      << G4BestUnit(dose,"Dose") << " +- " << G4BestUnit(rmsDose,"Dose")
-      << G4endl
-      << "------------------------------------------------------------"
-      << G4endl
-      << G4endl;
+   //G4cout
+   //   << G4endl
+   //   << " The run consists of " << nofEvents << " "<< runCondition
+   //   << G4endl
+   //   << " Dose in scoring volume : " 
+   //   << G4BestUnit(dose,"Dose") << " +- " << G4BestUnit(rmsDose,"Dose")
+   //   << G4endl
+   //   << "------------------------------------------------------------"
+   //   << G4endl
+   //   << G4endl;
 
 
 }

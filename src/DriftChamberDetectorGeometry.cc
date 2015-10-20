@@ -120,7 +120,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    G4ThreeVector zTrans(0, 0, 0);
 
    // -----------------------------------------------------------------------------
-   for( int super_layer = 1; super_layer <=6; super_layer++) {
+   for( int super_layer = 1; super_layer <=0; super_layer++) {
 
       // Has to be really long for some reason, otherwise there is a seg fault...
       G4double hex_length = 3500*cm;
