@@ -45,8 +45,8 @@ Run the simulation
     cd ../c12run
     ./bin/c12sim share/C12SIM/examples/vis.mac 
 
-Using git
----------
+Using git 
+--------- 
 
 First you will want to do the following if you have never used git:
 

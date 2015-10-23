@@ -49,7 +49,7 @@ G4Run* B1RunAction::GenerateRun()
    G4SDManager::GetSDMpointer()->ListTree();
 
 
-   //fOutputFile = new TFile(Form("EBL_sim_output_%d.root",fRunNumber), "UPDATE");
+   //fOutputFile = new TFile(Form("c12_sim_output_%d.root",fRunNumber), "UPDATE");
    //fOutputFile->cd();
 
 
@@ -69,7 +69,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 
    // Open an output file
    ss file_name;
-   file_name << "EBL_sim_output_" << fRunNumber;
+   file_name << "c12sim_output_" << fRunNumber;
    analysisManager->OpenFile(file_name.str().c_str());
 }
 //______________________________________________________________________________

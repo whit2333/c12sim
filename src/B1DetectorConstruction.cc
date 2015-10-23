@@ -117,6 +117,7 @@ B1DetectorConstruction::B1DetectorConstruction() :
 
    wire_hex_log = 0;
    fDriftChamber = 0;//new DriftChamberDetectorGeometry();
+   fRecoilChamber = 0;
 }
 //___________________________________________________________________
 
@@ -405,22 +406,22 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Drift chamber
    // ------------------------------------------------------------------------
-   double d_layer_sl1 = 0.3861*cm;
-   double h_hex       = d_layer_sl1 * TMath::Sqrt(3.0);
-   double l_hex_side  = d_layer_sl1 * 2.0;
+   //double d_layer_sl1 = 0.3861*cm;
+   //double h_hex       = d_layer_sl1 * TMath::Sqrt(3.0);
+   //double l_hex_side  = d_layer_sl1 * 2.0;
 
-   std::vector<G4ExtrudedSolid::ZSection> zsections;
-   zsections.push_back({ -1.0*cm, G4TwoVector{0.0,0.0},1.0 });
-   zsections.push_back({  1.0*cm, G4TwoVector{0.0,0.0},1.0 });
+   //std::vector<G4ExtrudedSolid::ZSection> zsections;
+   //zsections.push_back({ -1.0*cm, G4TwoVector{0.0,0.0},1.0 });
+   //zsections.push_back({  1.0*cm, G4TwoVector{0.0,0.0},1.0 });
 
-   std::vector<G4TwoVector> polygon;
-   polygon.push_back({ -d_layer_sl1,  h_hex} );
-   polygon.push_back({  d_layer_sl1,  h_hex} );
-   polygon.push_back({        h_hex,    0.0} );
-   polygon.push_back({  d_layer_sl1, -h_hex} );
-   polygon.push_back({ -d_layer_sl1, -h_hex} );
-   polygon.push_back({       -h_hex,    0.0} );
-   G4Box * subtraction_box = new G4Box("a_hex_solid",0.01*cm,0.01*cm,0.01*cm);
+   //std::vector<G4TwoVector> polygon;
+   //polygon.push_back({ -d_layer_sl1,  h_hex} );
+   //polygon.push_back({  d_layer_sl1,  h_hex} );
+   //polygon.push_back({        h_hex,    0.0} );
+   //polygon.push_back({  d_layer_sl1, -h_hex} );
+   //polygon.push_back({ -d_layer_sl1, -h_hex} );
+   //polygon.push_back({       -h_hex,    0.0} );
+   //G4Box * subtraction_box = new G4Box("a_hex_solid",0.01*cm,0.01*cm,0.01*cm);
 
    fDriftChamber = new DriftChamberDetectorGeometry();
    fDriftChamber->BuildLogicalVolumes();
@@ -437,6 +438,17 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //   // Region III
    //   fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
    //}
+
+   // ------------------------------------------------------------------------
+   // Recoil Chamber
+   // ------------------------------------------------------------------------
+
+   fRecoilChamber = new RecoilChamberDetectorGeometry();
+   fRecoilChamber->He10CO2   = He10CO2;
+   fRecoilChamber->HeiC4H10  = HeiC4H10;
+   fRecoilChamber->Tungsten  = Tungsten; 
+   fRecoilChamber->Mylar     = Mylar;
+   fRecoilChamber->PlacePhysicalVolume( world_log);
 
    // ------------------------------------------------------------------------
    // beam vacuum  
@@ -776,102 +788,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
 
 
-   ///////////////////////////////////////////////////////////////////////////
-   //--------------------------- Gas Detector ------------------------------//
-   ///////////////////////////////////////////////////////////////////////////
-
-   //--Creating the geometry
-   G4ThreeVector gasDetector_pos = G4ThreeVector(gasDetector_posX, gasDetector_posY, gasDetector_posZ);
-
-   G4Tubs* gasDetector = new G4Tubs("GasDetector", innerRadiusOfTheGasDetector,outerRadiusOfTheGasDetector, hightOfTheGasDetector, startAngleOfTheGasDetector, spanningAngleOfTheGasDetector);
-
-   G4LogicalVolume* logicGasDetector =                         
-      new G4LogicalVolume(gasDetector,          //its solid
-            HeiC4H10,            //its material
-            "GasDetector");       //its name
-
-   new G4PVPlacement(0,                     //no rotation
-         gasDetector_pos,          //at position
-         logicGasDetector,         //its logical volume
-         "GasDetector",            //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         true);          //overlaps checking
-
-   G4VisAttributes * GasDetectorVisAtt = new G4VisAttributes(G4Colour(0.3,0.1,0.1));
-   GasDetectorVisAtt->SetForceWireframe(true);
-   logicGasDetector->SetVisAttributes(GasDetectorVisAtt);
-
-   //--Step max
-   G4double maxStep = 2.0*mm;
-   fStepLimit = new G4UserLimits(maxStep);
-   fStepLimit->SetMaxAllowedStep(maxStep);
-   //   fStepLimit->SetUserMaxTrackLength(maxStep);
-   logicGasDetector->SetUserLimits(fStepLimit);
-
-   //--Making it a sensitive detector
-   G4SDManager* SDman = G4SDManager::GetSDMpointer();
-
-   G4String gasDetectorSDname = "/mydet/GasDetector";
-   //GasDetectorSD * gasDetectorSD = new GasDetectorSD(gasDetectorSDname);
-   //SDman->AddNewDetector(gasDetectorSD);
-   //logicGasDetector->SetSensitiveDetector(gasDetectorSD);
-   //--
-
-   // --Placing the wires
-   G4Tubs* wiresolid = new G4Tubs("Wire", innerRadiusOfTheWire,outerRadiusOfTheWire, lengthOfTheWire/2.0, startAngleOfTheWire, spanningAngleOfTheWire);
-   G4LogicalVolume* wires_even_log = new G4LogicalVolume(wiresolid, Tungsten, "wires_even_log");       
-   G4LogicalVolume* wires_odd_log = new G4LogicalVolume(wiresolid, Tungsten, "wires_odd_log");       
-
-   double sign = 1.0;
-   for(G4int tlay=0; tlay<NTLay; tlay++){
-
-      // Determine the radius of this layer of wires
-      // The first layer is offset from the nominal inner radius by DeltaP
-      G4double   Rtlay = (innerRadiusOfTheGasDetector + DeltaP + NsLay*DeltaP*tlay);
-      G4int      NWiresLay = int(CLHEP::pi*Rtlay / DeltaP);
-      NWiresLay = 2*NWiresLay; // to ensure an even number of wires
-      G4double PhiWire = (2.*CLHEP::pi/ NWiresLay);
-
-      for(G4int slay=0;slay<NsLay;slay++){
-
-         G4double Rlay = Rtlay + DeltaR*slay;
-
-         for(G4double wi=0;wi<NWiresLay;wi++){  
-
-            G4double xw = (Rlay * cos(wi*PhiWire));
-            G4double yw = (Rlay * sin(wi*PhiWire));
-
-            if(tlay%2==0) sign=1.;
-            else sign=-1.;
-
-            G4RotationMatrix* rotationMatrix = new G4RotationMatrix();
-            rotationMatrix->rotate(sign*steAng,G4ThreeVector(xw,yw,0.));
-
-            G4LogicalVolume * logicWires = wires_odd_log;
-            if(tlay%2 == 0 )  logicWires = wires_even_log;
-
-            new G4PVPlacement(rotationMatrix,G4ThreeVector(xw,yw,0.),logicWires,
-                  "Wire",logicGasDetector,
-                  false,(tlay+1)*10000+(slay+1)*1000+wi,false);
-         } // wi		     
-      } // slay
-   } // tlay
-   //--
-
-   // Definition of visualisation attributes
-   // Instantiation of a set of visualization attributes with green colour
-   // Set the forced wireframe style 
-   //   GasDetectorVisAtt->SetForceWireframe(true);
-   // Assignment of the visualization attributes to the logical volume
-   G4VisAttributes * wires_even_vis = new G4VisAttributes(G4Colour(1.,1.0,0.0));
-   wires_even_vis->SetForceSolid(true);
-   wires_even_log->SetVisAttributes(wires_even_vis);
-
-   G4VisAttributes * wires_odd_vis = new G4VisAttributes(G4Colour(1.,0.0,1.0));
-   wires_odd_vis->SetForceSolid(true);
-   wires_odd_log->SetVisAttributes(wires_odd_vis);
 
    ///////////////////////////////////////////////////////////////////////////
    //------------------------ Outisde Mylar layer --------------------------//

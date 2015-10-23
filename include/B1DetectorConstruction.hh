@@ -5,6 +5,7 @@
 #include "globals.hh"
 #include "DriftChamberDetectorGeometry.h"
 #include "DriftChamberSensitiveDetector.h"
+#include "RecoilChamberDetectorGeometry.h"
 #include "G4SystemOfUnits.hh"
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -87,30 +88,6 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       //--
 
 
-      //--Parameters of the gas detector
-      G4double  innerRadiusOfTheGasDetector = 30.00*mm;
-      G4double  outerRadiusOfTheGasDetector = 79.995*mm;
-      G4double  hightOfTheGasDetector = 200.*mm;
-      G4double  startAngleOfTheGasDetector = 0.*deg;
-      G4double  spanningAngleOfTheGasDetector = 360.*deg;
-      G4double   gasDetector_posX = 0.*mm;
-      G4double   gasDetector_posY = 0.*mm;
-      G4double   gasDetector_posZ = 0.*mm; 
-      //--
-
-      //--Parameters of the wires
-      G4double  innerRadiusOfTheWire   = 0.00*mm;
-      G4double  outerRadiusOfTheWire   = 0.04*mm;
-      G4double  lengthOfTheWire        = 30.*cm;   // not the "hight"
-      G4double  startAngleOfTheWire    = 0.*deg;
-      G4double  spanningAngleOfTheWire = 360.*deg; 
-      G4double  DeltaP                 = 2.0*mm; // wire separation around the circumference. 
-                                                 // This number is only approximate if it does not divide the circumference
-      G4double  DeltaR = 2.0*mm;
-      G4double  NTLay  = 2.0;//4.; // Number of T layers
-      G4double  NsLay  = 3.0;//5.; // Number of s layers 
-      G4double  steAng = 10.0*deg;
-      //--
 
       //--Mylar foil around the gas detector
       G4double     innerRadiusOfTheOKapton = 79.995*mm;
@@ -229,7 +206,8 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       //int nDriftChamberVols;
       //DriftChamberSensitiveDetector * fDriftChamber_SD;
 
-      DriftChamberDetectorGeometry  * fDriftChamber;
+      RecoilChamberDetectorGeometry  * fRecoilChamber;
+      DriftChamberDetectorGeometry   * fDriftChamber;
       G4LogicalVolume   * wire_hex_log   ;
 
    protected:
