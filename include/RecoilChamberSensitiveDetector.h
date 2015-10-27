@@ -13,7 +13,7 @@
 
 #include "TTree.h"
 #include "HTCCHitsEvent.h"
-#include "DCHitsEvent.h"
+#include "RCHitsEvent.h"
 #include "Crate.h"
 #include "Module.h"
 
@@ -33,7 +33,7 @@ class RecoilChamberSensitiveDetector : public G4VSensitiveDetector {
 
    public:
 
-      //clas12::hits::RCHitsEvent    * fRCHitsEvent;
+      clas12::hits::RCHitsEvent    * fRCHitsEvent;
 
       RecoilChamberSensitiveDetector( G4String name, G4int Nchan = 12);
       virtual ~RecoilChamberSensitiveDetector();

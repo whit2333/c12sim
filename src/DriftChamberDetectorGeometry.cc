@@ -50,6 +50,9 @@ DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
    fRegion2_log = 0;
    fRegion3_log = 0;
 
+   fEmptyRegion1_log = 0;
+   fEmptyRegion2_log = 0;
+   fEmptyRegion3_log = 0;
 
    G4NistManager * matman = G4NistManager::Instance();
    G4Element     * Ar     = new G4Element("Argon", "Ar", /*z    = */18, /*a            = */ 39.95*g/mole);
@@ -68,6 +71,8 @@ DriftChamberDetectorGeometry::~DriftChamberDetectorGeometry()
 
 void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 {
+
+   bool check_overlaps = false;
 
    using namespace CLHEP;
    using namespace clas12::geo;
@@ -102,11 +107,25 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    fRegion2_log->SetVisAttributes(vs);
    fRegion3_log->SetVisAttributes(vs);
 
-   bool check_overlaps = false;
-
    fRegions_log[0] = fRegion1_log;
    fRegions_log[1] = fRegion2_log;
    fRegions_log[2] = fRegion3_log;
+
+   fEmptyRegion1_log = new G4LogicalVolume(fRegion1_solid, fGasMaterial, "DC_EmptyRegion1_log");
+   fEmptyRegion2_log = new G4LogicalVolume(fRegion2_solid, fGasMaterial, "DC_EmptyRegion2_log");
+   fEmptyRegion3_log = new G4LogicalVolume(fRegion3_solid, fGasMaterial, "DC_EmptyRegion3_log");
+
+   //fEmptyRegion1_log->SetSensitiveDetector(fSensitiveDetector2);
+   //fEmptyRegion2_log->SetSensitiveDetector(fSensitiveDetector2);
+   //fEmptyRegion3_log->SetSensitiveDetector(fSensitiveDetector2);
+
+   fEmptyRegion1_log->SetVisAttributes(vs_odd);
+   fEmptyRegion2_log->SetVisAttributes(vs_even);
+   fEmptyRegion3_log->SetVisAttributes(vs3);
+
+   fEmptyRegions_log[0] = fEmptyRegion1_log;
+   fEmptyRegions_log[1] = fEmptyRegion2_log;
+   fEmptyRegions_log[2] = fEmptyRegion3_log;
 
    G4RotationMatrix* yRot = new G4RotationMatrix;  // Rotates X and Z axes only
    yRot->rotateX(M_PI/3.*rad);                     // Rotates 60 degrees
@@ -120,7 +139,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    G4ThreeVector zTrans(0, 0, 0);
 
    // -----------------------------------------------------------------------------
-   for( int super_layer = 1; super_layer <=0; super_layer++) {
+   for( int super_layer = 1; super_layer <=1; super_layer++) {
 
       // Has to be really long for some reason, otherwise there is a seg fault...
       G4double hex_length = 3500*cm;
@@ -199,7 +218,30 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
 }
 //______________________________________________________________________________
+
 G4VPhysicalVolume * DriftChamberDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region )
+{
+   using namespace clas12::geo;
+   int index    = region-1;
+   int grouping = (sec-1)*3 + (region-1);
+
+   G4VPhysicalVolume * phys = new G4PVPlacement(
+         G4Transform3D(
+            RegionRotation(sec,region),
+            RegionTranslation(sec, region)
+         ),
+         fEmptyRegions_log[index],          // its logical volume
+         Form("region%d_phys",region), // its name
+         mother,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         grouping,                     // its copy number
+         true);                        // check for overlaps
+
+   return phys;
+}
+//______________________________________________________________________________
+
+G4VPhysicalVolume * DriftChamberDetectorGeometry::PlaceParallelPhysicalVolume(G4LogicalVolume * mother, int sec, int region )
 {
    using namespace clas12::geo;
    int index    = region-1;

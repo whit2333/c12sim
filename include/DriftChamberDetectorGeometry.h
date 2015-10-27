@@ -18,6 +18,7 @@ class DriftChamberDetectorGeometry {
       G4VSolid * fHexWireVolume_solid;
 
       std::array<G4LogicalVolume*,3> fRegions_log;
+      std::array<G4LogicalVolume*,3> fEmptyRegions_log;
       std::array<G4VSolid*,3> fRegions_solid;
 
    public:
@@ -33,6 +34,10 @@ class DriftChamberDetectorGeometry {
       G4LogicalVolume * fRegion2_log;
       G4LogicalVolume * fRegion3_log;
 
+      G4LogicalVolume * fEmptyRegion1_log;
+      G4LogicalVolume * fEmptyRegion2_log;
+      G4LogicalVolume * fEmptyRegion3_log;
+
       G4Material * fGasMaterial;
 
    public:
@@ -42,6 +47,7 @@ class DriftChamberDetectorGeometry {
       void BuildLogicalVolumes();
       
       G4VPhysicalVolume * PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region);
+      G4VPhysicalVolume * PlaceParallelPhysicalVolume(G4LogicalVolume * mother, int sec, int region);
 
 };
 

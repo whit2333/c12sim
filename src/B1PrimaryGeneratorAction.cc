@@ -11,7 +11,6 @@
 #include "Randomize.hh"
 
 
-
 B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAction(),
    fParticleGun(0), fEnvelopeBox(0)
 {
@@ -21,11 +20,10 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAc
    // default particle kinematic
    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
    G4String particleName;
-   G4ParticleDefinition* particle
-      = particleTable->FindParticle(particleName="e-");
+   G4ParticleDefinition* particle = particleTable->FindParticle(particleName="proton");
    fParticleGun->SetParticleDefinition(particle);
    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-   fParticleGun->SetParticleEnergy(8.0*MeV); // kinetic energy (not total)
+   fParticleGun->SetParticleEnergy(4.0*GeV); // kinetic energy (not total)
 }
 //______________________________________________________________________________
 
@@ -66,6 +64,15 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
    //  G4Exception("B1PrimaryGeneratorAction::GeneratePrimaries()",
    //   "MyCode0002",JustWarning,msg);
    //}
+   double phi= 2.*CLHEP::pi* G4UniformRand();
+   double cosTheta = -1. + 2. * G4UniformRand();
+   double sinTheta = sqrt(1. - cosTheta * cosTheta);
+   double ux= sinTheta * cos(phi);
+   double uy= sinTheta * sin(phi);
+   double uz =cosTheta;
+
+   fParticleGun->SetParticleEnergy(2.0*G4UniformRand()*GeV); // kinetic energy (not total)
+   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
 
    G4double size = 1.0; 
    G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);

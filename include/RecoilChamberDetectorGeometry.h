@@ -67,6 +67,7 @@ class RecoilChamberDetectorGeometry {
       void BuildUnitCells();
       
       G4VPhysicalVolume * PlacePhysicalVolume(G4LogicalVolume * mother);
+      G4VPhysicalVolume * PlaceParallelPhysicalVolume(G4LogicalVolume * mother);
 
 };
 

@@ -7,6 +7,7 @@
 #include "DriftChamberSensitiveDetector.h"
 #include "RecoilChamberDetectorGeometry.h"
 #include "G4SystemOfUnits.hh"
+
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 class B1DetectorMessenger;

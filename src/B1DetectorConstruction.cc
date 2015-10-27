@@ -1,6 +1,7 @@
 #include "B1DetectorConstruction.hh"
 #include "B1DetectorMessenger.hh"
 
+#include "SimulationManager.h"
 #include "G4Isotope.hh"
 #include "G4UnitsTable.hh"
 #include "G4Material.hh"
@@ -423,27 +424,27 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //polygon.push_back({       -h_hex,    0.0} );
    //G4Box * subtraction_box = new G4Box("a_hex_solid",0.01*cm,0.01*cm,0.01*cm);
 
-   fDriftChamber = new DriftChamberDetectorGeometry();
+   fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
    fDriftChamber->BuildLogicalVolumes();
 
    // Sectors
-   //for(int i = 1; i<=6; i++ ) {
+   for(int i = 1; i<=6; i++ ) {
 
-   //   // Region I
-   //   fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
+      // Region I
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
 
-   //   // Region II
-   //   fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
+      // Region II
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
 
-   //   // Region III
-   //   fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
-   //}
+      // Region III
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
+   }
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
 
-   fRecoilChamber = new RecoilChamberDetectorGeometry();
+   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
    fRecoilChamber->He10CO2   = He10CO2;
    fRecoilChamber->HeiC4H10  = HeiC4H10;
    fRecoilChamber->Tungsten  = Tungsten; 
@@ -473,157 +474,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    //G4UserLimits * scoring_limits = new G4UserLimits(0.004*um);
    //scoring_log->SetUserLimits(scoring_limits);
-
-   // ------------------------------------------------------------------------
-   // Inner Collimator 
-   // ------------------------------------------------------------------------
-   // Part I : Upstream inner cone 
-   //red       = 250.0/256.0;
-   //green     = 0.0/256.0;
-   //blue      = 1.0/256.0;
-   //alpha     = 0.4;
-
-   //if(collimator_phys) delete collimator_phys;
-   //if(collimator_log)  delete collimator_log;
-   //if(collimator_solid) delete collimator_solid;
-
-   //collimator_mat   = nist->FindOrBuildMaterial(fCollimatorMatName);
-   ////collimator_solid = new G4Tubs("collimator_solid", collimator_ID/2.0, collimator_OD/2.0, collimator_length/2.0, 0.0, 360.*deg );
-   //collimator_solid = new G4Cons("collimator_solid", collimator_ID/4.0, collimator_OD/2.0, collimator_ID/2.0, collimator_OD/2.0, collimator_length/4.0, 0.0, 360.*deg );
-   //collimator_log   = new G4LogicalVolume(collimator_solid, collimator_mat,"collimator_log");
-   //collimator_phys  = new G4PVPlacement(0,collimator_pos, collimator_log, "collimator_phys",world_log,false,0,checkOverlaps);                                  
-
-   //G4Colour            collimator_color {red, green, blue, alpha };   // Gray 
-   //G4VisAttributes   * collimator_vis   = new G4VisAttributes(collimator_color);
-   //collimator_log->SetVisAttributes(collimator_vis);
-
-   //// ------------------------------------------------------------------------
-   //// Part II : downstream inner cone 
-   //red       = 250.0/256.0;
-   //green     = 0.0/256.0;
-   //blue      = 1.0/256.0;
-   //alpha     = 0.4;
-
-   //if(collimator2_phys) delete collimator2_phys;
-   //if(collimator2_log)  delete collimator2_log;
-   //if(collimator2_solid) delete collimator2_solid;
-
-   //collimator2_mat   = nist->FindOrBuildMaterial(fCollimatorMatName);
-   ////collimator2_solid = new G4Tubs("collimator2_solid", collimator2_ID/2.0, collimator2_OD/2.0, collimator2_length/2.0, 0.0, 360.*deg );
-   //collimator2_solid = new G4Cons("collimator2_solid", collimator_ID/4.0, collimator_OD/2.0, collimator_ID/2.0, collimator_OD/2.0, collimator_length/4.0, 0.0, 360.*deg );
-   //collimator2_log   = new G4LogicalVolume(collimator2_solid, collimator2_mat,"collimator2_log");
-   //collimator2_phys  = new G4PVPlacement(0,collimator2_pos, collimator2_log, "collimator2_phys",world_log,false,0,checkOverlaps);                                  
-
-   //G4Colour            collimator2_color {red, green, blue, alpha };   // Gray 
-   //G4VisAttributes   * collimator2_vis   = new G4VisAttributes(collimator2_color);
-   //collimator2_log->SetVisAttributes(collimator2_vis);
-
-
-   //// ------------------------------------------------------------------------
-   //// Outer Collimator 
-   //// ------------------------------------------------------------------------
-   //red       = 0.0/256.0;
-   //green     = 256.0/256.0;
-   //blue      = 1.0/256.0;
-   //alpha     = 0.4;
-
-   //if(outer_collimator_phys)  delete outer_collimator_phys;
-   //if(outer_collimator_log)   delete outer_collimator_log;
-   //if(outer_collimator_solid) delete outer_collimator_solid;
-
-   //outer_collimator_mat   = nist->FindOrBuildMaterial("G4_Cu");
-   //outer_collimator_solid = new G4Tubs("outer_collimator_solid", outer_collimator_ID/2.0, outer_collimator_OD/2.0, collimator_length/2.0, 0.0, 360.*deg );
-   //outer_collimator_log   = new G4LogicalVolume(outer_collimator_solid, outer_collimator_mat,"outer_collimator_log");
-   //outer_collimator_phys  = new G4PVPlacement(0,outer_collimator_pos, outer_collimator_log, "outer_collimator_phys",world_log,false,0,checkOverlaps);                                  
-   //G4Colour            outer_collimator_color {red, green, blue, alpha };   // Gray 
-   //G4VisAttributes   * outer_collimator_vis   = new G4VisAttributes(outer_collimator_color);
-   //outer_collimator_vis->SetForceWireframe(true);
-   //outer_collimator_log->SetVisAttributes(outer_collimator_vis);
-
-   //// ------------------------------------------------------------------------
-   //// Scoring volume 
-   //// ------------------------------------------------------------------------
-   //red       = 177.0/256.0;
-   //green     = 104.0/256.0;
-   //blue      = 177.0/256.0;
-   //alpha     = 0.4;
-
-   //if(scoring_phys) delete scoring_phys;
-   //if(scoring_log) delete scoring_log;
-   //if(scoring_solid) delete scoring_solid;
-   ////if(scoring_det) delete scoring_det;
-
-   //scoring_mat   = nist->FindOrBuildMaterial("G4_AIR");
-   //scoring_solid = new G4Tubs("scoring_solid", 0.0, scoring_diameter/2.0, scoring_length/2.0, 0.0, 360.*deg );
-   //scoring_log   = new G4LogicalVolume(scoring_solid, scoring_mat,"scoring_log");
-   //scoring_phys  = new G4PVPlacement(0,scoring_pos, scoring_log, "scoring_phys",world_log,false,0,checkOverlaps);                                  
-
-   //G4Colour            scoring_color {red, green, blue, alpha };   // Gray 
-   //G4VisAttributes   * scoring_vis   = new G4VisAttributes(scoring_color);
-   //scoring_log->SetVisAttributes(scoring_vis);
-
-   ////G4UserLimits * scoring_limits = new G4UserLimits(0.004*um);
-   ////scoring_log->SetUserLimits(scoring_limits);
-
-   //if(!scoring_det) scoring_det = new FakeSD("/FakeSD1");
-   //SetSensitiveDetector("scoring_log",scoring_det);
-
-   //// ------------------------------------------------------------------------
-   //// window 
-   //// ------------------------------------------------------------------------
-   //red       = 5.0/256.0;
-   //green     = 255.0/256.0;
-   //blue      = 1.0/256.0;
-   //alpha     = 0.4;
-
-   //if(window_phys) delete window_phys;
-   //if(window_log) delete window_log;
-   //if(window_solid) delete window_solid;
-
-   //double cone_slope = (collimator_ID/4.0)/(collimator_length/2.0);
-   //window_mat   = nist->FindOrBuildMaterial("G4_Cu");
-   ////window_solid  = new G4Tubs("window_solid", 0.0, window_diameter/2.0, window_thickness/2.0, 0.0, 360.*deg );
-   //window_solid = new G4Cons("collimator2_solid", 0.0, window_diameter/2.0 - cone_slope*window_thickness, 0.0, window_diameter/2.0, window_thickness/2.0, 0.0, 360.*deg );
-   //window_log   = new G4LogicalVolume(window_solid, window_mat,"window_log");
-   //window_phys  = new G4PVPlacement(0,window_pos, window_log, "window_phys",world_log,false,0,checkOverlaps);                                  
-
-   //G4Colour            window_color {red, green, blue, alpha };   // Gray 
-   //G4VisAttributes   * window_vis   = new G4VisAttributes(window_color);
-   //window_log->SetVisAttributes(window_vis);
-
-   //// ------------------------------------------------------------------------
-   //// Scoring volume 
-   //// ------------------------------------------------------------------------
-   //red       = 66.0/256.0;
-   //green     = 174.0/256.0;
-   //blue      = 208.0/256.0;
-   //alpha     = 0.4;
-
-   //if(scoring2_phys) delete scoring2_phys;
-   //if(scoring2_log) delete scoring2_log;
-   //if(scoring2_solid) delete scoring2_solid;
-   ////if(scoring2_det) delete scoring2_det;
-
-   //scoring2_mat   = nist->FindOrBuildMaterial("G4_AIR");
-   //scoring2_solid  = new G4Tubs("scoring2_solid", 0.0, scoring2_diameter/2.0, scoring2_length/2.0, 0.0, 360.*deg );
-   //scoring2_log   = new G4LogicalVolume(scoring2_solid, scoring2_mat,"scoring2_log");
-   //scoring2_phys  = new G4PVPlacement(0,scoring2_pos, scoring2_log, "scoring2_phys",world_log,false,0,checkOverlaps);                                  
-
-   //G4Colour            scoring2_color {red, green, blue, alpha };   // Gray 
-   //G4VisAttributes   * scoring2_vis   = new G4VisAttributes(scoring2_color);
-   //scoring2_log->SetVisAttributes(scoring2_vis);
-
-   ////G4UserLimits * scoring_limits = new G4UserLimits(0.004*um);
-   ////scoring_log->SetUserLimits(scoring_limits);
-
-   //if(!scoring2_det) scoring2_det = new FakeSD("/FakeSD2");
-   //SetSensitiveDetector("scoring2_log",scoring2_det);
-
-
-   // --------------------------------------------------------
-  // Option to switch on/off checking of volumes overlaps
-  //
-
 
    G4NistManager* man = nist;//G4NistManager::Instance();
 

@@ -2,6 +2,7 @@
 #define B1RunAction_h 1
 
 #include "G4UserRunAction.hh"
+#include "RunConfiguration.h"
 #include "globals.hh"
 
 class G4Run;
@@ -19,6 +20,8 @@ class B1RunAction : public G4UserRunAction
    public:
 
       G4int   fRunNumber;
+      G4Run * fRun;
+      clas12::sim::RunConfiguration * fRunConf;
 
    public:
       B1RunAction(G4int rn = 0);

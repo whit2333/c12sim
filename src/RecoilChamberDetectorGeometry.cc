@@ -174,7 +174,7 @@ void RecoilChamberDetectorGeometry::BuildUnitCells()
       } // slay
 
       fWireVolume_solid[tlay] = combined_temp2;
-      fWireVolume_log[tlay]   = new G4LogicalVolume(fWireVolume_solid[tlay], HeiC4H10, "Unitcell");
+      fWireVolume_log[tlay]   = new G4LogicalVolume(fWireVolume_solid[tlay], 0, "Unitcell");
    }
 }
 //______________________________________________________________________________
@@ -188,13 +188,96 @@ void RecoilChamberDetectorGeometry::BuildLogicalVolumes()
 }
 //______________________________________________________________________________
 
-G4VPhysicalVolume * RecoilChamberDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother )
+G4VPhysicalVolume * RecoilChamberDetectorGeometry::PlaceParallelPhysicalVolume(G4LogicalVolume * mother )
 {
    using namespace clas12::geo;
 
    BuildUnitCells();
 
    //--Creating the geometry
+   G4ThreeVector gasDetector_pos = G4ThreeVector(gasDetector_posX, gasDetector_posY, gasDetector_posZ);
+
+   G4Tubs* gasDetector = new G4Tubs("GasDetectorPara", 
+         innerRadiusOfTheGasDetector,outerRadiusOfTheGasDetector, 
+         hightOfTheGasDetector, 
+         startAngleOfTheGasDetector, spanningAngleOfTheGasDetector);
+
+   G4LogicalVolume* logicGasDetector =                         
+      new G4LogicalVolume(gasDetector, 0, "GasDetectorPara_log");            
+
+   G4VPhysicalVolume * gasDetector_phys = new G4PVPlacement(0, gasDetector_pos, logicGasDetector, 
+         "gasDetectorPara_phys", mother, false, 0, true);            
+
+   G4VisAttributes * GasDetectorVisAtt = new G4VisAttributes(G4Colour(0.3,0.1,0.1));
+   GasDetectorVisAtt->SetForceWireframe(true);
+   logicGasDetector->SetVisAttributes(GasDetectorVisAtt);
+
+   //--Step max
+   G4double maxStep = 2.0*mm;
+   G4UserLimits * fStepLimit = new G4UserLimits(maxStep);
+   fStepLimit->SetMaxAllowedStep(maxStep);
+   //   fStepLimit->SetUserMaxTrackLength(maxStep);
+   logicGasDetector->SetUserLimits(fStepLimit);
+
+   //--Making it a sensitive detector
+   G4SDManager* SDman = G4SDManager::GetSDMpointer();
+   G4String gasDetectorSDname = "/mydet/GasDetector";
+   //--
+
+   int wire_number = 0;
+   double sign = 1.0;
+   for(G4int tlay=0; tlay<NTLay; tlay++){
+
+      // Determine the radius of this layer of wires
+      // The first layer is offset from the nominal inner radius by DeltaP
+      G4double   Rtlay = (innerRadiusOfTheGasDetector + DeltaP + NsLay*DeltaP*tlay);
+      G4int      NWiresLay = int(CLHEP::pi*Rtlay / DeltaP);
+      NWiresLay = 2*NWiresLay; // to ensure an even number of wires
+      G4double PhiWire = (2.*CLHEP::pi/ NWiresLay);
+
+      for(G4int slay=0;slay<NsLay;slay++){
+
+         G4double Rlay = Rtlay + DeltaR*slay;
+
+         for(int wi=0;wi<NWiresLay;wi++){  
+
+            G4double xw = (Rlay * cos(double(wi)*PhiWire));
+            G4double yw = (Rlay * sin(double(wi)*PhiWire));
+
+            if(tlay%2==0) sign=1.;
+            else sign=-1.;
+
+            G4RotationMatrix* rotationMatrix = new G4RotationMatrix();
+            rotationMatrix->rotateZ(-1.0*double(wi)*PhiWire);
+            //rotationMatrix->rotate(sign*steAng,G4ThreeVector(xw,yw,0.));
+
+            //G4LogicalVolume * logicWires = wires_odd_log;
+            //if(tlay%2 == 0 )  logicWires = wires_even_log;
+
+            if( ((wi+1)%2 == 0) && ( (slay+1)%2==0 ) ) {
+
+               std::string wire_name = "wire_volume_" + std::to_string(wire_number);
+
+               fWireVolume_log[tlay]->SetSensitiveDetector(fSensitiveDetector);
+               new G4PVPlacement(rotationMatrix,G4ThreeVector(0,0,0.),
+                     fWireVolume_log[tlay], wire_name, logicGasDetector,
+                     false,wire_number,false);
+               wire_number++;
+            }
+         }   
+      } // slay
+   } // tlay
+
+   return gasDetector_phys;
+}
+//______________________________________________________________________________
+
+G4VPhysicalVolume * RecoilChamberDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother )
+{
+   // Real world geometry
+
+   using namespace clas12::geo;
+
    G4ThreeVector gasDetector_pos = G4ThreeVector(gasDetector_posX, gasDetector_posY, gasDetector_posZ);
 
    G4Tubs* gasDetector = new G4Tubs("GasDetector", 
@@ -233,43 +316,99 @@ G4VPhysicalVolume * RecoilChamberDetectorGeometry::PlacePhysicalVolume(G4Logical
    G4LogicalVolume* wires_even_log = new G4LogicalVolume(wiresolid, Tungsten, "wires_even_log");       
    G4LogicalVolume* wires_odd_log = new G4LogicalVolume(wiresolid, Tungsten, "wires_odd_log");       
 
-   double sign = 1.0;
-   for(G4int tlay=0; tlay<NTLay; tlay++){
+///////////////////////////////////////////////////////////////////////////
+//--------------------------- Gas Detector ------------------------------//
+///////////////////////////////////////////////////////////////////////////
 
-      // Determine the radius of this layer of wires
-      // The first layer is offset from the nominal inner radius by DeltaP
-      G4double   Rtlay = (innerRadiusOfTheGasDetector + DeltaP + NsLay*DeltaP*tlay);
-      G4int      NWiresLay = int(CLHEP::pi*Rtlay / DeltaP);
+//  //--Creating the geometry
+//   G4ThreeVector gasDetector_pos = G4ThreeVector(gasDetector_posX, gasDetector_posY, gasDetector_posZ);
+//
+//   G4Tubs* gasDetector = new G4Tubs("GasDetectorReal", innerRadiusOfTheGasDetector,outerRadiusOfTheGasDetector, hightOfTheGasDetector, startAngleOfTheGasDetector, spanningAngleOfTheGasDetector);
+//
+//   G4LogicalVolume* logicGasDetector =                         
+//    new G4LogicalVolume(gasDetector,          //its solid
+//                        HeiC4H10,            //its material
+//                        "GasDetector");       //its name
+//                
+//    new G4PVPlacement(0,                     //no rotation
+//                    gasDetector_pos,          //at position
+//                    logicGasDetector,         //its logical volume
+//                    "GasDetector",            //its name
+//                    experimentalHall_log,    //its mother  volume
+//                    false,                   //no boolean operation
+//                    0,                       //copy number
+//                    checkOverlaps);          //overlaps checking
+//
+//      // Definition of visualisation attributes
+//      // Instantiation of a set of visualization attributes with cyan colour
+//      G4VisAttributes * GasDetectorVisAtt = new G4VisAttributes(G4Colour(0.,1.,1.));
+//      // Set the forced wireframe style 
+//      GasDetectorVisAtt->SetForceWireframe(true);
+//      // Assignment of the visualization attributes to the logical volume
+//      logicGasDetector->SetVisAttributes(GasDetectorVisAtt);
+//   //--
+//   
+//   //--Step max
+//   G4double maxStep = 2.0*mm;
+//   fStepLimit = new G4UserLimits(maxStep);
+//   fStepLimit->SetMaxAllowedStep(maxStep);
+////   fStepLimit->SetUserMaxTrackLength(maxStep);
+//   logicGasDetector->SetUserLimits(fStepLimit);
+//
+////G4cout << "Youhou " << logicGasDetector->GetUserLimits()
+//
+//   //--Making it a sensitive detector
+//   G4SDManager* SDman = G4SDManager::GetSDMpointer();
+//
+//   G4String gasDetectorSDname = "/mydet/GasDetector";
+//   GasDetectorSD * gasDetectorSD = new GasDetectorSD(gasDetectorSDname);
+//   SDman->AddNewDetector(gasDetectorSD);
+//   logicGasDetector->SetSensitiveDetector(gasDetectorSD);
+//   //--
+//
+//   // --Placing the wires
+//   G4Tubs* wiresolid = new G4Tubs("Wire", innerRadiusOfTheWire,outerRadiusOfTheWire, hightOfTheWire, startAngleOfTheWire, spanningAngleOfTheWire);
+//   G4LogicalVolume* logicWires =                         
+//    new G4LogicalVolume(wiresolid,      //its solid
+//                        Tungsten,       //its material
+//                        "Wires");       //its name
+			
+   bool checkOverlaps = false;
+   double sign = 1.0;
+   int wire_element;
+   for(G4int tlay=0;tlay<NTLay;tlay++){
+
+      G4double Rtlay = (innerRadiusOfTheGasDetector + DeltaP + NsLay*DeltaP*tlay)*mm;
+      G4int NWiresLay = (G4int) (CLHEP::pi*Rtlay / DeltaP);
       NWiresLay = 2*NWiresLay; // to ensure an even number of wires
-      G4double PhiWire = (2.*CLHEP::pi/ NWiresLay);
+      G4double PhiWire = (2.*CLHEP::pi/ NWiresLay)*rad;
 
       for(G4int slay=0;slay<NsLay;slay++){
 
          G4double Rlay = Rtlay + DeltaR*slay;
 
-         for(int wi=0;wi<NWiresLay;wi++){  
-
-            G4double xw = (Rlay * cos(double(wi)*PhiWire));
-            G4double yw = (Rlay * sin(double(wi)*PhiWire));
+         for(G4double wi=0;wi<NWiresLay;wi++){  
+            G4double xw = (Rlay * cos(wi*PhiWire))*mm;
+            G4double yw = (Rlay * sin(wi*PhiWire))*mm;
 
             if(tlay%2==0) sign=1.;
             else sign=-1.;
-
             G4RotationMatrix* rotationMatrix = new G4RotationMatrix();
-            rotationMatrix->rotateZ(-1.0*double(wi)*PhiWire);
-            //rotationMatrix->rotate(sign*steAng,G4ThreeVector(xw,yw,0.));
+            rotationMatrix->rotate(sign*steAng,G4ThreeVector(xw,yw,0.));
 
             G4LogicalVolume * logicWires = wires_odd_log;
             if(tlay%2 == 0 )  logicWires = wires_even_log;
 
-            if( ((wi+1)%2 == 0) && ( (slay+1)%2==0 ) ) {
-               new G4PVPlacement(rotationMatrix,G4ThreeVector(0,0,0.),
-                     fWireVolume_log[tlay], "Wire", logicGasDetector,
-                     false,(tlay+1)*10000+(slay+1)*1000+wi,false);
-            }
-         }   
+            std::string wire_name = "wire_element_" + std::to_string(wire_element);
+
+            new G4PVPlacement(rotationMatrix,G4ThreeVector(xw,yw,0.),logicWires,
+                  wire_name,logicGasDetector,
+                  false,(tlay+1)*10000+(slay+1)*1000+wi,checkOverlaps);
+            wire_element++;
+         } // wi		     
       } // slay
    } // tlay
+   //--
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with green colour
@@ -287,4 +426,5 @@ G4VPhysicalVolume * RecoilChamberDetectorGeometry::PlacePhysicalVolume(G4Logical
    return gasDetector_phys;
 }
 //______________________________________________________________________________
+
 

@@ -25,11 +25,13 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include <sys/file.h>
+#include "RecoilChamberDetectorGeometry.h"
+#include "DriftChamberDetectorGeometry.h"
 
 
-//______________________________________________________________________________
 SimulationManager* SimulationManager::fgSimulationManager = 0;
 //______________________________________________________________________________
+
 SimulationManager::SimulationManager () {
 
    fSimulationMessenger = new SimulationMessenger ( this );
@@ -39,6 +41,8 @@ SimulationManager::SimulationManager () {
    fOutputDirectoryName = "data/rootfiles";
    fOutputFileName      = "clas12gemc";
    fOutputTreeName      = "clasdigi_hits";
+   fRecoilChamberGeo    = nullptr;
+   fDriftChamberGeo     = nullptr;
 
 }
 //______________________________________________________________________________
@@ -48,6 +52,7 @@ SimulationManager::~SimulationManager()
    delete fSimulationMessenger;
 }
 //______________________________________________________________________________
+
 SimulationManager* SimulationManager::GetInstance (  )
 {
    if ( fgSimulationManager == 0 )
@@ -101,6 +106,46 @@ std::string SimulationManager::OutputTreeName() const {
    return filename;
 }
 //______________________________________________________________________________
+
+int SimulationManager::tryGetLock( char const *lockName )
+{
+   mode_t m = umask( 0 );
+   int fd = open( lockName, O_RDWR|O_CREAT, 0666 );
+   umask( m );
+   if( fd >= 0 && flock( fd, LOCK_EX | LOCK_NB ) < 0 )
+   {
+      close( fd );
+      fd = -1;
+   }
+   return fd;
+}
+//______________________________________________________________________________
+
+void SimulationManager::releaseLock( int fd, char const *lockName )
+{
+   if( fd < 0 )
+      return;
+   remove( lockName );
+   close( fd );
+}
+//______________________________________________________________________________
+
+DriftChamberDetectorGeometry * SimulationManager::GetDriftDetectorGeometry(){
+   if(!fDriftChamberGeo) {
+      fDriftChamberGeo = new DriftChamberDetectorGeometry();
+   }
+   return fDriftChamberGeo;
+}
+//______________________________________________________________________________
+
+RecoilChamberDetectorGeometry * SimulationManager::GetRecoilDetectorGeometry(){
+   if(!fRecoilChamberGeo) {
+      fRecoilChamberGeo = new RecoilChamberDetectorGeometry();
+   }
+   return fRecoilChamberGeo;
+}
+//______________________________________________________________________________
+
 //int SimulationManager::InitializeNewRun(int run) {
 //   fRunNumber = RetrieveRunNumber(run);
 //   return(fRunNumber);

@@ -29,13 +29,15 @@ RecoilChamberSensitiveDetector::RecoilChamberSensitiveDetector(G4String name, G4
    fCountAllPhotons(true), fSavePhotonPositions(false)
 {
    SimulationManager * sim_manager  = SimulationManager::GetInstance();
-   //fDCHitsEvent = &(sim_manager->fEvent->fDCEvent);
+   fRCHitsEvent = &(sim_manager->fEvent->fRCEvent);
 }
 //______________________________________________________________________________
+
 RecoilChamberSensitiveDetector::~RecoilChamberSensitiveDetector()
 {
 }
 //______________________________________________________________________________
+
 void RecoilChamberSensitiveDetector::Initialize(G4HCofThisEvent* hitsCollectionOfThisEvent)
 {
    //fCrate->Clear();
@@ -58,67 +60,73 @@ G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableH
    double step_length = aStep->GetStepLength()/cm;
 
    bool ion_pair   = does_step_create_ion_pair( step_length );
-   bool first_step = aStep->IsFirstStepInVolume();
+   bool first_step = false; //aStep->IsFirstStepInVolume();
+   if (aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)  {
+      // First step in volume
+      // For some reason IsFirstStepInVolume doesn't work for parallel geometry
+      first_step = true;
+   }
 
    if( ion_pair || first_step ) {
 
-      //const G4ThreeVector& pos_global = aStep->GetPreStepPoint()->GetPosition();
-      //double time = aStep->GetPreStepPoint()->GetGlobalTime()/ns;
+      const G4ThreeVector& pos_global = aStep->GetPreStepPoint()->GetPosition();
+      double time = aStep->GetPreStepPoint()->GetGlobalTime()/ns;
 
-      //G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
-      //G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
-
-
-      //// layer/superlayer/wire comes from channel
-      //int channel  = touchable->GetReplicaNumber(0);
-      //int layer    = (channel/112)%6 + 1;
-      //int wire     = channel%112 + 1;
-
-      //// grouping is the placement of the sector/region
-      //int grouping    = touchable->GetReplicaNumber(1);
-      //int sector      = grouping/3+1;
-      //int region      = grouping%3+1;
-      //int super_layer = (channel/112)/6 + (grouping%3)*2 + 1;
-      //int pdg         = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
-      //TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,time);
+      G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
+      G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
 
 
-      //if(ion_pair) {
-      //   RecoilChamberIonPairHit * ahit = fDCHitsEvent->AddIonPairHit( pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
-      //   ahit->fGlobalPosition         = global_4vec;
-      //   ahit->fStepLength             = step_length;
-      //   ahit->fChannel                = channel;
-      //   ahit->fDCWire.fSector         = sector;
-      //   ahit->fDCWire.fRegion         = region;
-      //   ahit->fDCWire.fSuperLayer     = super_layer;
-      //   ahit->fDCWire.fLayer          = layer;
-      //   ahit->fDCWire.fWire           = wire;
-      //   ahit->fPDGCode                = pdg;
+      // layer/superlayer/wire comes from channel
+      int channel  = touchable->GetReplicaNumber(0);
+      int layer    = (channel/112)%6 + 1;
+      int wire     = channel%112 + 1;
 
-      //   if( step_length == 0.0 ) {
-      //      std::cout << step_length << " cm : " ;
-      //      std::cout << "(" << ahit->fPDGCode << ") " << aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() << " to ";  
-      //      std::cout << aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() << std::endl;
-      //   }
-      //}
+      // grouping is the placement of the sector/region
+      int grouping    = touchable->GetReplicaNumber(1);
+      int sector      = grouping/3+1;
+      int region      = grouping%3+1;
+      int super_layer = (channel/112)/6 + (grouping%3)*2 + 1;
+      int pdg         = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
+      TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,time);
+
+
+      if(ion_pair) {
+         DriftChamberIonPairHit * ahit = fRCHitsEvent->AddIonPairHit( pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
+         ahit->fGlobalPosition         = global_4vec;
+         ahit->fStepLength             = step_length;
+         ahit->fChannel                = channel;
+         ahit->fDCWire.fSector         = sector;
+         ahit->fDCWire.fRegion         = region;
+         ahit->fDCWire.fSuperLayer     = super_layer;
+         ahit->fDCWire.fLayer          = layer;
+         ahit->fDCWire.fWire           = wire;
+         ahit->fPDGCode                = pdg;
 
       //if( first_step ) {
-
-      //   G4ThreeVector  mom  = aStep->GetTrack()->GetMomentum();
-      //   double         Etot = aStep->GetTrack()->GetTotalEnergy();
-      //   if(Etot/MeV > 10.0) { 
-      //      RecoilChamberParticleHit * part_hit = fDCHitsEvent->AddParticleHit();
-      //      part_hit->fPDGCode            = pdg;
-      //      part_hit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
-      //      part_hit->fGlobalPosition     = global_4vec;
-      //      part_hit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, Etot/GeV);
-      //      part_hit->fDCWire.fSector     = sector;
-      //      part_hit->fDCWire.fRegion     = region;
-      //      part_hit->fDCWire.fSuperLayer = super_layer;
-      //      part_hit->fDCWire.fLayer      = layer;
-      //      part_hit->fDCWire.fWire       = wire;
+      //   if( step_length > 0.0  ) {
+      //      std::cout << step_length << " cm : " ;
+      //      //std::cout << "(" << ahit->fPDGCode << ") " << aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() << " to ";  
+      //      std::cout << aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() << std::endl;
       //   }
-      //}
+      }
+
+      if( first_step ) {
+
+         G4ThreeVector  mom  = aStep->GetTrack()->GetMomentum();
+         double         Etot = aStep->GetTrack()->GetTotalEnergy();
+         if(Etot/MeV > 10.0) { 
+            DriftChamberParticleHit * part_hit = fRCHitsEvent->AddParticleHit();
+            part_hit->fPDGCode            = pdg;
+            part_hit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
+            part_hit->fGlobalPosition     = global_4vec;
+            part_hit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, Etot/GeV);
+            part_hit->fDCWire.fSector     = sector;
+            part_hit->fDCWire.fRegion     = region;
+            part_hit->fDCWire.fSuperLayer = super_layer;
+            part_hit->fDCWire.fLayer      = layer;
+            part_hit->fDCWire.fWire       = wire;
+         }
+      }
 
    }
    return true;
