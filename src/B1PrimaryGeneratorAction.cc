@@ -23,7 +23,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAc
    // default particle kinematic
    particleTable = G4ParticleTable::GetParticleTable();
    G4String  particleName;
-   G4ParticleDefinition* particle = particleTable->FindParticle(particleName="proton");
+   G4ParticleDefinition* particle = particleTable->FindParticle(particleName="e-");
    fParticleGun->SetParticleDefinition(particle);
    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
    fParticleGun->SetParticleEnergy(4.0*GeV); // kinetic energy (not total)
@@ -43,7 +43,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
    std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
 
-   if( fInputLundFile.is_open() ){
+   if( false ) {//fInputLundFile.is_open() ){
       std::cout << " khjasdfkjasdflkjasdfkj\n";
       fThrownEvent.ReadLundEvent(fInputLundFile);
       int npart = fThrownEvent.GetNParticles();
@@ -72,22 +72,31 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
    } else {
 
       G4double envSizeXY = 2.0*mm;
-      G4double envSizeZ  = 0.0*nm;
+      G4double envSizeZ  = 5.0*cm;
 
       double phi= 2.*CLHEP::pi* G4UniformRand();
-      double cosTheta = -1. + 2. * G4UniformRand();
+      //double cosTheta = -1. + 2. * G4UniformRand();
+      double cosTheta = 1. * G4UniformRand();
       double sinTheta = sqrt(1. - cosTheta * cosTheta);
       double ux= sinTheta * cos(phi);
       double uy= sinTheta * sin(phi);
       double uz =cosTheta;
 
-      fParticleGun->SetParticleEnergy(2.0*G4UniformRand()*GeV); // kinetic energy (not total)
+      if( G4UniformRand() < 0.5 ) {
+         G4ParticleDefinition* particle = particleTable->FindParticle("proton");
+         fParticleGun->SetParticleDefinition(particle);
+      } else {
+         G4ParticleDefinition* particle = particleTable->FindParticle("e-");
+         fParticleGun->SetParticleDefinition(particle);
+      }
+
+      fParticleGun->SetParticleEnergy((0.1 + 1.0*G4UniformRand())*GeV); // kinetic energy (not total)
       fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
 
       G4double size = 1.0; 
       G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
       G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-      G4double z0 = -20.0*cm;
+      G4double z0 = envSizeZ * (G4UniformRand()-0.5);
 
       fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
       fParticleGun->GeneratePrimaryVertex(anEvent);

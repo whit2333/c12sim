@@ -9,6 +9,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UniformMagField.hh"
 #include "G4FieldManager.hh"
+#include "C12MagneticField.h"
 #include "G4TransportationManager.hh"
 
 #include "G4RunManager.hh"
@@ -486,17 +487,28 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    ///////////////////////////////////////////////////////////////////////////
 
    // create a field
-   G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
+   //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
+   C12MagneticField * magField = new C12MagneticField(true,true);
 
    // set it as the default field
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager(); // set it as the default field
    fieldMgr->SetDetectorField(magField);
    fieldMgr->CreateChordFinder(magField); // create the objects which calculate the trajectory
    // change the accuracy of volume intersection
-   //   fieldMgr->GetChordFinder()->SetDeltaChord(acc_inter);
-   G4ThreeVector myfield = magField->GetConstantFieldValue();
-   //G4cout << "Uniform magnetic field set to ( x , y , z ): ( " << myfield[0] << " , " << myfield[1] << " , " << G4BestUnit(myfield[2],"Magnetic flux density") << ")" << G4endl;;
+   //fieldMgr->GetChordFinder()->SetDeltaChord(acc_inter);
+   double pos[4] = {0.0,0.0,0.0,0.0};
+   G4ThreeVector myfield = magField->GetFieldValue(pos);
+   G4cout << "magnetic field at origin : ( " << myfield[0] << " , " << myfield[1] << " , " << G4BestUnit(myfield[2],"Magnetic flux density") << ")" << G4endl;;
 
+   // Relative accuracy values:
+   G4double minEps= 1.0e-6;  //   Minimum & value for smallest steps
+   G4double maxEps= 1.0e-5;  //   Maximum & value for largest steps
+
+   fieldMgr->SetMinimumEpsilonStep( minEps );
+   fieldMgr->SetMaximumEpsilonStep( maxEps );
+   fieldMgr->SetDeltaOneStep( 0.1e-4 * mm );  // 0.5 micrometer
+
+   G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
 
 
 
