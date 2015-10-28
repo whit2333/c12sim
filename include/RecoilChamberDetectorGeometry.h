@@ -27,15 +27,14 @@ class RecoilChamberDetectorGeometry {
    public:
 
       //--Parameters of the gas detector
-      G4double  innerRadiusOfTheGasDetector = 30.00*mm;
-      G4double  outerRadiusOfTheGasDetector = 79.995*mm;
-      G4double  hightOfTheGasDetector = 200.*mm;
-      G4double  startAngleOfTheGasDetector = 0.*deg;
+      G4double  innerRadiusOfTheGasDetector   = 30.00*mm;
+      G4double  outerRadiusOfTheGasDetector   = 79.995*mm;
+      G4double  hightOfTheGasDetector         = 200.*mm;
+      G4double  startAngleOfTheGasDetector    = 0.*deg;
       G4double  spanningAngleOfTheGasDetector = 360.*deg;
-      G4double   gasDetector_posX = 0.*mm;
-      G4double   gasDetector_posY = 0.*mm;
-      G4double   gasDetector_posZ = 0.*mm; 
-      //--
+      G4double   gasDetector_posX             = 0.*mm;
+      G4double   gasDetector_posY             = 0.*mm;
+      G4double   gasDetector_posZ             = 0.*mm;
 
       //--Parameters of the wires
       G4double  innerRadiusOfTheWire   = 0.00*mm;
@@ -49,7 +48,6 @@ class RecoilChamberDetectorGeometry {
       G4double  NTLay  = 6.0;//4.; // Number of T layers
       G4double  NsLay  = 3.0;//5.; // Number of s layers 
       G4double  steAng = 1.0*deg;
-      //--
 
       G4Material* He10CO2;
       G4Material* HeiC4H10;

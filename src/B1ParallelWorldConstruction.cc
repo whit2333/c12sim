@@ -134,7 +134,7 @@ void B1ParallelWorldConstruction::Construct()
    //}
 
    // ------------------------------------------------------------------------
-   // Recoil Chamber
+   // Drift Chamber
    // ------------------------------------------------------------------------
 
    DriftChamberDetectorGeometry * fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();

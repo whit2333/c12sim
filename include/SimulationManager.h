@@ -37,6 +37,7 @@ class SimulationManager {
       DriftChamberDetectorGeometry  * fDriftChamberGeo;
 
    public:
+
       SimulationMessenger           * fSimulationMessenger;
       clas12::hits::CLAS12HitsEvent * fEvent;
       std::string                     fOutputDirectoryName;
@@ -44,6 +45,7 @@ class SimulationManager {
       std::string                     fOutputFileName;
       TTree                         * fOutputTree;
       std::string                     fOutputTreeName;
+      std::string                     fInputFileName;
 
    public:
       ~SimulationManager();
@@ -57,12 +59,14 @@ class SimulationManager {
 
       std::string OutputFileName() const ;
       std::string OutputTreeName() const ;
+      std::string InputFileName() const ;
 
       int GetEventNumber() const { return(fEvent->fEventNumber); };
       int ReadRunNumber(const char * fname = "run_number.txt");
 
       DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
       RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
+
 
    private:
 

@@ -9,6 +9,9 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "SimulationManager.h"
+#include "ThrownEvent.h"
+#include "TParticle.h"
 
 
 B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAction(),
@@ -18,12 +21,15 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAc
    fParticleGun  = new G4ParticleGun(n_particle);
 
    // default particle kinematic
-   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-   G4String particleName;
+   particleTable = G4ParticleTable::GetParticleTable();
+   G4String  particleName;
    G4ParticleDefinition* particle = particleTable->FindParticle(particleName="proton");
    fParticleGun->SetParticleDefinition(particle);
    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
    fParticleGun->SetParticleEnergy(4.0*GeV); // kinetic energy (not total)
+
+   std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
+   fInputLundFile.open(SimulationManager::GetInstance()->InputFileName().c_str());
 }
 //______________________________________________________________________________
 
@@ -35,53 +41,57 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-   //this function is called at the begining of ecah event
-   //
+   std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
 
-   // In order to avoid dependence of PrimaryGeneratorAction
-   // on DetectorConstruction class we get Envelope volume
-   // from G4LogicalVolumeStore.
+   if( fInputLundFile.is_open() ){
+      std::cout << " khjasdfkjasdflkjasdfkj\n";
+      fThrownEvent.ReadLundEvent(fInputLundFile);
+      int npart = fThrownEvent.GetNParticles();
+      for(int i = 0; i<npart; i++){
+         TParticle * part = fThrownEvent.GetParticle(i);
+         int pdgcode = part->GetPdgCode();
+         std::cout << "PDG CODE " << pdgcode << "\n";
+         std::cout << "npart " << npart << " i " << i << "\n";
+         std::cout << "npart2 " << fThrownEvent.GetNParticles() << " i " << i << "\n";
+         G4ParticleDefinition* particle = particleTable->FindParticle(pdgcode);
+         fParticleGun->SetParticleDefinition(particle);
+         double KE =  part->Energy() - part->GetMass();
+         double ux = part->Px();
+         double uy = part->Py();
+         double uz = part->Pz();
+         double x0 = part->Vx();
+         double y0 = part->Vy();
+         double z0 = part->Vz();
+         fParticleGun->SetParticleEnergy( KE*GeV );
+         fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
+         fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+         fParticleGun->GeneratePrimaryVertex(anEvent);
+      } 
+      fThrownEvent.Print();
 
-   G4double envSizeXY = 2.0*mm;
-   G4double envSizeZ  = 0.0*nm;
+   } else {
 
-   //if (!fEnvelopeBox)
-   //{
-   //  G4LogicalVolume* envLV
-   //    = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
-   //  if ( envLV ) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
-   //}
+      G4double envSizeXY = 2.0*mm;
+      G4double envSizeZ  = 0.0*nm;
 
-   //if ( fEnvelopeBox ) {
-   //  envSizeXY = fEnvelopeBox->GetXHalfLength()*2.;
-   //  envSizeZ = fEnvelopeBox->GetZHalfLength()*2.;
-   //}  
-   //else  {
-   //  G4ExceptionDescription msg;
-   //  msg << "Envelope volume of box shape not found.\n"; 
-   //  msg << "Perhaps you have changed geometry.\n";
-   //  msg << "The gun will be place at the center.";
-   //  G4Exception("B1PrimaryGeneratorAction::GeneratePrimaries()",
-   //   "MyCode0002",JustWarning,msg);
-   //}
-   double phi= 2.*CLHEP::pi* G4UniformRand();
-   double cosTheta = -1. + 2. * G4UniformRand();
-   double sinTheta = sqrt(1. - cosTheta * cosTheta);
-   double ux= sinTheta * cos(phi);
-   double uy= sinTheta * sin(phi);
-   double uz =cosTheta;
+      double phi= 2.*CLHEP::pi* G4UniformRand();
+      double cosTheta = -1. + 2. * G4UniformRand();
+      double sinTheta = sqrt(1. - cosTheta * cosTheta);
+      double ux= sinTheta * cos(phi);
+      double uy= sinTheta * sin(phi);
+      double uz =cosTheta;
 
-   fParticleGun->SetParticleEnergy(2.0*G4UniformRand()*GeV); // kinetic energy (not total)
-   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
+      fParticleGun->SetParticleEnergy(2.0*G4UniformRand()*GeV); // kinetic energy (not total)
+      fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
 
-   G4double size = 1.0; 
-   G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
-   G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-   G4double z0 = -20.0*cm;
+      G4double size = 1.0; 
+      G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
+      G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
+      G4double z0 = -20.0*cm;
 
-   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-
-   fParticleGun->GeneratePrimaryVertex(anEvent);
+      fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+      fParticleGun->GeneratePrimaryVertex(anEvent);
+   }
 }
 //______________________________________________________________________________
 

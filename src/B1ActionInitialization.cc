@@ -5,8 +5,8 @@
 #include "B1SteppingAction.hh"
 
 
-B1ActionInitialization::B1ActionInitialization(G4int rn) : G4VUserActionInitialization(),
-   fRunNumber(rn)
+B1ActionInitialization::B1ActionInitialization(G4int rn) : 
+   G4VUserActionInitialization(), fRunNumber(rn)
 { }
 //______________________________________________________________________________
 

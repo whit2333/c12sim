@@ -41,7 +41,8 @@ void print_help() {
    std::cout << "                        0 to use command line\n";
    std::cout << "    --vis=#, -V         set to 1 (default) to visualization geometry and events\n";
    std::cout << "                        0 to turn off visualization\n";
-   std::cout << "    --interactive, -i   run in interactive mode (default)\n";
+   std::cout << "    --interactive, -I   run in interactive mode (default)\n";
+   std::cout << "    --init, -N          run without initializing G4 kernel\n";
    std::cout << "    --batch, -b         run in batch mode\n"; 
 }
 
@@ -51,6 +52,7 @@ int main(int argc,char** argv)
 {
 
    int          run_number        = 0;
+   std::string  input_file_name   = "";
    std::string  output_file_name  = "";
    std::string  output_tree_name  = "";
    std::string  theRest           = "";
@@ -70,12 +72,13 @@ int main(int argc,char** argv)
       {"run",         required_argument,  0, 'r'},
       {"gui",         required_argument,  0, 'g'},
       {"vis",         required_argument,  0, 'V'},
-      {"interactive", no_argument,        0, 'i'},
+      {"interactive", no_argument,        0, 'I'},
       {"batch",       no_argument,        0, 'b'},
+      {"input",       required_argument,  0, 'i'},
       {"output",      required_argument,  0, 'o'},
       {"tree",        required_argument,  0, 't'},
       {"help",        no_argument,        0, 'h'},
-      {"init",        no_argument,        0, 'I'},
+      {"init",        no_argument,        0, 'N'},
       {0,0,0,0}
    };
    while(iarg != -1) {
@@ -83,13 +86,17 @@ int main(int argc,char** argv)
 
       switch (iarg)
       {
+         case 'i':
+            input_file_name = optarg;
+            break;
+
          case 'b':
             is_interactive = false;
             use_gui = false;
             use_vis = false;
             break;
 
-         case 'i':
+         case 'I':
             is_interactive = true;
             break;
 
@@ -117,7 +124,7 @@ int main(int argc,char** argv)
             output_tree_name = optarg;
             break;
 
-         case 'I':
+         case 'N':
             run_manager_init = true;
             break;
 
@@ -150,6 +157,7 @@ int main(int argc,char** argv)
    }
 
    std::cout << " the rest of the arguments: " << theRest << std::endl;
+   std::cout << "input  : " << input_file_name << std::endl;
    std::cout << "output : " << output_file_name << std::endl;
    std::cout << "  tree : " << output_tree_name << std::endl;
 

@@ -51,12 +51,15 @@ set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${CLHEP_LIBRARIES})
 ###################
 # ROOT
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
-find_package(ROOT REQUIRED COMPONENTS MathCore RIO Hist MathMore Graf Graf3d Gpad GX11 GeomPainter X3d Gviz3d RGL Eve EG Foam GenVector Geom GLEW Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer)
+set(ROOT_LIBS EG MathCore RIO Hist MathMore Graf Graf3d Gpad GX11 GeomPainter X3d Gviz3d RGL Eve EG Eve Foam GenVector Geom GLEW Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer EG)
+find_package(ROOT REQUIRED COMPONENTS ${ROOT_LIBS})
 message(" ROOT_USE_FILE = ${ROOT_USE_FILE} " )
 #include(${ROOT_USE_FILE})
 include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 add_definitions(${ROOT_CXX_FLAGS})
-#set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${ROOT_LIBRARIES})
+set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${ROOT_LIBS})
+message(" ROOT_LIBRARIES = ${ROOT_LIBRARIES} " )
+message(" ROOT_LIBRARY_DIR = ${ROOT_LIBRARY_DIR} " )
 
 
 link_directories(

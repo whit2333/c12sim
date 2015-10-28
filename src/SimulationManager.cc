@@ -43,7 +43,7 @@ SimulationManager::SimulationManager () {
    fOutputTreeName      = "clasdigi_hits";
    fRecoilChamberGeo    = nullptr;
    fDriftChamberGeo     = nullptr;
-
+   fInputFileName       = "data/lundfiles/eg_LH2_full_4.lund";
 }
 //______________________________________________________________________________
 
@@ -103,6 +103,12 @@ std::string SimulationManager::OutputFileName() const {
 
 std::string SimulationManager::OutputTreeName() const {
    std::string filename = fOutputTreeName;
+   return filename;
+}
+//______________________________________________________________________________
+
+std::string SimulationManager::InputFileName() const {
+   std::string filename = fInputFileName;
    return filename;
 }
 //______________________________________________________________________________

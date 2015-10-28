@@ -235,7 +235,7 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlacePhysicalVolume(G4LogicalV
          mother,                       // its mother (logical) volume
          false,                        // no boolean operations
          grouping,                     // its copy number
-         true);                        // check for overlaps
+         false);                        // check for overlaps
 
    return phys;
 }
@@ -257,7 +257,7 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlaceParallelPhysicalVolume(G4
          mother,                       // its mother (logical) volume
          false,                        // no boolean operations
          grouping,                     // its copy number
-         true);                        // check for overlaps
+         false);                        // check for overlaps
 
    return phys;
 }
