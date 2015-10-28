@@ -75,8 +75,8 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4double envSizeZ  = 5.0*cm;
 
       double phi= 2.*CLHEP::pi* G4UniformRand();
-      //double cosTheta = -1. + 2. * G4UniformRand();
-      double cosTheta = 1. * G4UniformRand();
+      double cosTheta = -1. + 2. * G4UniformRand();
+      //double cosTheta = 1. * G4UniformRand();
       double sinTheta = sqrt(1. - cosTheta * cosTheta);
       double ux= sinTheta * cos(phi);
       double uy= sinTheta * sin(phi);

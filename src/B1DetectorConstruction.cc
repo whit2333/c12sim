@@ -37,7 +37,7 @@ B1DetectorConstruction::B1DetectorConstruction() :
    G4VUserDetectorConstruction(), 
    world_x                      ( 10.0*m                  ),
    world_y                      ( 10.0*m                  ),
-   world_z                      ( 10.0*m                  ),
+   world_z                      ( 16.0*m                  ),
    radiator_thickness           ( 6.0*mm                 ),
    collimator_target_center_gap ( 4.0*cm                 ),
    collimator_ID                ( 1.0*cm                 ),
