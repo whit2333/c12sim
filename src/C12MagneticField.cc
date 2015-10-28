@@ -28,11 +28,10 @@ G4ThreeVector C12MagneticField::GetFieldValue( const G4double Point[4]) const
 
 void  C12MagneticField::GetFieldValue( const G4double Point[4], G4double *Bfield ) const
 {
-   using namespace CLHEP;
    G4ThreeVector B = GetFieldValue(Point);
-   Bfield[0] = B.x()*tesla;
-   Bfield[1] = B.y()*tesla;
-   Bfield[2] = B.z()*tesla;
+   Bfield[0] = B.x();
+   Bfield[1] = B.y();
+   Bfield[2] = B.z();
 }
 //______________________________________________________________________________
 
