@@ -108,6 +108,10 @@ HTCCDetectorGeometry::HTCCDetectorGeometry()
 
    htcc_solid = new G4SubtractionSolid("htccEntryDishCone_solid",htccBigGasVolume_solid , htccEntryDishCone_solid);
 
+   // wedge for sector placement
+   G4VSolid * temp = new G4Tubs("temp_wedge",0,2.0*m, 2.0*m, 60.0*deg, 60.0*deg);
+   sector_wedge_solid = new G4IntersectionSolid("sector_wedge_solid",htcc_solid , temp);
+
 }
 //______________________________________________________________________________
 
@@ -1043,7 +1047,14 @@ void HTCCDetectorGeometry::BuildMirrors()
    pmt_4_sector3_1_rot.rotateY( 4.7212992*deg );
    pmt_4_sector3_1_rot.rotateZ( 0*deg);
    //pmt_4_sector2_2 | htcc | htcc pmt 4, sector2 right | 417.60646*mm 1558.5278*mm -63.469128*mm | 162.04762*deg -4.7212992*deg 0*deg | ff8080 | Tube | 0*mm 55*mm 1.5*mm 0*deg 360*deg | HTCCPMTquartz | no | 1 | 1 | 1 | 1 | 1 | htcc | htcc | sector manual 2 ring manual 4 half manual 2
+   pmt_4_sector2_2_solid = new G4Tubs("pmt_4_sector2_2_solid", 0*mm,55*mm,1.5*mm,0*deg,360*deg );
+   pmt_4_sector2_2_trans = {417.60646*mm,1558.5278*mm,-63.469128*mm};
+   pmt_4_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   pmt_4_sector2_2_rot.rotateX( 162.04762*deg    );
+   pmt_4_sector2_2_rot.rotateY( -4.7212992*deg );
+   pmt_4_sector2_2_rot.rotateZ( 0*deg);
 
+   // ----------------------------------------------------------------
    // Winston cone
    //wc_4_sector3_1inner | htcc | htcc wc 4, sector3 leftinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
    G4VSolid *       wc_4_sector3_1inner_solid = new G4Paraboloid("wc_4_sector3_1inner_solid",125.25*mm,51.338961*mm,76.723114*mm);
@@ -1054,34 +1065,333 @@ void HTCCDetectorGeometry::BuildMirrors()
    G4VSolid *       wc_4_sector3_1outer_solid = new G4Paraboloid("wc_4_sector3_1outer_solid",95.25*mm,56*mm,75.1426*mm);
    G4ThreeVector    wc_4_sector3_1outer_trans = {-409.64307*mm,1528.8081*mm,28.25812*mm};
    G4RotationMatrix wc_4_sector3_1outer_rot   = G4RotationMatrix::IDENTITY;
-   pmt_4_sector3_1_rot.rotateX( -17.952376*deg    );
-   pmt_4_sector3_1_rot.rotateY(  -4.7212992*deg );
-   pmt_4_sector3_1_rot.rotateZ( 0*deg);
+   wc_4_sector3_1outer_rot.rotateX( -17.952376*deg    );
+   wc_4_sector3_1outer_rot.rotateY(  -4.7212992*deg );
+   wc_4_sector3_1outer_rot.rotateZ( 0*deg);
 
    //wc_4_sector3_1 | htcc | htcc wc 4, sector3 left | -409.64307*mm 1528.8081*mm 28.25812*mm | -17.952376*deg -4.7212992*deg 0*deg | 80ff802 | Operation: wc_4_sector3_1outer - wc_4_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = MirrorBoxCut_up_sect0mirr3half1_rot;
-   r2   = HTCC_InnerCutCone_rot;
+   r1   = wc_4_sector3_1outer_rot;
+   r2   = wc_4_sector3_1inner_rot;
    r_tot = r2*(r1.inverse());
-   t1   = MirrorBoxCut_up_sect0mirr3half1_trans;
-   t2   = HTCC_InnerCutCone_trans;
+   t1   = wc_4_sector3_1outer_trans;
+   t2   = wc_4_sector3_1inner_trans;
    t_tot = (t2-t1);
    t_tot *= r1;
-   MirrorConeCut_sect0mirr3half1_solid = new G4SubtractionSolid(
-         "MirrorConeCut_sect0mirr3half1_solid",
-         MirrorBoxCut_up_sect0mirr3half1_solid,
-         HTCC_InnerCutCone_solid,
+   //G4RotationMatrix rotate    = it2->second.rot ;
+   //G4ThreeVector    translate = it2->second.pos;
+   //G4RotationMatrix invRot    =  rotate.invert() ;
+   //G4Transform3D    transf1( invRot, G4ThreeVector( 0, 0, 0 ) );
+   //G4Transform3D    transf2( G4RotationMatrix(), translate );
+   //G4Transform3D    transform = transf2 * transf1 ;
+   wc_4_sector3_1_solid = new G4SubtractionSolid(
+         "wc_4_sector3_1_solid",
+         wc_4_sector3_1outer_solid,
+         wc_4_sector3_1inner_solid,
          &r_tot,
          t_tot
          );
-   G4ThreeVector MirrorConeCut_sect0mirr3half1_trans(0,0,0);
-   G4RotationMatrix MirrorConeCut_sect0mirr3half1_rot;
-   MirrorConeCut_sect0mirr3half1_rot.rotateY( 0*rad  );
-   MirrorConeCut_sect0mirr3half1_rot.rotateZ(-0.2617993878*rad    );
-   MirrorConeCut_sect0mirr3half1_rot.rotateX( 1.392074611*rad);
+   wc_4_sector3_1_trans = {-409.64307*mm,1528.8081*mm,28.25812*mm};
+   wc_4_sector3_1_rot = G4RotationMatrix::IDENTITY;
+   wc_4_sector3_1_rot.rotateX( -17.952376*deg    );
+   wc_4_sector3_1_rot.rotateY(  -4.7212992*deg );
+   wc_4_sector3_1_rot.rotateZ( 0*deg);
 
+   // ----------------------------------------------------------------
    //wc_4_sector2_2inner | htcc | htcc wc 4, sector2 rightinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_4_sector2_2inner_solid = new G4Paraboloid("wc_4_sector2_2inner_solid",125.25*mm,51.338961*mm,76.723114*mm);
+   G4ThreeVector    wc_4_sector2_2inner_trans = {0,0,0};
+   G4RotationMatrix wc_4_sector2_2inner_rot   = G4RotationMatrix::IDENTITY;
+
    //wc_4_sector2_2outer | htcc | htcc wc 4, sector2 rightouter | 409.64307*mm 1528.8081*mm 28.25812*mm | -17.952376*deg 4.7212992*deg 0*deg | 999999 | Paraboloid | 95.25*mm 56*mm 75.1426*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_4_sector2_2outer_solid = new G4Paraboloid("wc_4_sector2_2outer_solid",95.25*mm,56*mm,75.1426*mm);
+   G4ThreeVector    wc_4_sector2_2outer_trans = {-409.64307*mm,1528.8081*mm,28.25812*mm};
+   G4RotationMatrix wc_4_sector2_2outer_rot   = G4RotationMatrix::IDENTITY;
+   wc_4_sector2_2outer_rot.rotateX( -17.952376*deg    );
+   wc_4_sector2_2outer_rot.rotateY(  4.7212992*deg );
+   wc_4_sector2_2outer_rot.rotateZ( 0*deg);
+
    //wc_4_sector2_2 | htcc | htcc wc 4, sector2 right | 409.64307*mm 1528.8081*mm 28.25812*mm | -17.952376*deg 4.7212992*deg 0*deg | ff80802 | Operation: wc_4_sector2_2outer - wc_4_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
+   r1   = wc_4_sector2_2outer_rot;
+   r2   = wc_4_sector2_2inner_rot;
+   r_tot = r2*(r1.inverse());
+   t1   = wc_4_sector2_2outer_trans;
+   t2   = wc_4_sector2_2inner_trans;
+   t_tot = (t2-t1);
+   t_tot *= r1;
+   //G4RotationMatrix rotate    = it2->second.rot ;
+   //G4ThreeVector    translate = it2->second.pos;
+   //G4RotationMatrix invRot    =  rotate.invert() ;
+   //G4Transform3D    transf1( invRot, G4ThreeVector( 0, 0, 0 ) );
+   //G4Transform3D    transf2( G4RotationMatrix(), translate );
+   //G4Transform3D    transform = transf2 * transf1 ;
+   wc_4_sector2_2_solid = new G4SubtractionSolid(
+         "wc_4_sector2_2_solid",
+         wc_4_sector2_2outer_solid,
+         wc_4_sector2_2inner_solid,
+         &r_tot,
+         t_tot
+         );
+   wc_4_sector2_2_trans = {409.64307*mm,1528.8081*mm,28.25812*mm};
+   wc_4_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   wc_4_sector2_2_rot.rotateX( -17.952376*deg    );
+   wc_4_sector2_2_rot.rotateY(  4.7212992*deg );
+   wc_4_sector2_2_rot.rotateZ( 0*deg);
+
+   //---------------------------------------------------------
+   // row 3
+   //pmt_3_sector3_1 | htcc | htcc pmt 3, sector3 left | -463.16694*mm 1728.5611*mm 162.09428*mm | 146.59016*deg 8.392807*deg 0*deg | f0f0f0 | Tube | 0*mm 55*mm 1.5*mm 0*deg 360*deg | HTCCPMTquartz | no | 1 | 1 | 1 | 1 | 1 | htcc | htcc | sector manual 3 ring manual 3 half manual 1
+   pmt_3_sector3_1_solid = pmt_4_sector3_1_solid;
+   pmt_3_sector3_1_trans = {-463.16694*mm, 1728.5611*mm, 162.09428*mm};
+   pmt_3_sector3_1_rot = G4RotationMatrix::IDENTITY;
+   pmt_3_sector3_1_rot.rotateX( 146.59016*deg    );
+   pmt_3_sector3_1_rot.rotateY( 8.392807*deg );
+   pmt_3_sector3_1_rot.rotateZ( 0*deg);
+   //pmt_3_sector2_2 | htcc | htcc pmt 3, sector2 right | 463.16694*mm 1728.5611*mm 162.09428*mm | 146.59016*deg -8.392807*deg 0*deg | 8080ff | Tube | 0*mm 55*mm 1.5*mm 0*deg 360*deg | HTCCPMTquartz | no | 1 | 1 | 1 | 1 | 1 | htcc | htcc | sector manual 2 ring manual 3 half manual 2
+   pmt_3_sector2_2_solid = pmt_4_sector3_1_solid;
+   pmt_3_sector2_2_trans = {463.16694*mm, 1728.5611*mm, 162.09428*mm};
+   pmt_3_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   pmt_3_sector2_2_rot.rotateX( 146.59016*deg    );
+   pmt_3_sector2_2_rot.rotateY(-8.392807*deg );
+   pmt_3_sector2_2_rot.rotateZ( 0*deg);
+
+   // -------------------------------------
+   //wc_3_sector3_1inner | htcc | htcc wc 3, sector3 leftinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_3_sector3_1inner_solid = wc_4_sector3_1inner_solid ;
+   G4ThreeVector    wc_3_sector3_1inner_trans = {0,0,0};
+   G4RotationMatrix wc_3_sector3_1inner_rot   = G4RotationMatrix::IDENTITY;
+
+   //wc_3_sector3_1outer | htcc | htcc wc 3, sector3 leftouter | -449.04543*mm 1675.8588*mm 241.99168*mm | -33.409841*deg -8.392807*deg 0*deg | 999999 | Paraboloid | 95.25*mm 56*mm 75.1426*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_3_sector3_1outer_solid = wc_4_sector3_1outer_solid;
+   G4ThreeVector    wc_3_sector3_1outer_trans = {-449.04543*mm,1675.8588*mm,241.99168*mm};
+   G4RotationMatrix wc_3_sector3_1outer_rot   = G4RotationMatrix::IDENTITY;
+   wc_3_sector3_1outer_rot.rotateX( -33.409841*deg    );
+   wc_3_sector3_1outer_rot.rotateY(   -8.392807*deg );
+   wc_3_sector3_1outer_rot.rotateZ( 0*deg);
+
+   //wc_3_sector3_1 | htcc | htcc wc 3, sector3 left | -449.04543*mm 1675.8588*mm 241.99168*mm | -33.409841*deg -8.392807*deg 0*deg | f0f0f02 | Operation: wc_3_sector3_1outer - wc_3_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
+   r1   = wc_3_sector3_1outer_rot;
+   r2   = wc_3_sector3_1inner_rot;
+   r_tot = r2*(r1.inverse());
+   t1   = wc_3_sector3_1outer_trans;
+   t2   = wc_3_sector3_1inner_trans;
+   t_tot = (t2-t1);
+   t_tot *= r1;
+   wc_3_sector3_1_solid = new G4SubtractionSolid(
+         "wc_3_sector3_1_solid",
+         wc_3_sector3_1outer_solid,
+         wc_3_sector3_1inner_solid,
+         &r_tot,
+         t_tot
+         );
+   wc_3_sector3_1_trans = {-449.04543*mm,1675.8588*mm,241.99168*mm};
+   wc_3_sector3_1_rot = G4RotationMatrix::IDENTITY;
+   wc_3_sector3_1_rot.rotateX( -33.409841*deg    );
+   wc_3_sector3_1_rot.rotateY(   -8.392807*deg );
+   wc_3_sector3_1_rot.rotateZ( 0*deg);
+
+   // ----------------------------------------------------------------
+   //wc_3_sector2_2inner | htcc | htcc wc 3, sector2 rightinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_3_sector2_2inner_solid = wc_4_sector2_2inner_solid;
+   G4ThreeVector    wc_3_sector2_2inner_trans = {0,0,0};
+   G4RotationMatrix wc_3_sector2_2inner_rot   = G4RotationMatrix::IDENTITY;
+
+   //wc_3_sector2_2outer | htcc | htcc wc 3, sector2 rightouter | 449.04543*mm 1675.8588*mm 241.99168*mm | -33.409841*deg 8.392807*deg 0*deg | 999999 | Paraboloid | 95.25*mm 56*mm 75.1426*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_3_sector2_2outer_solid = wc_4_sector2_2outer_solid;
+   G4ThreeVector    wc_3_sector2_2outer_trans = {449.04543*mm,1675.8588*mm,241.99168*mm};
+   G4RotationMatrix wc_3_sector2_2outer_rot   = G4RotationMatrix::IDENTITY;
+   wc_3_sector2_2outer_rot.rotateX( -33.409841*deg    );
+   wc_3_sector2_2outer_rot.rotateY(   8.392807*deg );
+   wc_3_sector2_2outer_rot.rotateZ( 0*deg);
+
+   //wc_3_sector2_2 | htcc | htcc wc 3, sector2 right | 449.04543*mm 1675.8588*mm 241.99168*mm | -33.409841*deg 8.392807*deg 0*deg | 8080ff2 | Operation: wc_3_sector2_2outer - wc_3_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
+   r1   = wc_3_sector2_2outer_rot;
+   r2   = wc_3_sector2_2inner_rot;
+   r_tot = r2*(r1.inverse());
+   t1   = wc_3_sector2_2outer_trans;
+   t2   = wc_3_sector2_2inner_trans;
+   t_tot = (t2-t1);
+   t_tot *= r1;
+   wc_3_sector2_2_solid = new G4SubtractionSolid(
+         "wc_3_sector2_2_solid",
+         wc_3_sector2_2outer_solid,
+         wc_3_sector2_2inner_solid,
+         &r_tot,
+         t_tot
+         );
+   wc_3_sector2_2_trans = {449.04543*mm,1675.8588*mm,241.99168*mm};
+   wc_3_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   wc_3_sector2_2_rot.rotateX( -33.409841*deg    );
+   wc_3_sector2_2_rot.rotateY(   8.392807*deg );
+   wc_3_sector2_2_rot.rotateZ( 0*deg);
+
+   //pmt_2_sector3_1 | htcc | htcc pmt 2, sector3 left | -492.67437*mm 1838.6863*mm 424.50853*mm | 131.44772*deg 11.356395*deg 0*deg | 80ff80 | Tube | 0*mm 55*mm 1.5*mm 0*deg 360*deg | HTCCPMTquartz | no | 1 | 1 | 1 | 1 | 1 | htcc | htcc | sector manual 3 ring manual 2 half manual 1
+   pmt_2_sector3_1_solid = pmt_4_sector3_1_solid;
+   pmt_2_sector3_1_trans = {-492.67437*mm, 1838.6863*mm, 424.50853*mm };
+   pmt_2_sector3_1_rot = G4RotationMatrix::IDENTITY;
+   pmt_2_sector3_1_rot.rotateX( 131.44772*deg   );
+   pmt_2_sector3_1_rot.rotateY( 11.356395*deg );
+   pmt_2_sector3_1_rot.rotateZ( 0*deg);
+   //pmt_2_sector2_2 | htcc | htcc pmt 2, sector2 right | 492.67437*mm 1838.6863*mm 424.50853*mm | 131.44772*deg -11.356395*deg 0*deg | ff8080 | Tube | 0*mm 55*mm 1.5*mm 0*deg 360*deg | HTCCPMTquartz | no | 1 | 1 | 1 | 1 | 1 | htcc | htcc | sector manual 2 ring manual 2 half manual 2
+   pmt_2_sector2_2_solid = pmt_4_sector3_1_solid;
+   pmt_2_sector2_2_trans = {492.67437*mm, 1838.6863*mm, 424.50853*mm};
+   pmt_2_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   pmt_2_sector2_2_rot.rotateX( 131.44772*deg   );
+   pmt_2_sector2_2_rot.rotateY(-11.356395*deg  );
+   pmt_2_sector2_2_rot.rotateZ( 0*deg);
+
+   // ------------------------------
+   //wc_2_sector3_1inner | htcc | htcc wc 2, sector3 leftinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_2_sector3_1inner_solid = wc_4_sector3_1inner_solid;
+   G4ThreeVector    wc_2_sector3_1inner_trans = {0,0,0};
+   G4RotationMatrix wc_2_sector3_1inner_rot   = G4RotationMatrix::IDENTITY;
+
+   //wc_2_sector3_1outer | htcc | htcc wc 2, sector3 leftouter | -473.6232*mm 1767.5862*mm 487.29704*mm | -48.552284*deg -11.356395*deg 0*deg | 999999 | Paraboloid | 95.25*mm 56*mm 75.1426*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_2_sector3_1outer_solid = wc_4_sector3_1outer_solid;
+   G4ThreeVector    wc_2_sector3_1outer_trans = {-473.6232*mm,1767.5862*mm,487.29704*mm };
+   G4RotationMatrix wc_2_sector3_1outer_rot   = G4RotationMatrix::IDENTITY;
+   wc_2_sector3_1outer_rot.rotateX( -48.552284*deg    );
+   wc_2_sector3_1outer_rot.rotateY(  -11.356395*deg  );
+   wc_2_sector3_1outer_rot.rotateZ( 0*deg);
+
+   //wc_2_sector3_1 | htcc | htcc wc 2, sector3 left | -473.6232*mm 1767.5862*mm 487.29704*mm | -48.552284*deg -11.356395*deg 0*deg | 80ff802 | Operation: wc_2_sector3_1outer - wc_2_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
+   r1   = wc_2_sector3_1outer_rot;
+   r2   = wc_2_sector3_1inner_rot;
+   r_tot = r2*(r1.inverse());
+   t1   = wc_2_sector3_1outer_trans;
+   t2   = wc_2_sector3_1inner_trans;
+   t_tot = (t2-t1);
+   t_tot *= r1;
+   wc_2_sector3_1_solid = new G4SubtractionSolid(
+         "wc_2_sector3_1_solid",
+         wc_2_sector3_1outer_solid,
+         wc_2_sector3_1inner_solid,
+         &r_tot,
+         t_tot
+         );
+   wc_2_sector3_1_trans = {-473.6232*mm,1767.5862*mm,487.29704*mm};
+   wc_2_sector3_1_rot = G4RotationMatrix::IDENTITY;
+   wc_2_sector3_1_rot.rotateX( -48.552284*deg    );
+   wc_2_sector3_1_rot.rotateY( -11.356395*deg  );
+   wc_2_sector3_1_rot.rotateZ( 0*deg);
+
+   //wc_2_sector2_2inner | htcc | htcc wc 2, sector2 rightinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_2_sector2_2inner_solid = wc_4_sector2_2inner_solid;
+   G4ThreeVector    wc_2_sector2_2inner_trans = {0,0,0};
+   G4RotationMatrix wc_2_sector2_2inner_rot   = G4RotationMatrix::IDENTITY;
+
+   //wc_2_sector2_2outer | htcc | htcc wc 2, sector2 rightouter | 473.6232*mm 1767.5862*mm 487.29704*mm | -48.552284*deg 11.356395*deg 0*deg | 999999 | Paraboloid | 95.25*mm 56*mm 75.1426*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_2_sector2_2outer_solid = wc_4_sector2_2outer_solid;
+   G4ThreeVector    wc_2_sector2_2outer_trans = {473.6232*mm,1767.5862*mm,487.29704*mm };
+   G4RotationMatrix wc_2_sector2_2outer_rot   = G4RotationMatrix::IDENTITY;
+   wc_2_sector2_2outer_rot.rotateX(   -48.552284*deg);
+   wc_2_sector2_2outer_rot.rotateY(    11.356395*deg );
+   wc_2_sector2_2outer_rot.rotateZ( 0*deg);
+
+   //wc_2_sector2_2 | htcc | htcc wc 2, sector2 right | 473.6232*mm 1767.5862*mm 487.29704*mm | -48.552284*deg 11.356395*deg 0*deg | ff80802 | Operation: wc_2_sector2_2outer - wc_2_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
+   r1   = wc_2_sector2_2outer_rot;
+   r2   = wc_2_sector2_2inner_rot;
+   r_tot = r2*(r1.inverse());
+   t1   = wc_2_sector2_2outer_trans;
+   t2   = wc_2_sector2_2inner_trans;
+   t_tot = (t2-t1);
+   t_tot *= r1;
+   wc_2_sector2_2_solid = new G4SubtractionSolid(
+         "wc_2_sector2_2_solid",
+         wc_2_sector2_2outer_solid,
+         wc_2_sector2_2inner_solid,
+         &r_tot,
+         t_tot
+         );
+   wc_2_sector2_2_trans = {473.6232*mm,1767.5862*mm,487.29704*mm};
+   wc_2_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   wc_2_sector2_2_rot.rotateX(   -48.552284*deg);
+   wc_2_sector2_2_rot.rotateY(    11.356395*deg );
+   wc_2_sector2_2_rot.rotateZ( 0*deg);
+
+   //pmt_1_sector3_1 | htcc | htcc pmt 1, sector3 left | -504.25588*mm 1881.909*mm 707.08098*mm | 116.81116*deg 13.449397*deg 0*deg | f0f0f0 | Tube | 0*mm 55*mm 1.5*mm 0*deg 360*deg | HTCCPMTquartz | no | 1 | 1 | 1 | 1 | 1 | htcc | htcc | sector manual 3 ring manual 1 half manual 1
+   pmt_1_sector3_1_solid = pmt_4_sector3_1_solid;
+   pmt_1_sector3_1_trans = {-504.25588*mm,1881.909*mm,707.08098*mm };
+   pmt_1_sector3_1_rot = G4RotationMatrix::IDENTITY;
+   pmt_1_sector3_1_rot.rotateX( 116.81116*deg  );
+   pmt_1_sector3_1_rot.rotateY( 13.449397*deg   );
+   pmt_1_sector3_1_rot.rotateZ( 0*deg);
+   //pmt_1_sector2_2 | htcc | htcc pmt 1, sector2 right | 504.25588*mm 1881.909*mm 707.08098*mm | 116.81116*deg -13.449397*deg 0*deg | 8080ff | Tube | 0*mm 55*mm 1.5*mm 0*deg 360*deg | HTCCPMTquartz | no | 1 | 1 | 1 | 1 | 1 | htcc | htcc | sector manual 2 ring manual 1 half manual 2
+   pmt_1_sector2_2_solid = pmt_4_sector3_1_solid;
+   pmt_1_sector2_2_trans = {504.25588*mm,1881.909*mm,707.08098*mm};
+   pmt_1_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   pmt_1_sector2_2_rot.rotateX( 116.81116*deg  );
+   pmt_1_sector2_2_rot.rotateY( -13.449397*deg   );
+   pmt_1_sector2_2_rot.rotateZ( 0*deg);
+
+   // ------------------------------
+   //wc_1_sector3_1inner | htcc | htcc wc 1, sector3 leftinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_1_sector3_1inner_solid = wc_4_sector3_1inner_solid;
+   G4ThreeVector    wc_1_sector3_1inner_trans = {0,0,0};
+   G4RotationMatrix wc_1_sector3_1inner_rot   = G4RotationMatrix::IDENTITY;
+
+   //wc_1_sector3_1outer | htcc | htcc wc 1, sector3 leftouter | -481.75313*mm 1797.9279*mm 749.52343*mm | -63.188841*deg -13.449397*deg 0*deg | 999999 | Paraboloid | 95.25*mm 56*mm 75.1426*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_1_sector3_1outer_solid = wc_4_sector3_1outer_solid;
+   G4ThreeVector    wc_1_sector3_1outer_trans = {-481.75313*mm,1797.9279*mm,749.52343*mm };
+   G4RotationMatrix wc_1_sector3_1outer_rot   = G4RotationMatrix::IDENTITY;
+   wc_1_sector3_1outer_rot.rotateX( -63.188841*deg     );
+   wc_1_sector3_1outer_rot.rotateY( -13.449397*deg );
+   wc_1_sector3_1outer_rot.rotateZ(  0*deg);
+
+   //wc_1_sector3_1 | htcc | htcc wc 1, sector3 left | -481.75313*mm 1797.9279*mm 749.52343*mm | -63.188841*deg -13.449397*deg 0*deg | f0f0f02 | Operation: wc_1_sector3_1outer - wc_1_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
+   r1   = wc_1_sector3_1outer_rot;
+   r2   = wc_1_sector3_1inner_rot;
+   r_tot = r2*(r1.inverse());
+   t1   = wc_1_sector3_1outer_trans;
+   t2   = wc_1_sector3_1inner_trans;
+   t_tot = (t2-t1);
+   t_tot *= r1;
+   wc_1_sector3_1_solid = new G4SubtractionSolid(
+         "wc_1_sector3_1_solid",
+         wc_1_sector3_1outer_solid,
+         wc_1_sector3_1inner_solid,
+         &r_tot,
+         t_tot
+         );
+   wc_1_sector3_1_trans = {-481.75313*mm,1797.9279*mm,749.52343*mm};
+   wc_1_sector3_1_rot = G4RotationMatrix::IDENTITY;
+   wc_1_sector3_1_rot.rotateX( -63.188841*deg     );
+   wc_1_sector3_1_rot.rotateY( -13.449397*deg );
+   wc_1_sector3_1_rot.rotateZ(  0*deg);
+
+   //wc_1_sector2_2inner | htcc | htcc wc 1, sector2 rightinner | 0 0 0 | 0 0 0 | 999999 | Paraboloid | 125.25*mm 51.338961*mm 76.723114*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_1_sector2_2inner_solid = wc_4_sector2_2inner_solid;
+   G4ThreeVector    wc_1_sector2_2inner_trans = {0,0,0};
+   G4RotationMatrix wc_1_sector2_2inner_rot   = G4RotationMatrix::IDENTITY;
+
+   //wc_1_sector2_2outer | htcc | htcc wc 1, sector2 rightouter | 481.75313*mm 1797.9279*mm 749.52343*mm | -63.188841*deg 13.449397*deg 0*deg | 999999 | Paraboloid | 95.25*mm 56*mm 75.1426*mm | Component | no | 1 | 1 | 1 | 1 | 0 | no | no | no
+   G4VSolid *       wc_1_sector2_2outer_solid = wc_4_sector2_2outer_solid;
+   G4ThreeVector    wc_1_sector2_2outer_trans = {481.75313*mm,1797.9279*mm,749.52343*mm};
+   G4RotationMatrix wc_1_sector2_2outer_rot   = G4RotationMatrix::IDENTITY;
+   wc_1_sector2_2outer_rot.rotateX(  -63.188841*deg    );
+   wc_1_sector2_2outer_rot.rotateY(   8.392807*deg );
+   wc_1_sector2_2outer_rot.rotateZ( 0*deg);
+
+   //wc_1_sector2_2 | htcc | htcc wc 1, sector2 right | 481.75313*mm 1797.9279*mm 749.52343*mm | -63.188841*deg 13.449397*deg 0*deg | 8080ff2 | Operation: wc_1_sector2_2outer - wc_1_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
+   r1   = wc_1_sector2_2outer_rot;
+   r2   = wc_1_sector2_2inner_rot;
+   r_tot = r2*(r1.inverse());
+   t1   = wc_1_sector2_2outer_trans;
+   t2   = wc_1_sector2_2inner_trans;
+   t_tot = (t2-t1);
+   t_tot *= r1;
+   wc_1_sector2_2_solid = new G4SubtractionSolid(
+         "wc_1_sector2_2_solid",
+         wc_1_sector2_2outer_solid,
+         wc_1_sector2_2inner_solid,
+         &r_tot,
+         t_tot
+         );
+   wc_1_sector2_2_trans = {481.75313*mm,1797.9279*mm,749.52343*mm};
+   wc_1_sector2_2_rot = G4RotationMatrix::IDENTITY;
+   wc_1_sector2_2_rot.rotateX(  -63.188841*deg    );
+   wc_1_sector2_2_rot.rotateY(    13.449397*deg );
+   wc_1_sector2_2_rot.rotateZ( 0*deg);
+
 }
 //______________________________________________________________________________
 
@@ -1099,7 +1409,21 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    htccEntryDishVolume_log = new G4LogicalVolume(htccEntryDishVolume_solid, default_mat, "htccEntryDishVolume_log");
    htccEntryConeVolume_log = new G4LogicalVolume(htccEntryConeVolume_solid, default_mat, "htccEntryConeVolume_log");
    htccEntryDishCone_log = new G4LogicalVolume(htccEntryDishCone_solid, default_mat, "htccEntryDishCone_log");
+
+   G4VisAttributes * htcc_vis = new G4VisAttributes(G4VisAttributes::GetInvisible());//;
+   htcc_vis->SetDaughtersInvisible(false);
+   htcc_vis->SetForceSolid(false);
+   htcc_vis->SetForceWireframe(true);
    htcc_log               = new G4LogicalVolume(htcc_solid, default_mat, "htcc_log");
+   htcc_log->SetVisAttributes(htcc_vis);//G4VisAttributes::GetInvisible());
+
+   G4VisAttributes * vs3 = new G4VisAttributes(G4Colour(0.8,0.1,0.1));//G4VisAttributes::GetInvisible());//;
+   vs3->SetDaughtersInvisible(false);
+   vs3->SetForceSolid(false);
+   vs3->SetForceWireframe(true);
+   sector_wedge_log = new G4LogicalVolume(sector_wedge_solid, default_mat, "sector_wedge_log");
+   sector_wedge_log->SetVisAttributes(vs3);
+   //-----------------------------------------------------------------------------
 
    mirror_4_sector2_2_log = new G4LogicalVolume(mirror_4_sector2_2_solid, default_mat, "mirror_4_sector2_2_log");
    mirror_3_sector2_2_log = new G4LogicalVolume(mirror_3_sector2_2_solid, default_mat, "mirror_3_sector2_2_log");
@@ -1112,28 +1436,29 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    mirror_1_sector3_1_log = new G4LogicalVolume(mirror_1_sector3_1_solid, default_mat, "mirror_1_sector3_1_log");
 
    pmt_4_sector3_1_log = new G4LogicalVolume(pmt_4_sector3_1_solid, default_mat, "pmt_4_sector3_1_log");
+   wc_4_sector3_1_log = new G4LogicalVolume(wc_4_sector3_1_solid, default_mat, "wc_4_sector3_1_log");
+   pmt_4_sector2_2_log = new G4LogicalVolume(pmt_4_sector2_2_solid, default_mat, "pmt_4_sector2_2_log");
+   wc_4_sector2_2_log = new G4LogicalVolume(wc_4_sector2_2_solid, default_mat, "wc_4_sector2_2_log");
 
-   BarrelEllipseCut_sect0mirr0half0_log = new G4LogicalVolume(BarrelEllipseCut_sect0mirr0half0_solid, default_mat, "BarrelEllipseCut_sect0mirr0half0_log");
+   pmt_3_sector3_1_log = new G4LogicalVolume(pmt_3_sector3_1_solid, default_mat, "pmt_3_sector3_1_log");
+   wc_3_sector3_1_log = new G4LogicalVolume(wc_3_sector3_1_solid, default_mat, "wc_3_sector3_1_log");
+   pmt_3_sector2_2_log = new G4LogicalVolume(pmt_3_sector2_2_solid, default_mat, "pmt_3_sector2_2_log");
+   wc_3_sector2_2_log = new G4LogicalVolume(wc_3_sector2_2_solid, default_mat, "wc_3_sector2_2_log");
+
+   pmt_2_sector3_1_log = new G4LogicalVolume(pmt_2_sector3_1_solid, default_mat, "pmt_2_sector3_1_log");
+   wc_2_sector3_1_log = new G4LogicalVolume(wc_2_sector3_1_solid, default_mat, "wc_2_sector3_1_log");
+   pmt_2_sector2_2_log = new G4LogicalVolume(pmt_2_sector2_2_solid, default_mat, "pmt_2_sector2_2_log");
+   wc_2_sector2_2_log = new G4LogicalVolume(wc_2_sector2_2_solid, default_mat, "wc_2_sector2_2_log");
+
+   pmt_1_sector3_1_log = new G4LogicalVolume(pmt_1_sector3_1_solid, default_mat, "pmt_1_sector3_1_log");
+   wc_1_sector3_1_log = new G4LogicalVolume(wc_1_sector3_1_solid, default_mat, "wc_1_sector3_1_log");
+   pmt_1_sector2_2_log = new G4LogicalVolume(pmt_1_sector2_2_solid, default_mat, "pmt_1_sector2_2_log");
+   wc_1_sector2_2_log = new G4LogicalVolume(wc_1_sector2_2_solid, default_mat, "wc_1_sector2_2_log");
+
+   //BarrelEllipseCut_sect0mirr0half0_log = new G4LogicalVolume(BarrelEllipseCut_sect0mirr0half0_solid, default_mat, "BarrelEllipseCut_sect0mirr0half0_log");
 
    using namespace CLHEP;
    using namespace clas12::geo;
-
-}
-//______________________________________________________________________________
-
-G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region )
-{
-   using namespace clas12::geo;
-   int index    = region-1;
-   int grouping = (sec-1)*3 + (region-1);
-   G4VPhysicalVolume * phys = new G4PVPlacement(
-         0,G4ThreeVector(0,0,0),
-         htcc_log,//htcc_log,          // its logical volume
-         "htcc_phys", // its name
-         mother,                       // its mother (logical) volume
-         false,                        // no boolean operations
-         0,                     // its copy number
-         false);                        // check for overlaps
 
    // ----------------------------------------------
    // Mirrors
@@ -1142,7 +1467,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_4_sector2_2_trans,
          mirror_4_sector2_2_log,          // its logical volume
          "mirror_4_sector2_2_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
@@ -1152,7 +1477,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_3_sector2_2_trans,
          mirror_3_sector2_2_log,          // its logical volume
          "mirror_3_sector2_2_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
@@ -1161,7 +1486,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_2_sector2_2_trans,
          mirror_2_sector2_2_log,          // its logical volume
          "mirror_2_sector2_2_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
@@ -1170,7 +1495,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_1_sector2_2_trans,
          mirror_1_sector2_2_log,          // its logical volume
          "mirror_1_sector2_2_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
@@ -1180,7 +1505,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_4_sector3_1_trans,
          mirror_4_sector3_1_log,          // its logical volume
         "mirror_4_sector3_1_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
@@ -1189,7 +1514,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_3_sector3_1_trans,
          mirror_3_sector3_1_log,          // its logical volume
         "mirror_3_sector3_1_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
@@ -1198,7 +1523,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_2_sector3_1_trans,
          mirror_2_sector3_1_log,          // its logical volume
         "mirror_2_sector3_1_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
@@ -1207,24 +1532,214 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          mirror_1_sector3_1_trans,
          mirror_1_sector3_1_log,          // its logical volume
         "mirror_1_sector3_1_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
 
-   // pmts
+   // ---------------------------------
+   // pmt
    new G4PVPlacement(
         &pmt_4_sector3_1_rot, 
          pmt_4_sector3_1_trans,
          pmt_4_sector3_1_log,          // its logical volume
         "pmt_4_sector3_1_phys", // its name
-         htcc_log,                       // its mother (logical) volume
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_4_sector3_1_rot, 
+         wc_4_sector3_1_trans,
+         wc_4_sector3_1_log,          // its logical volume
+        "wc_4_sector3_1_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // pmt
+   new G4PVPlacement(
+        &pmt_4_sector2_2_rot, 
+         pmt_4_sector2_2_trans,
+         pmt_4_sector2_2_log,          // its logical volume
+        "pmt_4_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_4_sector2_2_rot, 
+         wc_4_sector2_2_trans,
+         wc_4_sector2_2_log,          // its logical volume
+        "wc_4_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
 
+   // --------------------------------------
+   // pmt
+   new G4PVPlacement(
+        &pmt_3_sector3_1_rot, 
+         pmt_3_sector3_1_trans,
+         pmt_3_sector3_1_log,          // its logical volume
+        "pmt_3_sector3_1_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_3_sector3_1_rot, 
+         wc_3_sector3_1_trans,
+         wc_3_sector3_1_log,          // its logical volume
+        "wc_3_sector3_1_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // pmt
+   new G4PVPlacement(
+        &pmt_3_sector2_2_rot, 
+         pmt_3_sector2_2_trans,
+         pmt_3_sector2_2_log,          // its logical volume
+        "pmt_3_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_3_sector2_2_rot, 
+         wc_3_sector2_2_trans,
+         wc_3_sector2_2_log,          // its logical volume
+        "wc_3_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
 
-   return phys;
+   // --------------------------------------
+   // pmt
+   new G4PVPlacement(
+        &pmt_2_sector3_1_rot, 
+         pmt_2_sector3_1_trans,
+         pmt_2_sector3_1_log,          // its logical volume
+        "pmt_2_sector3_1_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_2_sector3_1_rot, 
+         wc_2_sector3_1_trans,
+         wc_2_sector3_1_log,          // its logical volume
+        "wc_2_sector3_1_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // pmt
+   new G4PVPlacement(
+        &pmt_2_sector2_2_rot, 
+         pmt_2_sector2_2_trans,
+         pmt_2_sector2_2_log,          // its logical volume
+        "pmt_2_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_2_sector2_2_rot, 
+         wc_2_sector2_2_trans,
+         wc_2_sector2_2_log,          // its logical volume
+        "wc_2_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+
+   // --------------------------------------
+   // pmt
+   new G4PVPlacement(
+        &pmt_1_sector3_1_rot, 
+         pmt_1_sector3_1_trans,
+         pmt_1_sector3_1_log,          // its logical volume
+        "pmt_1_sector3_1_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_1_sector3_1_rot, 
+         wc_1_sector3_1_trans,
+         wc_1_sector3_1_log,          // its logical volume
+        "wc_1_sector3_1_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // pmt
+   new G4PVPlacement(
+        &pmt_1_sector2_2_rot, 
+         pmt_1_sector2_2_trans,
+         pmt_1_sector2_2_log,          // its logical volume
+        "pmt_1_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+   // winston cone
+   new G4PVPlacement(
+        &wc_1_sector2_2_rot, 
+         wc_1_sector2_2_trans,
+         wc_1_sector2_2_log,          // its logical volume
+        "wc_1_sector2_2_phys", // its name
+         sector_wedge_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         0,                     // its copy number
+         false);                        // check for overlaps
+         
+
+}
+//______________________________________________________________________________
+
+G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region )
+{
+   using namespace clas12::geo;
+   int index    = region-1;
+   int grouping = (sec-1)*3 + (region-1);
+
+   if(!htcc_phys) {
+      htcc_phys = new G4PVPlacement(
+            0,G4ThreeVector(0,0,0),
+            htcc_log,//htcc_log,          // its logical volume
+            "htcc_phys", // its name
+            mother,                       // its mother (logical) volume
+            false,                        // no boolean operations
+            0,                     // its copy number
+            false);                        // check for overlaps
+   }
+
+   // --------------------------------------------
+   G4RotationMatrix * sector_rot = new G4RotationMatrix();
+   sector_rot->rotateZ( 60.0*CLHEP::deg*(sec-1) );
+   new G4PVPlacement(
+         sector_rot, 
+         G4ThreeVector(0,0,0),
+         sector_wedge_log,          // its logical volume
+         "sector_wedge_phys", // its name
+         htcc_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         sec,                     // its copy number
+         false);                        // check for overlaps
+
+   return htcc_phys;
 }
 //______________________________________________________________________________
 

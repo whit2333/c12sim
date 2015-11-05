@@ -100,87 +100,97 @@ class HTCCDetectorGeometry {
       G4ThreeVector mirror_2_sector2_2_trans;
       G4ThreeVector mirror_1_sector2_2_trans;
 
-      // -----------------
-      //G4VSolid        * Barrel_sect0half1_solid           ;
-      //G4VSolid        * phicut_sect0half1_solid           ;
-      //G4VSolid        * Mirror_sect0mirr0half1_solid      ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr0half1_solid ;
-      //G4VSolid        * Boxcut12_sect0mirr0half1_solid     ;
-      //G4VSolid        * MirrorBoxCut_sect0mirr0half1_solid ;
-      //G4VSolid        * MirrorCylinderCut_sect0mirr0half1_solid ;
-      //G4VSolid        * mirror_4_sector2_2_solid           ;
-      //G4LogicalVolume * mirror_4_sector2_2_log          ;
-      //G4LogicalVolume * BarrelEllipseCut_sect0mirr0half1_log;
-
-      //G4VSolid        * Mirror_sect0mirr1half0_solid            ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr1half0_solid  ;
-      //G4VSolid        * Boxcut_up_sect0mirr1half0_solid         ;
-      //G4VSolid        * Boxcut_down_sect0mirr1half0_solid       ;
-      //G4VSolid        * MirrorBoxCut_up_sect0mirr1half0_solid   ;
-      //G4VSolid        * MirrorBoxCut_down_sect0mirr1half0_solid ;
-      //G4VSolid        * mirror_3_sector2_2_solid                ;
-      //G4LogicalVolume * mirror_3_sector2_2_log          ;
-      //G4VSolid        * Mirror_sect0mirr2half0_solid            ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr2half0_solid  ;
-      //G4VSolid        * Boxcut_up_sect0mirr2half0_solid         ;
-      //G4VSolid        * Boxcut_down_sect0mirr2half0_solid       ;
-      //G4VSolid        * MirrorBoxCut_up_sect0mirr2half0_solid   ;
-      //G4VSolid        * MirrorBoxCut_down_sect0mirr2half0_solid ;
-      //G4VSolid        * mirror_2_sector2_2_solid                ;
-      //G4LogicalVolume * mirror_2_sector2_2_log          ;
-      //G4VSolid        * Mirror_sect0mirr3half0_solid            ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr3half0_solid  ;
-      //G4VSolid        * Boxcut_up_sect0mirr3half0_solid         ;
-      //G4VSolid        * MirrorBoxCut_up_sect0mirr3half0_solid   ;
-      //G4VSolid        * MirrorConeCut_sect0mirr3half0_solid     ;
-      //G4VSolid        * mirror_1_sector2_2_solid                ;
-      //G4LogicalVolume * mirror_1_sector2_2_log          ;
-      //G4VSolid        * Barrel_sect0half1_solid                 ;
-      //G4VSolid        * phicut_sect0half1_solid                 ;
-      //G4VSolid        * Mirror_sect0mirr0half1_solid            ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr0half1_solid  ;
-      //G4VSolid        * Boxcut12_sect0mirr0half1_solid          ;
-      //G4VSolid        * MirrorBoxCut_sect0mirr0half1_solid      ;
-      //G4VSolid        * MirrorCylinderCut_sect0mirr0half1_solid ;
-      //G4VSolid        * mirror_4_sector3_1_solid                ;
-      //G4LogicalVolume * mirror_4_sector3_1_log          ;
-      //G4VSolid        * Mirror_sect0mirr1half1_solid            ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr1half1_solid  ;
-      //G4VSolid        * Boxcut_up_sect0mirr1half1_solid         ;
-      //G4VSolid        * Boxcut_down_sect0mirr1half1_solid       ;
-      //G4VSolid        * MirrorBoxCut_up_sect0mirr1half1_solid   ;
-      //G4VSolid        * MirrorBoxCut_down_sect0mirr1half1_solid ;
-      //G4VSolid        * mirror_3_sector3_1_solid                ;
-      //G4LogicalVolume * mirror_3_sector3_1_log          ;
-      //G4VSolid        * Mirror_sect0mirr2half1_solid            ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr2half1_solid  ;
-      //G4VSolid        * Boxcut_up_sect0mirr2half1_solid         ;
-      //G4VSolid        * Boxcut_down_sect0mirr2half1_solid       ;
-      //G4VSolid        * MirrorBoxCut_up_sect0mirr2half1_solid   ;
-      //G4VSolid        * MirrorBoxCut_down_sect0mirr2half1_solid ;
-      //G4VSolid        * mirror_2_sector3_1_solid                ;
-      //G4LogicalVolume * mirror_2_sector3_1_log          ;
-      //G4VSolid        * Mirror_sect0mirr3half1_solid            ;
-      //G4VSolid        * BarrelEllipseCut_sect0mirr3half1_solid  ;
-      //G4VSolid        * Boxcut_up_sect0mirr3half1_solid         ;
-      //G4VSolid        * MirrorBoxCut_up_sect0mirr3half1_solid   ;
-      //G4VSolid        * MirrorConeCut_sect0mirr3half1_solid     ;
-      //G4VSolid        * mirror_1_sector3_1_solid                ;
-      //G4LogicalVolume * mirror_1_sector3_1_log          ;
-
       G4RotationMatrix mirror_4_sector3_1_rot;
       G4RotationMatrix mirror_3_sector3_1_rot;
       G4RotationMatrix mirror_2_sector3_1_rot;
       G4RotationMatrix mirror_1_sector3_1_rot;
+
       G4ThreeVector mirror_4_sector3_1_trans;
       G4ThreeVector mirror_3_sector3_1_trans;
       G4ThreeVector mirror_2_sector3_1_trans;
       G4ThreeVector mirror_1_sector3_1_trans;
 
+      // --------------------------------------
+
       G4VSolid        * pmt_4_sector3_1_solid;
       G4LogicalVolume * pmt_4_sector3_1_log;
       G4ThreeVector     pmt_4_sector3_1_trans;
       G4RotationMatrix  pmt_4_sector3_1_rot;
+
+      G4VSolid        * pmt_4_sector2_2_solid;
+      G4LogicalVolume * pmt_4_sector2_2_log;
+      G4ThreeVector     pmt_4_sector2_2_trans;
+      G4RotationMatrix  pmt_4_sector2_2_rot;
+
+      G4VSolid        * wc_4_sector3_1_solid;
+      G4LogicalVolume * wc_4_sector3_1_log;
+      G4ThreeVector     wc_4_sector3_1_trans;
+      G4RotationMatrix  wc_4_sector3_1_rot;
+
+      G4VSolid        * wc_4_sector2_2_solid;
+      G4LogicalVolume * wc_4_sector2_2_log;
+      G4ThreeVector     wc_4_sector2_2_trans;
+      G4RotationMatrix  wc_4_sector2_2_rot;
+
+      G4VSolid        * pmt_3_sector3_1_solid;
+      G4LogicalVolume * pmt_3_sector3_1_log;
+      G4ThreeVector     pmt_3_sector3_1_trans;
+      G4RotationMatrix  pmt_3_sector3_1_rot;
+
+      G4VSolid        * pmt_3_sector2_2_solid;
+      G4LogicalVolume * pmt_3_sector2_2_log;
+      G4ThreeVector     pmt_3_sector2_2_trans;
+      G4RotationMatrix  pmt_3_sector2_2_rot;
+
+      G4VSolid        * wc_3_sector3_1_solid;
+      G4LogicalVolume * wc_3_sector3_1_log;
+      G4ThreeVector     wc_3_sector3_1_trans;
+      G4RotationMatrix  wc_3_sector3_1_rot;
+
+      G4VSolid        * wc_3_sector2_2_solid;
+      G4LogicalVolume * wc_3_sector2_2_log;
+      G4ThreeVector     wc_3_sector2_2_trans;
+      G4RotationMatrix  wc_3_sector2_2_rot;
+
+      G4VSolid        * pmt_2_sector3_1_solid;
+      G4LogicalVolume * pmt_2_sector3_1_log;
+      G4ThreeVector     pmt_2_sector3_1_trans;
+      G4RotationMatrix  pmt_2_sector3_1_rot;
+
+      G4VSolid        * pmt_2_sector2_2_solid;
+      G4LogicalVolume * pmt_2_sector2_2_log;
+      G4ThreeVector     pmt_2_sector2_2_trans;
+      G4RotationMatrix  pmt_2_sector2_2_rot;
+
+      G4VSolid        * wc_2_sector3_1_solid;
+      G4LogicalVolume * wc_2_sector3_1_log;
+      G4ThreeVector     wc_2_sector3_1_trans;
+      G4RotationMatrix  wc_2_sector3_1_rot;
+
+      G4VSolid        * wc_2_sector2_2_solid;
+      G4LogicalVolume * wc_2_sector2_2_log;
+      G4ThreeVector     wc_2_sector2_2_trans;
+      G4RotationMatrix  wc_2_sector2_2_rot;
+
+      G4VSolid        * pmt_1_sector3_1_solid;
+      G4LogicalVolume * pmt_1_sector3_1_log;
+      G4ThreeVector     pmt_1_sector3_1_trans;
+      G4RotationMatrix  pmt_1_sector3_1_rot;
+
+      G4VSolid        * pmt_1_sector2_2_solid;
+      G4LogicalVolume * pmt_1_sector2_2_log;
+      G4ThreeVector     pmt_1_sector2_2_trans;
+      G4RotationMatrix  pmt_1_sector2_2_rot;
+
+      G4VSolid        * wc_1_sector3_1_solid;
+      G4LogicalVolume * wc_1_sector3_1_log;
+      G4ThreeVector     wc_1_sector3_1_trans;
+      G4RotationMatrix  wc_1_sector3_1_rot;
+
+      G4VSolid        * wc_1_sector2_2_solid;
+      G4LogicalVolume * wc_1_sector2_2_log;
+      G4ThreeVector     wc_1_sector2_2_trans;
+      G4RotationMatrix  wc_1_sector2_2_rot;
 
    public:
       void BuildMirrors();
@@ -197,8 +207,13 @@ class HTCCDetectorGeometry {
 
       G4VSolid        * htccEntryDishCone_solid;
       G4LogicalVolume * htccEntryDishCone_log;
+
+      G4VSolid        * sector_wedge_solid;
+      G4LogicalVolume * sector_wedge_log;
+
       G4VSolid        * htcc_solid;
       G4LogicalVolume * htcc_log;
+      G4VPhysicalVolume * htcc_phys;
 
       G4VSolid * fRegion1_solid;
       G4VSolid * fRegion2_solid;

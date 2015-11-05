@@ -415,13 +415,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    for(int i = 1; i<=6; i++ ) {
 
       // Region I
-      //fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
 
       //// Region II
-      //fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
 
       //// Region III
-      //fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
    }
 
    // ------------------------------------------------------------------------
@@ -440,6 +440,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    HTCCDetectorGeometry * htcc = new HTCCDetectorGeometry();
    htcc->BuildLogicalVolumes();
    htcc->PlacePhysicalVolume( world_log, 1, 1);
+   htcc->PlacePhysicalVolume( world_log, 2, 2);
+   htcc->PlacePhysicalVolume( world_log, 3, 1);
+   htcc->PlacePhysicalVolume( world_log, 4, 2);
+   htcc->PlacePhysicalVolume( world_log, 5, 1);
+   htcc->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // beam vacuum  
