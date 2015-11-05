@@ -15,20 +15,15 @@
 #include <string>
 using namespace std;
 
-// G4 headers
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 #include "G4Colour.hh"
 
-// gemc headers
 #include "string_utilities.h"
 #include "options.h"
 
-
-
 // merging two <string, string>
 void mergeMaps(map<string, string>& lhs, const map<string, string>& rhs);
-
 
 // calculate rotation matrix from input string (MYSQL version)
 G4RotationMatrix calc_rotation(string, string);
@@ -46,30 +41,30 @@ G4Colour gcol(string);
 // All leading and trailing spaces are removed
 class gtable
 {
-	public:
-		gtable(vector<string> d)
-		{
-			for(unsigned int i=0; i<d.size(); i++)
-				data.push_back(TrimSpaces(d[i]));
-		}
-		gtable(){data.clear();}
-		~gtable(){;}
-		
-		vector<string> data;
-		
-		void add_data(QVariant input)
-		{
-			data.push_back(TrimSpaces(qv_tostring(input)));
-		}
-		
-		void add_data(string input)
-		{
-			data.push_back(TrimSpaces(input));
-		}
-		
-	
-	// Overloaded "<<" for gtable class. Dumps infos on screen.
-	friend ostream &operator<<(ostream &stream, gtable);                          
+   public:
+      gtable(vector<string> d)
+      {
+         for(unsigned int i=0; i<d.size(); i++)
+            data.push_back(TrimSpaces(d[i]));
+      }
+      gtable(){data.clear();}
+      ~gtable(){;}
+
+      vector<string> data;
+
+      //void add_data(QVariant input)
+      //{
+      //   data.push_back(TrimSpaces(qv_tostring(input)));
+      //}
+
+      void add_data(string input)
+      {
+         data.push_back(TrimSpaces(input));
+      }
+
+
+      // Overloaded "<<" for gtable class. Dumps infos on screen.
+      friend ostream &operator<<(ostream &stream, gtable);                          
 
 };
 
