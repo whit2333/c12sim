@@ -21,6 +21,7 @@
 #include "G4PhysListFactory.hh"
 #include "G4StepLimiterPhysics.hh"
 #include "Randomize.hh"
+#include "B1OpticalPhysics.hh"
 
 #include "B1ParallelWorldConstruction.hh"
 #include "G4ParallelWorldPhysics.hh"
@@ -191,21 +192,22 @@ int main(int argc,char** argv)
    // Detector construction with parallel world 
    G4String                        paraWorldName = "ParallelWorld";
    B1DetectorConstruction        * realWorld     = new B1DetectorConstruction();
-   B1ParallelWorldConstruction * parallelWorld = new B1ParallelWorldConstruction(paraWorldName);
+   //B1ParallelWorldConstruction * parallelWorld = new B1ParallelWorldConstruction(paraWorldName);
 
-   realWorld->RegisterParallelWorld(parallelWorld);
+   //realWorld->RegisterParallelWorld(parallelWorld);
    runManager->SetUserInitialization(realWorld);
 
    // Physics list
    G4PhysListFactory     factory;
    //QGSP_BIC_EMY QGSP_BERT_HP_PEN
    G4VModularPhysicsList * physicsList =  factory.GetReferencePhysList("QGSP_BIC_LIV");
+   physicsList->RegisterPhysics(new B1OpticalPhysics());
 
    // This is needed to make use of the G4UserLimits applied to logical volumes.
    physicsList->RegisterPhysics(new G4StepLimiterPhysics());
 
    // This connects the phyics to the parallel world (and sensitive detectors)
-   physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
+   //physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
    //physicsList->ReplacePhysics(new G4IonQMDPhysics());
    //physicsList->SetDefaultCutValue(0.005*um);
 

@@ -1,5 +1,9 @@
 #include "HTCCDetectorGeometry.h"
 
+#include "G4UserLimits.hh"
+#include "G4OpticalSurface.hh"
+#include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
 #include "G4Paraboloid.hh"
 #include "G4VisAttributes.hh"
 #include "G4SubtractionSolid.hh"
@@ -10,6 +14,7 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Ellipsoid.hh"
+#include "G4Sphere.hh"
 #include "G4Cons.hh"
 #include "G4Polycone.hh"
 #include "G4IntersectionSolid.hh"
@@ -109,7 +114,7 @@ HTCCDetectorGeometry::HTCCDetectorGeometry()
    htcc_solid = new G4SubtractionSolid("htccEntryDishCone_solid",htccBigGasVolume_solid , htccEntryDishCone_solid);
 
    // wedge for sector placement
-   G4VSolid * temp = new G4Tubs("temp_wedge",0,2.0*m, 2.0*m, 60.0*deg, 60.0*deg);
+   G4VSolid * temp = new G4Tubs("temp_wedge",0,3.0*m, 4.0*m, 60.0*deg, 60.0*deg);
    sector_wedge_solid = new G4IntersectionSolid("sector_wedge_solid",htcc_solid , temp);
 
 }
@@ -178,7 +183,8 @@ void HTCCDetectorGeometry::BuildMirrors()
    // ------------------------------------------------------------------------
    // Mirror 4 
    //Mirror_sect0mirr0half0  |                htcc  |Ellipsoid defining mirror surface  |        208.7414292*mm 779.0336195*mm -31.02335*mm  |ordered: yzx 0*rad   0.2617993878*rad    1.609243305*rad  | ff8080   |           Ellipsoid  |               1728.673*mm 1728.673*mm 1907.810*mm 0*mm 0*mm  |           Component  |                  no  |     1   |     1   |     1   |   1   |   0   |                  no  |                  no  |                                      no 
-   Mirror_sect0mirr0half0_solid = new G4Ellipsoid("Mirror_sect0mirr0half0_solid",1728.673*mm, 1728.673*mm, 1907.810*mm, 0*mm, 0*mm); 
+   Mirror_sect0mirr0half0_solid = new G4Ellipsoid("Mirror_sect0mirr0half0_solid",1728.673*mm, 1728.673*mm, 1907.810*mm, -10*mm, 10.0*mm); 
+   //Mirror_sect0mirr0half0_solid = new G4Sphere("Mirror_sect0mirr0half0_solid",0, 1907.810*mm, 0*deg, 360*deg, 0.0*deg, 180.0*deg); 
    G4ThreeVector    Mirror_sect0mirr0half0_trans(208.7414292*mm, 779.0336195*mm, -31.02335*mm);
    G4RotationMatrix Mirror_sect0mirr0half0_rot;
    Mirror_sect0mirr0half0_rot.rotateY( 0*rad  );
@@ -1398,71 +1404,251 @@ void HTCCDetectorGeometry::BuildMirrors()
 void HTCCDetectorGeometry::BuildLogicalVolumes()
 {
 
-   bool check_overlaps = false;
+   using namespace CLHEP;
+   bool check_overlaps = true;
 
    BuildMirrors();
 
    G4NistManager* nist = G4NistManager::Instance();
    G4Material * default_mat   = nist->FindOrBuildMaterial("G4_AIR");
 
-   htccBigGasVolume_log    = new G4LogicalVolume(htccBigGasVolume_solid, default_mat, "htccBigGasVolume_log");
-   htccEntryDishVolume_log = new G4LogicalVolume(htccEntryDishVolume_solid, default_mat, "htccEntryDishVolume_log");
-   htccEntryConeVolume_log = new G4LogicalVolume(htccEntryConeVolume_solid, default_mat, "htccEntryConeVolume_log");
-   htccEntryDishCone_log = new G4LogicalVolume(htccEntryDishCone_solid, default_mat, "htccEntryDishCone_log");
+   fGasMaterial = nist->FindOrBuildMaterial("G4_CARBON_DIOXIDE");
+
+   const G4int NUMENTRIES = 7; //32;
+
+   G4double ppckov[NUMENTRIES] = {
+      1.9074494*eV, 1.9372533*eV, 1.9680033*eV, 1.9997453*eV, 2.0325280*eV,
+      6.1992105*eV, 6.5254848*eV
+   };
+   //   2.0664035*eV, 2.1014273*eV, 2.1376588*eV, 2.1751616*eV, 2.2140038*eV,
+   //   2.2542584*eV, 2.2960039*eV, 2.3393247*eV, 2.3843117*eV, 2.4310630*eV,
+   //   2.4796842*eV, 2.5302900*eV, 2.5830044*eV, 2.6379619*eV, 2.6953089*eV,
+   //   2.7552047*eV, 2.8178230*eV, 2.8833537*eV, 2.9520050*eV, 3.0240051*eV,
+   //   3.0996053*eV, 3.1790823*eV, 3.2627424*eV, 3.3509246*eV, 3.4440059*eV,
+   //   3.5424060*eV, 3.6465944*eV, 3.7570973*eV, 3.8745066*eV, 3.9994907*eV,
+   //   4.1328070*eV, 4.2753176*eV, 4.4280075*eV, 4.5920078*eV, 4.7686235*eV,
+   //   4.9593684*eV, 5.1660088*eV, 5.3906179*eV, 5.6356459*eV, 5.9040100*eV,
+   //   6.1992105*eV, 6.5254848*eV
+   //};
+   G4double rindex[NUMENTRIES] = {
+      1.0004473, 1.0004475, 1.0004477, 1.000448, 1.0004483,
+      1.0005262, 1.0005378
+   };
+   //   1.0004486, 1.0004489, 1.0004492, 1.0004495, 1.0004498,
+   //   1.0004502, 1.0004506, 1.000451, 1.0004514, 1.0004518,
+   //   1.0004523, 1.0004528, 1.0004534, 1.0004539, 1.0004545,
+   //   1.0004552, 1.0004559, 1.0004566, 1.0004574, 1.0004583,
+   //   1.0004592, 1.0004602, 1.0004613, 1.0004625, 1.0004638,
+   //   1.0004652, 1.0004668, 1.0004685, 1.0004704, 1.0004724,
+   //   1.0004748, 1.0004773, 1.0004803, 1.0004835, 1.0004873,
+   //   1.0004915, 1.0004964, 1.0005021, 1.0005088, 1.0005167,
+   //   1.0005262, 1.0005378
+   //};
+   G4double absorption[NUMENTRIES] = {
+      1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m,
+      802.8323273*m, 0.7465970*m
+   };
+   //   1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m,
+   //   1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m,
+   //   1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m,
+   //   1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m,
+   //   1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m,
+   //   1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m, 1000.0000000*m,
+   //   82.8323273*m, 0.7465970*m
+   //};
+
+   // ---------------------------------------------
+
+   G4MaterialPropertiesTable *MPT = new G4MaterialPropertiesTable();
+   //MPT->AddConstProperty("SCINTILLATIONYIELD",100./MeV);
+   MPT->AddProperty("RINDEX",ppckov,rindex,NUMENTRIES);
+   MPT->AddProperty("ABSLENGTH",ppckov,absorption,NUMENTRIES);
+   fGasMaterial->SetMaterialPropertiesTable(MPT);
+
+   // ---------------------------------------------
+
+   OpSurface = new G4OpticalSurface("mirror");
+   G4double sigma_alpha = 0.1;
+   OpSurface->SetType(dielectric_metal);
+   OpSurface->SetFinish(polished);
+   OpSurface->SetModel(unified);
+   //OpSurface -> SetSigmaAlpha(sigma_alpha);
+
+   // ---------------------------------------------
+
+   const G4int NUM = 2;
+   G4double pp[NUM] = {1.9074494*eV,6.5254848*eV};
+   G4double specularlobe[NUM]  = {0.3, 0.3};
+   G4double specularspike[NUM] = {0.2, 0.2};
+   G4double backscatter[NUM]   = {0.0, 0.0};
+   G4double rindex2[NUM]       = {1.05, 1.40};
+   G4double reflectivity[NUM]  = {0.9, 0.9}; // made up
+   G4double efficiency[NUM]    = {0.0, 0.0};
+
+   G4MaterialPropertiesTable* SMPT = new G4MaterialPropertiesTable();
+   //SMPT -> AddProperty("RINDEX",pp,rindex2,NUM);
+   //SMPT -> AddProperty("SPECULARLOBECONSTANT",pp,specularlobe,NUM);
+   //SMPT -> AddProperty("SPECULARSPIKECONSTANT",pp,specularspike,NUM);
+   //SMPT -> AddProperty("BACKSCATTERCONSTANT",pp,backscatter,NUM);
+   SMPT -> AddProperty("REFLECTIVITY",pp,reflectivity,NUM);
+   //SMPT -> AddProperty("EFFICIENCY",pp,efficiency,NUM);
+   OpSurface->SetMaterialPropertiesTable(SMPT);
+
+   // ---------------------------------------------
+
+   //htccBigGasVolume_log    = new G4LogicalVolume(htccBigGasVolume_solid, default_mat, "htccBigGasVolume_log");
+   //htccEntryDishVolume_log = new G4LogicalVolume(htccEntryDishVolume_solid, default_mat, "htccEntryDishVolume_log");
+   //htccEntryConeVolume_log = new G4LogicalVolume(htccEntryConeVolume_solid, default_mat, "htccEntryConeVolume_log");
+   //htccEntryDishCone_log = new G4LogicalVolume(htccEntryDishCone_solid, default_mat, "htccEntryDishCone_log");
 
    G4VisAttributes * htcc_vis = new G4VisAttributes(G4VisAttributes::GetInvisible());//;
    htcc_vis->SetDaughtersInvisible(false);
    htcc_vis->SetForceSolid(false);
    htcc_vis->SetForceWireframe(true);
-   htcc_log               = new G4LogicalVolume(htcc_solid, default_mat, "htcc_log");
+
+   htcc_log               = new G4LogicalVolume(htcc_solid, fGasMaterial, "htcc_log");
    htcc_log->SetVisAttributes(htcc_vis);//G4VisAttributes::GetInvisible());
 
    G4VisAttributes * vs3 = new G4VisAttributes(G4Colour(0.8,0.1,0.1));//G4VisAttributes::GetInvisible());//;
    vs3->SetDaughtersInvisible(false);
    vs3->SetForceSolid(false);
    vs3->SetForceWireframe(true);
-   sector_wedge_log = new G4LogicalVolume(sector_wedge_solid, default_mat, "sector_wedge_log");
+
+   sector_wedge_log = new G4LogicalVolume(sector_wedge_solid, fGasMaterial, "sector_wedge_log");
    sector_wedge_log->SetVisAttributes(vs3);
+
    //-----------------------------------------------------------------------------
 
-   mirror_4_sector2_2_log = new G4LogicalVolume(mirror_4_sector2_2_solid, default_mat, "mirror_4_sector2_2_log");
-   mirror_3_sector2_2_log = new G4LogicalVolume(mirror_3_sector2_2_solid, default_mat, "mirror_3_sector2_2_log");
-   mirror_2_sector2_2_log = new G4LogicalVolume(mirror_2_sector2_2_solid, default_mat, "mirror_2_sector2_2_log");
-   mirror_1_sector2_2_log = new G4LogicalVolume(mirror_1_sector2_2_solid, default_mat, "mirror_1_sector2_2_log");
+   G4Material * mirror_mat   = nist->FindOrBuildMaterial ( "G4_Pyrex_Glass" );
+   G4double rindex3[NUM]     = {1.0, 1.0};
+   G4double absorption3[NUM] = {1000.0*m, 1000.0*m};
+   G4MaterialPropertiesTable * mirror_MPT = new G4MaterialPropertiesTable();
+   mirror_MPT->AddProperty("RINDEX",   pp,rindex3,NUM);
+   //mirror_MPT->AddProperty("ABSLENGTH",pp,absorption3,NUM);
+   //mirror_mat->SetMaterialPropertiesTable(mirror_MPT);
 
-   mirror_4_sector3_1_log = new G4LogicalVolume(mirror_4_sector3_1_solid, default_mat, "mirror_4_sector3_1_log");
-   mirror_3_sector3_1_log = new G4LogicalVolume(mirror_3_sector3_1_solid, default_mat, "mirror_3_sector3_1_log");
-   mirror_2_sector3_1_log = new G4LogicalVolume(mirror_2_sector3_1_solid, default_mat, "mirror_2_sector3_1_log");
-   mirror_1_sector3_1_log = new G4LogicalVolume(mirror_1_sector3_1_solid, default_mat, "mirror_1_sector3_1_log");
+   // ---------------------------------------------
+
+   mirror_4_sector2_2_log = new G4LogicalVolume(mirror_4_sector2_2_solid, mirror_mat, "mirror_4_sector2_2_log");
+   mirror_3_sector2_2_log = new G4LogicalVolume(mirror_3_sector2_2_solid, mirror_mat, "mirror_3_sector2_2_log");
+   mirror_2_sector2_2_log = new G4LogicalVolume(mirror_2_sector2_2_solid, mirror_mat, "mirror_2_sector2_2_log");
+   mirror_1_sector2_2_log = new G4LogicalVolume(mirror_1_sector2_2_solid, mirror_mat, "mirror_1_sector2_2_log");
+   mirror_4_sector3_1_log = new G4LogicalVolume(mirror_4_sector3_1_solid, mirror_mat, "mirror_4_sector3_1_log");
+   mirror_3_sector3_1_log = new G4LogicalVolume(mirror_3_sector3_1_solid, mirror_mat, "mirror_3_sector3_1_log");
+   mirror_2_sector3_1_log = new G4LogicalVolume(mirror_2_sector3_1_solid, mirror_mat, "mirror_2_sector3_1_log");
+   mirror_1_sector3_1_log = new G4LogicalVolume(mirror_1_sector3_1_solid, mirror_mat, "mirror_1_sector3_1_log");
+
+   //-----------------------------------------------------------------------------
 
    pmt_4_sector3_1_log = new G4LogicalVolume(pmt_4_sector3_1_solid, default_mat, "pmt_4_sector3_1_log");
-   wc_4_sector3_1_log = new G4LogicalVolume(wc_4_sector3_1_solid, default_mat, "wc_4_sector3_1_log");
+   wc_4_sector3_1_log  = new G4LogicalVolume(wc_4_sector3_1_solid, default_mat, "wc_4_sector3_1_log");
    pmt_4_sector2_2_log = new G4LogicalVolume(pmt_4_sector2_2_solid, default_mat, "pmt_4_sector2_2_log");
-   wc_4_sector2_2_log = new G4LogicalVolume(wc_4_sector2_2_solid, default_mat, "wc_4_sector2_2_log");
+   wc_4_sector2_2_log  = new G4LogicalVolume(wc_4_sector2_2_solid, default_mat, "wc_4_sector2_2_log");
 
    pmt_3_sector3_1_log = new G4LogicalVolume(pmt_3_sector3_1_solid, default_mat, "pmt_3_sector3_1_log");
-   wc_3_sector3_1_log = new G4LogicalVolume(wc_3_sector3_1_solid, default_mat, "wc_3_sector3_1_log");
+   wc_3_sector3_1_log  = new G4LogicalVolume(wc_3_sector3_1_solid, default_mat, "wc_3_sector3_1_log");
    pmt_3_sector2_2_log = new G4LogicalVolume(pmt_3_sector2_2_solid, default_mat, "pmt_3_sector2_2_log");
-   wc_3_sector2_2_log = new G4LogicalVolume(wc_3_sector2_2_solid, default_mat, "wc_3_sector2_2_log");
+   wc_3_sector2_2_log  = new G4LogicalVolume(wc_3_sector2_2_solid, default_mat, "wc_3_sector2_2_log");
 
    pmt_2_sector3_1_log = new G4LogicalVolume(pmt_2_sector3_1_solid, default_mat, "pmt_2_sector3_1_log");
-   wc_2_sector3_1_log = new G4LogicalVolume(wc_2_sector3_1_solid, default_mat, "wc_2_sector3_1_log");
+   wc_2_sector3_1_log  = new G4LogicalVolume(wc_2_sector3_1_solid, default_mat, "wc_2_sector3_1_log");
    pmt_2_sector2_2_log = new G4LogicalVolume(pmt_2_sector2_2_solid, default_mat, "pmt_2_sector2_2_log");
-   wc_2_sector2_2_log = new G4LogicalVolume(wc_2_sector2_2_solid, default_mat, "wc_2_sector2_2_log");
+   wc_2_sector2_2_log  = new G4LogicalVolume(wc_2_sector2_2_solid, default_mat, "wc_2_sector2_2_log");
 
    pmt_1_sector3_1_log = new G4LogicalVolume(pmt_1_sector3_1_solid, default_mat, "pmt_1_sector3_1_log");
-   wc_1_sector3_1_log = new G4LogicalVolume(wc_1_sector3_1_solid, default_mat, "wc_1_sector3_1_log");
+   wc_1_sector3_1_log  = new G4LogicalVolume(wc_1_sector3_1_solid, default_mat, "wc_1_sector3_1_log");
    pmt_1_sector2_2_log = new G4LogicalVolume(pmt_1_sector2_2_solid, default_mat, "pmt_1_sector2_2_log");
-   wc_1_sector2_2_log = new G4LogicalVolume(wc_1_sector2_2_solid, default_mat, "wc_1_sector2_2_log");
+   wc_1_sector2_2_log  = new G4LogicalVolume(wc_1_sector2_2_solid, default_mat, "wc_1_sector2_2_log");
 
    //BarrelEllipseCut_sect0mirr0half0_log = new G4LogicalVolume(BarrelEllipseCut_sect0mirr0half0_solid, default_mat, "BarrelEllipseCut_sect0mirr0half0_log");
 
+
+}
+//______________________________________________________________________________
+
+G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region )
+{
+   using namespace CLHEP;
+   using namespace clas12::geo;
+   int index    = region-1;
+   int grouping = (sec-1)*3 + (region-1);
+
+   if(!htcc_phys) {
+      htcc_phys = new G4PVPlacement(
+            0,
+            G4ThreeVector(0,0,0),
+            htcc_log,//htcc_log,          // its logical volume
+            "htcc_phys", // its name
+            mother,                       // its mother (logical) volume
+            false,                        // no boolean operations
+            0,                     // its copy number
+            false);                        // check for overlaps
+   }
+
+   // --------------------------------------------
+   G4RotationMatrix * sector_rot = new G4RotationMatrix();
+   sector_rot->rotateZ( 60.0*CLHEP::deg*(sec-1) );
+
+   //G4VSolid * temp = new G4Tubs("temp_wedge2",0,3.0*m, 4.0*m, 0.0*deg, 360.0*deg);
+   //G4LogicalVolume * temp_log = new G4LogicalVolume(temp, fGasMaterial, "asdf");
+   //G4VPhysicalVolume * temp_phys = new G4PVPlacement(
+   //      0,
+   //      G4ThreeVector(0,0,0),
+   //      temp_log,          // its logical volume
+   //      "asdf", // its name
+   //      htcc_log,                       // its mother (logical) volume
+   //      false,                        // no boolean operations
+   //      0,                     // its copy number
+   //      false);                        // check for overlaps
+
+   G4VPhysicalVolume * sector_phys = new G4PVPlacement(
+         sector_rot, 
+         G4ThreeVector(0,0,0),
+         sector_wedge_log,          // its logical volume
+         Form("sector_wedge_phys%d",sec), // its name
+         htcc_log,                       // its mother (logical) volume
+         false,                        // no boolean operations
+         sec,                     // its copy number
+         false);                        // check for overlaps
+   G4UserLimits * scoring_limits = new G4UserLimits(1.0*mm);
+   sector_wedge_log->SetUserLimits(scoring_limits);
+
+   PlaceMirrors(sector_phys);
+
+   return htcc_phys;
+}
+//______________________________________________________________________________
+
+G4VPhysicalVolume * HTCCDetectorGeometry::PlaceParallelPhysicalVolume(G4LogicalVolume * mother, int sec, int region )
+{
+   using namespace clas12::geo;
+   int index    = region-1;
+   int grouping = (sec-1)*3 + (region-1);
+
+   //G4VPhysicalVolume * phys = new G4PVPlacement(
+   //      G4Transform3D(
+   //         RegionRotation(sec,region),
+   //         RegionTranslation(sec, region)
+   //      ),
+   //      fRegions_log[index],          // its logical volume
+   //      Form("region%d_phys",region), // its name
+   //      mother,                       // its mother (logical) volume
+   //      false,                        // no boolean operations
+   //      grouping,                     // its copy number
+   //      false);                        // check for overlaps
+
+   return nullptr;
+}
+//______________________________________________________________________________
+void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
+{
    using namespace CLHEP;
    using namespace clas12::geo;
 
    // ----------------------------------------------
    // Mirrors
-   new G4PVPlacement(
+   bool check_mirror_overlaps = false;
+   G4VPhysicalVolume * m1_phys = new G4PVPlacement(
          &mirror_4_sector2_2_rot, 
          mirror_4_sector2_2_trans,
          mirror_4_sector2_2_log,          // its logical volume
@@ -1470,9 +1656,8 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
-
-   new G4PVPlacement(
+         check_mirror_overlaps);                        // check for overlaps
+   G4VPhysicalVolume * m2_phys = new G4PVPlacement(
          &mirror_3_sector2_2_rot,
          mirror_3_sector2_2_trans,
          mirror_3_sector2_2_log,          // its logical volume
@@ -1480,8 +1665,8 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
-   new G4PVPlacement(
+         check_mirror_overlaps);                        // check for overlaps
+   G4VPhysicalVolume * m3_phys = new G4PVPlacement(
          &mirror_2_sector2_2_rot,
          mirror_2_sector2_2_trans,
          mirror_2_sector2_2_log,          // its logical volume
@@ -1489,8 +1674,8 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
-   new G4PVPlacement(
+         check_mirror_overlaps);                        // check for overlaps
+   G4VPhysicalVolume * m4_phys = new G4PVPlacement(
          &mirror_1_sector2_2_rot, 
          mirror_1_sector2_2_trans,
          mirror_1_sector2_2_log,          // its logical volume
@@ -1498,9 +1683,9 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
    // other side
-   new G4PVPlacement(
+   G4VPhysicalVolume * m5_phys = new G4PVPlacement(
         &mirror_4_sector3_1_rot, 
          mirror_4_sector3_1_trans,
          mirror_4_sector3_1_log,          // its logical volume
@@ -1508,8 +1693,8 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
-   new G4PVPlacement(
+         check_mirror_overlaps);                        // check for overlaps
+   G4VPhysicalVolume * m6_phys = new G4PVPlacement(
         &mirror_3_sector3_1_rot, 
          mirror_3_sector3_1_trans,
          mirror_3_sector3_1_log,          // its logical volume
@@ -1517,8 +1702,8 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
-   new G4PVPlacement(
+         check_mirror_overlaps);                        // check for overlaps
+   G4VPhysicalVolume * m7_phys = new G4PVPlacement(
         &mirror_2_sector3_1_rot, 
          mirror_2_sector3_1_trans,
          mirror_2_sector3_1_log,          // its logical volume
@@ -1526,8 +1711,8 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
-   new G4PVPlacement(
+         check_mirror_overlaps);                        // check for overlaps
+   G4VPhysicalVolume * m8_phys = new G4PVPlacement(
         &mirror_1_sector3_1_rot, 
          mirror_1_sector3_1_trans,
          mirror_1_sector3_1_log,          // its logical volume
@@ -1535,7 +1720,50 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
+
+   // ---------------------------------
+   //
+
+   //const G4int num = 2;
+   //G4double Ephoton[num]          = {1.0*eV, 10.0*eV};
+   //G4double MSpecularLobe[num]    = {0.0, 0.0};
+   //G4double MSpecularSpike[num]   = {0.0, 0.0};
+   //G4double MBackscatter[num]     = {0.0, 0.0};
+   //G4double MEfficiency[num]      = {0.0, 0.0};
+   //G4double coatingReflectivity[num] = {0.95, 0.95};
+
+   //G4OpticalSurface* OpMirrorSurface = new G4OpticalSurface ( "SilverSurface" );
+   //OpMirrorSurface->SetType(   dielectric_metal );
+   //OpMirrorSurface->SetFinish( polishedbackpainted );
+   //OpMirrorSurface->SetModel(  unified );
+
+   //G4MaterialPropertiesTable* reflectiveCoatingSurfacePTable = new G4MaterialPropertiesTable();
+
+   //reflectiveCoatingSurfacePTable->AddProperty ( "REFLECTIVITY",          Ephoton, coatingReflectivity, num );
+   //reflectiveCoatingSurfacePTable->AddProperty ( "SPECULARLOBECONSTANT",  Ephoton, MSpecularLobe,    num );
+   //reflectiveCoatingSurfacePTable->AddProperty ( "SPECULARSPIKECONSTANT", Ephoton, MSpecularSpike,   num );
+   //reflectiveCoatingSurfacePTable->AddProperty ( "BACKSCATTERCONSTANT",   Ephoton, MBackscatter,     num );
+   //OpMirrorSurface->SetMaterialPropertiesTable ( reflectiveCoatingSurfacePTable );
+
+   //G4LogicalBorderSurface* Surface1 = new G4LogicalBorderSurface("mirror_1", mother_phys, m1_phys, OpSurface);
+   //G4LogicalBorderSurface* Surface2 = new G4LogicalBorderSurface("mirror_2", mother_phys, m2_phys, OpSurface);
+   //G4LogicalBorderSurface* Surface3 = new G4LogicalBorderSurface("mirror_3", mother_phys, m3_phys, OpSurface);
+   //G4LogicalBorderSurface* Surface4 = new G4LogicalBorderSurface("mirror_4", mother_phys, m4_phys, OpSurface);
+
+   //G4LogicalBorderSurface* Surface5 = new G4LogicalBorderSurface("mirror_5", mother_phys, m5_phys, OpSurface);
+   //G4LogicalBorderSurface* Surface6 = new G4LogicalBorderSurface("mirror_6", mother_phys, m6_phys, OpSurface);
+   //G4LogicalBorderSurface* Surface7 = new G4LogicalBorderSurface("mirror_7", mother_phys, m7_phys, OpSurface);
+   //G4LogicalBorderSurface* Surface8 = new G4LogicalBorderSurface("mirror_8", mother_phys, m8_phys, OpSurface);
+
+   G4LogicalSkinSurface * surf1 = new G4LogicalSkinSurface("mirror_1", mirror_4_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * surf2 = new G4LogicalSkinSurface("mirror_2", mirror_2_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * surf3 = new G4LogicalSkinSurface("mirror_3", mirror_3_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * surf4 = new G4LogicalSkinSurface("mirror_4", mirror_1_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * surf5 = new G4LogicalSkinSurface("mirror_5", mirror_4_sector3_1_log , OpSurface);
+   G4LogicalSkinSurface * surf6 = new G4LogicalSkinSurface("mirror_6", mirror_3_sector3_1_log , OpSurface);
+   G4LogicalSkinSurface * surf7 = new G4LogicalSkinSurface("mirror_7", mirror_2_sector3_1_log , OpSurface);
+   G4LogicalSkinSurface * surf8 = new G4LogicalSkinSurface("mirror_8", mirror_1_sector3_1_log , OpSurface);
 
    // ---------------------------------
    // pmt
@@ -1547,7 +1775,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
         &wc_4_sector3_1_rot, 
@@ -1557,7 +1785,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
    // pmt
    new G4PVPlacement(
         &pmt_4_sector2_2_rot, 
@@ -1567,7 +1795,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
         &wc_4_sector2_2_rot, 
@@ -1577,7 +1805,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
 
    // --------------------------------------
    // pmt
@@ -1589,7 +1817,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
         &wc_3_sector3_1_rot, 
@@ -1599,7 +1827,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
    // pmt
    new G4PVPlacement(
         &pmt_3_sector2_2_rot, 
@@ -1609,7 +1837,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
         &wc_3_sector2_2_rot, 
@@ -1619,7 +1847,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          0,                     // its copy number
-         false);                        // check for overlaps
+         check_mirror_overlaps);                        // check for overlaps
 
    // --------------------------------------
    // pmt
@@ -1705,63 +1933,6 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
          0,                     // its copy number
          false);                        // check for overlaps
          
-
-}
-//______________________________________________________________________________
-
-G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region )
-{
-   using namespace clas12::geo;
-   int index    = region-1;
-   int grouping = (sec-1)*3 + (region-1);
-
-   if(!htcc_phys) {
-      htcc_phys = new G4PVPlacement(
-            0,G4ThreeVector(0,0,0),
-            htcc_log,//htcc_log,          // its logical volume
-            "htcc_phys", // its name
-            mother,                       // its mother (logical) volume
-            false,                        // no boolean operations
-            0,                     // its copy number
-            false);                        // check for overlaps
-   }
-
-   // --------------------------------------------
-   G4RotationMatrix * sector_rot = new G4RotationMatrix();
-   sector_rot->rotateZ( 60.0*CLHEP::deg*(sec-1) );
-   new G4PVPlacement(
-         sector_rot, 
-         G4ThreeVector(0,0,0),
-         sector_wedge_log,          // its logical volume
-         "sector_wedge_phys", // its name
-         htcc_log,                       // its mother (logical) volume
-         false,                        // no boolean operations
-         sec,                     // its copy number
-         false);                        // check for overlaps
-
-   return htcc_phys;
-}
-//______________________________________________________________________________
-
-G4VPhysicalVolume * HTCCDetectorGeometry::PlaceParallelPhysicalVolume(G4LogicalVolume * mother, int sec, int region )
-{
-   using namespace clas12::geo;
-   int index    = region-1;
-   int grouping = (sec-1)*3 + (region-1);
-
-   //G4VPhysicalVolume * phys = new G4PVPlacement(
-   //      G4Transform3D(
-   //         RegionRotation(sec,region),
-   //         RegionTranslation(sec, region)
-   //      ),
-   //      fRegions_log[index],          // its logical volume
-   //      Form("region%d_phys",region), // its name
-   //      mother,                       // its mother (logical) volume
-   //      false,                        // no boolean operations
-   //      grouping,                     // its copy number
-   //      false);                        // check for overlaps
-
-   return nullptr;
 }
 //______________________________________________________________________________
 

@@ -4,6 +4,7 @@
 #include <array>
 #include "G4VSolid.hh"
 #include "G4LogicalVolume.hh"
+#include "G4OpticalSurface.hh"
 #include "G4Material.hh"
 #include "G4Material.hh"
 #include "G4RotationMatrix.hh"
@@ -194,6 +195,7 @@ class HTCCDetectorGeometry {
 
    public:
       void BuildMirrors();
+      void PlaceMirrors(G4VPhysicalVolume *);
 
       //HTCCSensitiveDetector * fSensitiveDetector;
       SensitiveRegionDetector       * fSensitiveDetector2;
@@ -228,6 +230,7 @@ class HTCCDetectorGeometry {
       G4LogicalVolume * fEmptyRegion3_log;
 
       G4Material * fGasMaterial;
+      G4OpticalSurface* OpSurface;
 
    public:
       HTCCDetectorGeometry();
