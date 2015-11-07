@@ -23,6 +23,7 @@
 #include "G4PVPlacement.hh"
 #include "CLHEP/Units/PhysicalConstants.h"
 #include "G4UserLimits.hh"
+#include "PMTArraySensitiveDetector.h"
 
 HTCCDetectorGeometry::HTCCDetectorGeometry()
 {
@@ -30,8 +31,8 @@ HTCCDetectorGeometry::HTCCDetectorGeometry()
    using namespace CLHEP;
 
    G4SDManager* SDMan = G4SDManager::GetSDMpointer();
-   //fSensitiveDetector = new HTCCSensitiveDetector("HTCC",6*6*6*112);
-   //SDMan->AddNewDetector(fSensitiveDetector);
+   fSensitiveDetector = new PMTArraySensitiveDetector("HTCC",4*2*6);
+   SDMan->AddNewDetector(fSensitiveDetector);
 
    G4NistManager* nist = G4NistManager::Instance();
    G4Material * default_mat   = nist->FindOrBuildMaterial("G4_AIR");
@@ -1459,6 +1460,14 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    //mirror_MPT->AddProperty("ABSLENGTH",pp,absorption3,NUM);
    //mirror_mat->SetMaterialPropertiesTable(mirror_MPT);
 
+   G4Material * pmt_mat   = nist->FindOrBuildMaterial ( "G4_SILICON_DIOXIDE" );
+   G4double rindex4[NUM]     = {1.5, 1.5};
+   G4double absorption4[NUM] = {1000.0*m, 1000.0*m};
+   G4MaterialPropertiesTable * pmt_MPT = new G4MaterialPropertiesTable();
+   pmt_MPT->AddProperty("RINDEX",   pp,rindex4,NUM);
+   //pmt_MPT->AddProperty("ABSLENGTH",pp,absorption4,NUM);
+   pmt_mat->SetMaterialPropertiesTable(pmt_MPT);
+
    // ---------------------------------------------
 
    mirror_4_sector2_2_log = new G4LogicalVolume(mirror_4_sector2_2_solid, mirror_mat, "mirror_4_sector2_2_log");
@@ -1472,28 +1481,35 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
 
    //-----------------------------------------------------------------------------
 
-   pmt_4_sector3_1_log = new G4LogicalVolume(pmt_4_sector3_1_solid, default_mat, "pmt_4_sector3_1_log");
-   wc_4_sector3_1_log  = new G4LogicalVolume(wc_4_sector3_1_solid, mirror_mat, "wc_4_sector3_1_log");
-   pmt_4_sector2_2_log = new G4LogicalVolume(pmt_4_sector2_2_solid, default_mat, "pmt_4_sector2_2_log");
-   wc_4_sector2_2_log  = new G4LogicalVolume(wc_4_sector2_2_solid, mirror_mat, "wc_4_sector2_2_log");
+   pmt_4_sector3_1_log = new G4LogicalVolume(pmt_4_sector3_1_solid , pmt_mat , "pmt_4_sector3_1_log");
+   pmt_4_sector2_2_log = new G4LogicalVolume(pmt_4_sector2_2_solid , pmt_mat , "pmt_4_sector2_2_log");
+   wc_4_sector3_1_log  = new G4LogicalVolume(wc_4_sector3_1_solid  , mirror_mat  , "wc_4_sector3_1_log");
+   wc_4_sector2_2_log  = new G4LogicalVolume(wc_4_sector2_2_solid  , mirror_mat  , "wc_4_sector2_2_log");
 
-   pmt_3_sector3_1_log = new G4LogicalVolume(pmt_3_sector3_1_solid, default_mat, "pmt_3_sector3_1_log");
-   wc_3_sector3_1_log  = new G4LogicalVolume(wc_3_sector3_1_solid, mirror_mat, "wc_3_sector3_1_log");
-   pmt_3_sector2_2_log = new G4LogicalVolume(pmt_3_sector2_2_solid, default_mat, "pmt_3_sector2_2_log");
-   wc_3_sector2_2_log  = new G4LogicalVolume(wc_3_sector2_2_solid, mirror_mat, "wc_3_sector2_2_log");
+   pmt_3_sector3_1_log = new G4LogicalVolume(pmt_3_sector3_1_solid , pmt_mat , "pmt_3_sector3_1_log");
+   pmt_3_sector2_2_log = new G4LogicalVolume(pmt_3_sector2_2_solid , pmt_mat , "pmt_3_sector2_2_log");
+   wc_3_sector3_1_log  = new G4LogicalVolume(wc_3_sector3_1_solid  , mirror_mat  , "wc_3_sector3_1_log");
+   wc_3_sector2_2_log  = new G4LogicalVolume(wc_3_sector2_2_solid  , mirror_mat  , "wc_3_sector2_2_log");
 
-   pmt_2_sector3_1_log = new G4LogicalVolume(pmt_2_sector3_1_solid, default_mat, "pmt_2_sector3_1_log");
-   wc_2_sector3_1_log  = new G4LogicalVolume(wc_2_sector3_1_solid, mirror_mat, "wc_2_sector3_1_log");
-   pmt_2_sector2_2_log = new G4LogicalVolume(pmt_2_sector2_2_solid, default_mat, "pmt_2_sector2_2_log");
-   wc_2_sector2_2_log  = new G4LogicalVolume(wc_2_sector2_2_solid, mirror_mat, "wc_2_sector2_2_log");
+   pmt_2_sector3_1_log = new G4LogicalVolume(pmt_2_sector3_1_solid , pmt_mat , "pmt_2_sector3_1_log");
+   pmt_2_sector2_2_log = new G4LogicalVolume(pmt_2_sector2_2_solid , pmt_mat , "pmt_2_sector2_2_log");
+   wc_2_sector3_1_log  = new G4LogicalVolume(wc_2_sector3_1_solid  , mirror_mat  , "wc_2_sector3_1_log");
+   wc_2_sector2_2_log  = new G4LogicalVolume(wc_2_sector2_2_solid  , mirror_mat  , "wc_2_sector2_2_log");
 
-   pmt_1_sector3_1_log = new G4LogicalVolume(pmt_1_sector3_1_solid, default_mat, "pmt_1_sector3_1_log");
-   wc_1_sector3_1_log  = new G4LogicalVolume(wc_1_sector3_1_solid, mirror_mat, "wc_1_sector3_1_log");
-   pmt_1_sector2_2_log = new G4LogicalVolume(pmt_1_sector2_2_solid, default_mat, "pmt_1_sector2_2_log");
-   wc_1_sector2_2_log  = new G4LogicalVolume(wc_1_sector2_2_solid, mirror_mat, "wc_1_sector2_2_log");
+   pmt_1_sector3_1_log = new G4LogicalVolume(pmt_1_sector3_1_solid , pmt_mat , "pmt_1_sector3_1_log");
+   pmt_1_sector2_2_log = new G4LogicalVolume(pmt_1_sector2_2_solid , pmt_mat , "pmt_1_sector2_2_log");
+   wc_1_sector3_1_log  = new G4LogicalVolume(wc_1_sector3_1_solid  , mirror_mat  , "wc_1_sector3_1_log");
+   wc_1_sector2_2_log  = new G4LogicalVolume(wc_1_sector2_2_solid  , mirror_mat  , "wc_1_sector2_2_log");
 
    //BarrelEllipseCut_sect0mirr0half0_log = new G4LogicalVolume(BarrelEllipseCut_sect0mirr0half0_solid, default_mat, "BarrelEllipseCut_sect0mirr0half0_log");
-
+   pmt_4_sector3_1_log->SetSensitiveDetector(fSensitiveDetector);
+   pmt_4_sector2_2_log->SetSensitiveDetector(fSensitiveDetector);
+   pmt_3_sector3_1_log->SetSensitiveDetector(fSensitiveDetector);
+   pmt_3_sector2_2_log->SetSensitiveDetector(fSensitiveDetector);
+   pmt_2_sector3_1_log->SetSensitiveDetector(fSensitiveDetector);
+   pmt_2_sector2_2_log->SetSensitiveDetector(fSensitiveDetector);
+   pmt_1_sector3_1_log->SetSensitiveDetector(fSensitiveDetector);
+   pmt_1_sector2_2_log->SetSensitiveDetector(fSensitiveDetector);
 
 }
 //______________________________________________________________________________
@@ -1542,8 +1558,8 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
          false,                        // no boolean operations
          sec,                     // its copy number
          false);                        // check for overlaps
-   G4UserLimits * scoring_limits = new G4UserLimits(1.0*mm);
-   sector_wedge_log->SetUserLimits(scoring_limits);
+   //G4UserLimits * scoring_limits = new G4UserLimits(1.0*mm);
+   //sector_wedge_log->SetUserLimits(scoring_limits);
 
    PlaceMirrors(sector_phys);
 
@@ -1874,6 +1890,36 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
    G4LogicalSkinSurface * wc7 = new G4LogicalSkinSurface("wc_7", wc_2_sector3_1_log , OpSurface);
    G4LogicalSkinSurface * wc8 = new G4LogicalSkinSurface("wc_8", wc_1_sector3_1_log , OpSurface);
          
+   const G4int num = 2;
+   G4double Ephoton[num]          = {1.0*eV, 10.0*eV};
+   G4double MSpecularLobe[num]    = {0.0, 0.0};
+   G4double MSpecularSpike[num]   = {0.0, 0.0};
+   G4double MBackscatter[num]     = {0.0, 0.0};
+   G4double MEfficiency[num]      = {1.0, 1.0};
+   G4double pmtReflectivity[num] = {0.0, 0.0};
+
+   G4OpticalSurface* OpPMTSurface = new G4OpticalSurface ( "pmt_surface" );
+   OpPMTSurface->SetType(   dielectric_metal );
+   OpPMTSurface->SetFinish( polished );
+   OpPMTSurface->SetModel(  unified );
+
+   G4MaterialPropertiesTable* pmtSurfacePTable = new G4MaterialPropertiesTable();
+
+   pmtSurfacePTable->AddProperty( "REFLECTIVITY",          Ephoton, pmtReflectivity, num );
+   pmtSurfacePTable->AddProperty( "SPECULARLOBECONSTANT",  Ephoton, MSpecularLobe,    num );
+   pmtSurfacePTable->AddProperty( "SPECULARSPIKECONSTANT", Ephoton, MSpecularSpike,   num );
+   pmtSurfacePTable->AddProperty( "BACKSCATTERCONSTANT",   Ephoton, MBackscatter,     num );
+   pmtSurfacePTable->AddProperty( "EFFICIENCY",            Ephoton, MEfficiency,num);
+   OpPMTSurface->SetMaterialPropertiesTable ( pmtSurfacePTable );
+
+   G4LogicalSkinSurface * pmt1 = new G4LogicalSkinSurface("pmt_1", pmt_4_sector2_2_log , OpPMTSurface);
+   G4LogicalSkinSurface * pmt2 = new G4LogicalSkinSurface("pmt_2", pmt_2_sector2_2_log , OpPMTSurface);
+   G4LogicalSkinSurface * pmt3 = new G4LogicalSkinSurface("pmt_3", pmt_3_sector2_2_log , OpPMTSurface);
+   G4LogicalSkinSurface * pmt4 = new G4LogicalSkinSurface("pmt_4", pmt_1_sector2_2_log , OpPMTSurface);
+   G4LogicalSkinSurface * pmt5 = new G4LogicalSkinSurface("pmt_5", pmt_4_sector3_1_log , OpPMTSurface);
+   G4LogicalSkinSurface * pmt6 = new G4LogicalSkinSurface("pmt_6", pmt_3_sector3_1_log , OpPMTSurface);
+   G4LogicalSkinSurface * pmt7 = new G4LogicalSkinSurface("pmt_7", pmt_2_sector3_1_log , OpPMTSurface);
+   G4LogicalSkinSurface * pmt8 = new G4LogicalSkinSurface("pmt_8", pmt_1_sector3_1_log , OpPMTSurface);
 }
 //______________________________________________________________________________
 

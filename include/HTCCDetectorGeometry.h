@@ -8,7 +8,7 @@
 #include "G4Material.hh"
 #include "G4Material.hh"
 #include "G4RotationMatrix.hh"
-//#include "HTCCSensitiveDetector.h"
+#include "PMTArraySensitiveDetector.h"
 #include "SensitiveRegionDetector.h"
 
 class HTCCDetectorGeometry {
@@ -198,7 +198,7 @@ class HTCCDetectorGeometry {
       void PlaceMirrors(G4VPhysicalVolume *);
 
       //HTCCSensitiveDetector * fSensitiveDetector;
-      SensitiveRegionDetector       * fSensitiveDetector2;
+      PMTArraySensitiveDetector  * fSensitiveDetector;
 
       G4VSolid        * htccBigGasVolume_solid;
       G4LogicalVolume * htccBigGasVolume_log;

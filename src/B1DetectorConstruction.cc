@@ -415,10 +415,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    for(int i = 1; i<=6; i++ ) {
 
       // Region I
-      //fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
 
       ////// Region II
-      //fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
 
       ////// Region III
       //fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
@@ -482,7 +482,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    // create a field
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
-   C12MagneticField * magField = new C12MagneticField(false,false);
+   C12MagneticField * magField = new C12MagneticField();//false,false);
 
    // set it as the default field
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager(); // set it as the default field
