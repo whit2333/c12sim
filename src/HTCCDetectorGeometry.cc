@@ -23,7 +23,7 @@
 #include "G4PVPlacement.hh"
 #include "CLHEP/Units/PhysicalConstants.h"
 #include "G4UserLimits.hh"
-#include "PMTArraySensitiveDetector.h"
+#include "HTCCSensitiveDetector.h"
 
 HTCCDetectorGeometry::HTCCDetectorGeometry()
 {
@@ -31,7 +31,7 @@ HTCCDetectorGeometry::HTCCDetectorGeometry()
    using namespace CLHEP;
 
    G4SDManager* SDMan = G4SDManager::GetSDMpointer();
-   fSensitiveDetector = new PMTArraySensitiveDetector("HTCC",4*2*6);
+   fSensitiveDetector = new HTCCSensitiveDetector("HTCC",4*2*6);
    SDMan->AddNewDetector(fSensitiveDetector);
 
    G4NistManager* nist = G4NistManager::Instance();
