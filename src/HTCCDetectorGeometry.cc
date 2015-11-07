@@ -183,7 +183,7 @@ void HTCCDetectorGeometry::BuildMirrors()
    // ------------------------------------------------------------------------
    // Mirror 4 
    //Mirror_sect0mirr0half0  |                htcc  |Ellipsoid defining mirror surface  |        208.7414292*mm 779.0336195*mm -31.02335*mm  |ordered: yzx 0*rad   0.2617993878*rad    1.609243305*rad  | ff8080   |           Ellipsoid  |               1728.673*mm 1728.673*mm 1907.810*mm 0*mm 0*mm  |           Component  |                  no  |     1   |     1   |     1   |   1   |   0   |                  no  |                  no  |                                      no 
-   Mirror_sect0mirr0half0_solid = new G4Ellipsoid("Mirror_sect0mirr0half0_solid",1728.673*mm, 1728.673*mm, 1907.810*mm, -10*mm, 10.0*mm); 
+   Mirror_sect0mirr0half0_solid = new G4Ellipsoid("Mirror_sect0mirr0half0_solid",1728.673*mm, 1728.673*mm, 1907.810*mm, 0*mm, 0*mm); 
    //Mirror_sect0mirr0half0_solid = new G4Sphere("Mirror_sect0mirr0half0_solid",0, 1907.810*mm, 0*deg, 360*deg, 0.0*deg, 180.0*deg); 
    G4ThreeVector    Mirror_sect0mirr0half0_trans(208.7414292*mm, 779.0336195*mm, -31.02335*mm);
    G4RotationMatrix Mirror_sect0mirr0half0_rot;
@@ -1076,25 +1076,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_4_sector3_1outer_rot.rotateZ( 0*deg);
 
    //wc_4_sector3_1 | htcc | htcc wc 4, sector3 left | -409.64307*mm 1528.8081*mm 28.25812*mm | -17.952376*deg -4.7212992*deg 0*deg | 80ff802 | Operation: wc_4_sector3_1outer - wc_4_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_4_sector3_1outer_rot;
-   r2   = wc_4_sector3_1inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_4_sector3_1outer_trans;
-   t2   = wc_4_sector3_1inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
-   //G4RotationMatrix rotate    = it2->second.rot ;
-   //G4ThreeVector    translate = it2->second.pos;
-   //G4RotationMatrix invRot    =  rotate.invert() ;
-   //G4Transform3D    transf1( invRot, G4ThreeVector( 0, 0, 0 ) );
-   //G4Transform3D    transf2( G4RotationMatrix(), translate );
-   //G4Transform3D    transform = transf2 * transf1 ;
    wc_4_sector3_1_solid = new G4SubtractionSolid(
          "wc_4_sector3_1_solid",
          wc_4_sector3_1outer_solid,
          wc_4_sector3_1inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_4_sector3_1inner_trans
          );
    wc_4_sector3_1_trans = {-409.64307*mm,1528.8081*mm,28.25812*mm};
    wc_4_sector3_1_rot = G4RotationMatrix::IDENTITY;
@@ -1117,25 +1104,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_4_sector2_2outer_rot.rotateZ( 0*deg);
 
    //wc_4_sector2_2 | htcc | htcc wc 4, sector2 right | 409.64307*mm 1528.8081*mm 28.25812*mm | -17.952376*deg 4.7212992*deg 0*deg | ff80802 | Operation: wc_4_sector2_2outer - wc_4_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_4_sector2_2outer_rot;
-   r2   = wc_4_sector2_2inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_4_sector2_2outer_trans;
-   t2   = wc_4_sector2_2inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
-   //G4RotationMatrix rotate    = it2->second.rot ;
-   //G4ThreeVector    translate = it2->second.pos;
-   //G4RotationMatrix invRot    =  rotate.invert() ;
-   //G4Transform3D    transf1( invRot, G4ThreeVector( 0, 0, 0 ) );
-   //G4Transform3D    transf2( G4RotationMatrix(), translate );
-   //G4Transform3D    transform = transf2 * transf1 ;
    wc_4_sector2_2_solid = new G4SubtractionSolid(
          "wc_4_sector2_2_solid",
          wc_4_sector2_2outer_solid,
          wc_4_sector2_2inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_4_sector2_2inner_trans
          );
    wc_4_sector2_2_trans = {409.64307*mm,1528.8081*mm,28.25812*mm};
    wc_4_sector2_2_rot = G4RotationMatrix::IDENTITY;
@@ -1175,19 +1149,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_3_sector3_1outer_rot.rotateZ( 0*deg);
 
    //wc_3_sector3_1 | htcc | htcc wc 3, sector3 left | -449.04543*mm 1675.8588*mm 241.99168*mm | -33.409841*deg -8.392807*deg 0*deg | f0f0f02 | Operation: wc_3_sector3_1outer - wc_3_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_3_sector3_1outer_rot;
-   r2   = wc_3_sector3_1inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_3_sector3_1outer_trans;
-   t2   = wc_3_sector3_1inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
    wc_3_sector3_1_solid = new G4SubtractionSolid(
          "wc_3_sector3_1_solid",
          wc_3_sector3_1outer_solid,
          wc_3_sector3_1inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_3_sector3_1inner_trans
          );
    wc_3_sector3_1_trans = {-449.04543*mm,1675.8588*mm,241.99168*mm};
    wc_3_sector3_1_rot = G4RotationMatrix::IDENTITY;
@@ -1210,19 +1177,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_3_sector2_2outer_rot.rotateZ( 0*deg);
 
    //wc_3_sector2_2 | htcc | htcc wc 3, sector2 right | 449.04543*mm 1675.8588*mm 241.99168*mm | -33.409841*deg 8.392807*deg 0*deg | 8080ff2 | Operation: wc_3_sector2_2outer - wc_3_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_3_sector2_2outer_rot;
-   r2   = wc_3_sector2_2inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_3_sector2_2outer_trans;
-   t2   = wc_3_sector2_2inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
    wc_3_sector2_2_solid = new G4SubtractionSolid(
          "wc_3_sector2_2_solid",
          wc_3_sector2_2outer_solid,
          wc_3_sector2_2inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_3_sector2_2inner_trans
          );
    wc_3_sector2_2_trans = {449.04543*mm,1675.8588*mm,241.99168*mm};
    wc_3_sector2_2_rot = G4RotationMatrix::IDENTITY;
@@ -1260,19 +1220,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_2_sector3_1outer_rot.rotateZ( 0*deg);
 
    //wc_2_sector3_1 | htcc | htcc wc 2, sector3 left | -473.6232*mm 1767.5862*mm 487.29704*mm | -48.552284*deg -11.356395*deg 0*deg | 80ff802 | Operation: wc_2_sector3_1outer - wc_2_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_2_sector3_1outer_rot;
-   r2   = wc_2_sector3_1inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_2_sector3_1outer_trans;
-   t2   = wc_2_sector3_1inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
    wc_2_sector3_1_solid = new G4SubtractionSolid(
          "wc_2_sector3_1_solid",
          wc_2_sector3_1outer_solid,
          wc_2_sector3_1inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_2_sector3_1inner_trans
          );
    wc_2_sector3_1_trans = {-473.6232*mm,1767.5862*mm,487.29704*mm};
    wc_2_sector3_1_rot = G4RotationMatrix::IDENTITY;
@@ -1294,19 +1247,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_2_sector2_2outer_rot.rotateZ( 0*deg);
 
    //wc_2_sector2_2 | htcc | htcc wc 2, sector2 right | 473.6232*mm 1767.5862*mm 487.29704*mm | -48.552284*deg 11.356395*deg 0*deg | ff80802 | Operation: wc_2_sector2_2outer - wc_2_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_2_sector2_2outer_rot;
-   r2   = wc_2_sector2_2inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_2_sector2_2outer_trans;
-   t2   = wc_2_sector2_2inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
    wc_2_sector2_2_solid = new G4SubtractionSolid(
          "wc_2_sector2_2_solid",
          wc_2_sector2_2outer_solid,
          wc_2_sector2_2inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_2_sector2_2inner_trans
          );
    wc_2_sector2_2_trans = {473.6232*mm,1767.5862*mm,487.29704*mm};
    wc_2_sector2_2_rot = G4RotationMatrix::IDENTITY;
@@ -1344,19 +1290,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_1_sector3_1outer_rot.rotateZ(  0*deg);
 
    //wc_1_sector3_1 | htcc | htcc wc 1, sector3 left | -481.75313*mm 1797.9279*mm 749.52343*mm | -63.188841*deg -13.449397*deg 0*deg | f0f0f02 | Operation: wc_1_sector3_1outer - wc_1_sector3_1inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_1_sector3_1outer_rot;
-   r2   = wc_1_sector3_1inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_1_sector3_1outer_trans;
-   t2   = wc_1_sector3_1inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
    wc_1_sector3_1_solid = new G4SubtractionSolid(
          "wc_1_sector3_1_solid",
          wc_1_sector3_1outer_solid,
          wc_1_sector3_1inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_1_sector3_1inner_trans
          );
    wc_1_sector3_1_trans = {-481.75313*mm,1797.9279*mm,749.52343*mm};
    wc_1_sector3_1_rot = G4RotationMatrix::IDENTITY;
@@ -1378,19 +1317,12 @@ void HTCCDetectorGeometry::BuildMirrors()
    wc_1_sector2_2outer_rot.rotateZ( 0*deg);
 
    //wc_1_sector2_2 | htcc | htcc wc 1, sector2 right | 481.75313*mm 1797.9279*mm 749.52343*mm | -63.188841*deg 13.449397*deg 0*deg | 8080ff2 | Operation: wc_1_sector2_2outer - wc_1_sector2_2inner | 0 | G4_Al | no | 1 | 1 | 1 | 1 | 1 | mirror: htcc_AlMgF2 | mirror | id manual 1
-   r1   = wc_1_sector2_2outer_rot;
-   r2   = wc_1_sector2_2inner_rot;
-   r_tot = r2*(r1.inverse());
-   t1   = wc_1_sector2_2outer_trans;
-   t2   = wc_1_sector2_2inner_trans;
-   t_tot = (t2-t1);
-   t_tot *= r1;
    wc_1_sector2_2_solid = new G4SubtractionSolid(
          "wc_1_sector2_2_solid",
          wc_1_sector2_2outer_solid,
          wc_1_sector2_2inner_solid,
-         &r_tot,
-         t_tot
+         0,
+         wc_1_sector2_2inner_trans
          );
    wc_1_sector2_2_trans = {481.75313*mm,1797.9279*mm,749.52343*mm};
    wc_1_sector2_2_rot = G4RotationMatrix::IDENTITY;
@@ -1541,24 +1473,24 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    //-----------------------------------------------------------------------------
 
    pmt_4_sector3_1_log = new G4LogicalVolume(pmt_4_sector3_1_solid, default_mat, "pmt_4_sector3_1_log");
-   wc_4_sector3_1_log  = new G4LogicalVolume(wc_4_sector3_1_solid, default_mat, "wc_4_sector3_1_log");
+   wc_4_sector3_1_log  = new G4LogicalVolume(wc_4_sector3_1_solid, mirror_mat, "wc_4_sector3_1_log");
    pmt_4_sector2_2_log = new G4LogicalVolume(pmt_4_sector2_2_solid, default_mat, "pmt_4_sector2_2_log");
-   wc_4_sector2_2_log  = new G4LogicalVolume(wc_4_sector2_2_solid, default_mat, "wc_4_sector2_2_log");
+   wc_4_sector2_2_log  = new G4LogicalVolume(wc_4_sector2_2_solid, mirror_mat, "wc_4_sector2_2_log");
 
    pmt_3_sector3_1_log = new G4LogicalVolume(pmt_3_sector3_1_solid, default_mat, "pmt_3_sector3_1_log");
-   wc_3_sector3_1_log  = new G4LogicalVolume(wc_3_sector3_1_solid, default_mat, "wc_3_sector3_1_log");
+   wc_3_sector3_1_log  = new G4LogicalVolume(wc_3_sector3_1_solid, mirror_mat, "wc_3_sector3_1_log");
    pmt_3_sector2_2_log = new G4LogicalVolume(pmt_3_sector2_2_solid, default_mat, "pmt_3_sector2_2_log");
-   wc_3_sector2_2_log  = new G4LogicalVolume(wc_3_sector2_2_solid, default_mat, "wc_3_sector2_2_log");
+   wc_3_sector2_2_log  = new G4LogicalVolume(wc_3_sector2_2_solid, mirror_mat, "wc_3_sector2_2_log");
 
    pmt_2_sector3_1_log = new G4LogicalVolume(pmt_2_sector3_1_solid, default_mat, "pmt_2_sector3_1_log");
-   wc_2_sector3_1_log  = new G4LogicalVolume(wc_2_sector3_1_solid, default_mat, "wc_2_sector3_1_log");
+   wc_2_sector3_1_log  = new G4LogicalVolume(wc_2_sector3_1_solid, mirror_mat, "wc_2_sector3_1_log");
    pmt_2_sector2_2_log = new G4LogicalVolume(pmt_2_sector2_2_solid, default_mat, "pmt_2_sector2_2_log");
-   wc_2_sector2_2_log  = new G4LogicalVolume(wc_2_sector2_2_solid, default_mat, "wc_2_sector2_2_log");
+   wc_2_sector2_2_log  = new G4LogicalVolume(wc_2_sector2_2_solid, mirror_mat, "wc_2_sector2_2_log");
 
    pmt_1_sector3_1_log = new G4LogicalVolume(pmt_1_sector3_1_solid, default_mat, "pmt_1_sector3_1_log");
-   wc_1_sector3_1_log  = new G4LogicalVolume(wc_1_sector3_1_solid, default_mat, "wc_1_sector3_1_log");
+   wc_1_sector3_1_log  = new G4LogicalVolume(wc_1_sector3_1_solid, mirror_mat, "wc_1_sector3_1_log");
    pmt_1_sector2_2_log = new G4LogicalVolume(pmt_1_sector2_2_solid, default_mat, "pmt_1_sector2_2_log");
-   wc_1_sector2_2_log  = new G4LogicalVolume(wc_1_sector2_2_solid, default_mat, "wc_1_sector2_2_log");
+   wc_1_sector2_2_log  = new G4LogicalVolume(wc_1_sector2_2_solid, mirror_mat, "wc_1_sector2_2_log");
 
    //BarrelEllipseCut_sect0mirr0half0_log = new G4LogicalVolume(BarrelEllipseCut_sect0mirr0half0_solid, default_mat, "BarrelEllipseCut_sect0mirr0half0_log");
 
@@ -1932,6 +1864,15 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
          false,                        // no boolean operations
          0,                     // its copy number
          false);                        // check for overlaps
+
+   G4LogicalSkinSurface * wc1 = new G4LogicalSkinSurface("wc_1", wc_4_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * wc2 = new G4LogicalSkinSurface("wc_2", wc_2_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * wc3 = new G4LogicalSkinSurface("wc_3", wc_3_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * wc4 = new G4LogicalSkinSurface("wc_4", wc_1_sector2_2_log , OpSurface);
+   G4LogicalSkinSurface * wc5 = new G4LogicalSkinSurface("wc_5", wc_4_sector3_1_log , OpSurface);
+   G4LogicalSkinSurface * wc6 = new G4LogicalSkinSurface("wc_6", wc_3_sector3_1_log , OpSurface);
+   G4LogicalSkinSurface * wc7 = new G4LogicalSkinSurface("wc_7", wc_2_sector3_1_log , OpSurface);
+   G4LogicalSkinSurface * wc8 = new G4LogicalSkinSurface("wc_8", wc_1_sector3_1_log , OpSurface);
          
 }
 //______________________________________________________________________________
