@@ -13,5 +13,5 @@
 /run/initialize
 #
 # Visualization setting
-/control/macroPath @EBLSIM_MACRO_DIR@
-/control/execute examples/vis.mac
+/control/macroPath @C12SIM_MACRO_DIR@
+/control/execute vis.mac
