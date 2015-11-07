@@ -2,7 +2,7 @@
 /vis/open OGL 800x800-0+0
 #
 # Use this open statement to create an OpenInventor view:
-#/vis/open OI
+#/vis/open RayTracer
 #
 # Use this open statement to create a .prim file suitable for
 # viewing in DAWN:
@@ -33,14 +33,14 @@
 # Specify style (surface, wireframe, auxiliary edges,...)
 #/vis/viewer/set/style wireframe
 
-/vis/viewer/set/auxiliaryEdge true
+#/vis/viewer/set/auxiliaryEdge true
 
 #/vis/viewer/set/lineSegmentsPerCircle 100
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
-#/vis/scene/add/trajectories smooth
-#/vis/modeling/trajectories/create/drawByCharge
+/vis/scene/add/trajectories smooth
+/vis/modeling/trajectories/create/drawByCharge
 #/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
 #/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
@@ -59,17 +59,17 @@
 # Many other options are available with /vis/modeling and /vis/filtering.
 # For example, to select colour by particle ID:
 
-/vis/scene/add/trajectories smooth
-/vis/modeling/trajectories/create/drawByParticleID dbPID
-/vis/modeling/trajectories/select dbPID
+#/vis/scene/add/trajectories smooth
+#/vis/modeling/trajectories/create/drawByParticleID dbPID
+#/vis/modeling/trajectories/select dbPID
 
 #/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
 
 # To select or override default colours (note: e+ is blue by default):
 
-/vis/modeling/trajectories/list
-/vis/modeling/trajectories/dbPID/set gamma blue
-/vis/modeling/trajectories/dbPID/set gamma blue
+#/vis/modeling/trajectories/list
+#/vis/modeling/trajectories/dbPID/set gamma blue
+#/vis/modeling/trajectories/dbPID/set gamma blue
 
 #/vis/scene/add/trajectories smooth
 #/vis/modeling/trajectories/create/drawByOriginVolume dbOV
@@ -142,9 +142,9 @@
 
 /vis/viewer/set/background black
 
-#/vis/viewer/set/targetPoint 0.0 0.0 0.0 cm
-/vis/viewer/set/viewpointThetaPhi 90 0
-#/vis/viewer/zoom 100000
+/vis/viewer/set/targetPoint 0.0 0.0 0.0 cm
+/vis/viewer/set/viewpointThetaPhi 180 0
+/vis/viewer/zoom 30
 
 /vis/viewer/refresh
 

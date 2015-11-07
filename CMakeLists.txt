@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-project(C12SIM)
+project(c12sim)
 
 SET(C12SIM_MAJOR_VERSION 0)
 SET(C12SIM_MINOR_VERSION 0)
@@ -102,20 +102,20 @@ add_custom_target(C12SIM DEPENDS c12sim)
 # build B1. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(EXAMPLEB1_SCRIPTS
-  examples/init_vis.mac
-  examples/run1.mac
-  examples/run2.mac
-  examples/vis.mac
+set(MACROB1_SCRIPTS
+  mac/init_vis.mac
+  mac/run1.mac
+  mac/run2.mac
+  mac/vis.mac
   )
-foreach(_script ${EXAMPLEB1_SCRIPTS})
+foreach(_script ${MACROB1_SCRIPTS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/${_script}
     ${PROJECT_BINARY_DIR}/${_script}
     COPYONLY
     )
 endforeach()
-install(FILES ${EXAMPLEB1_SCRIPTS} DESTINATION "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/examples" )
+install(FILES ${MACROB1_SCRIPTS} DESTINATION "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}" )
 
 
 #----------------------------------------------------------------------------
