@@ -31,8 +31,10 @@ problems. (UPDATE YOUR COMPILER!)
 
     git clone https://github.com/whit2333/clasdigi.git
     mkdir clasdigi_build && cd clasdigi_build
-    cmake ../clasdigi/. -DCMAKE_INSTALL_PREFIX=$HOME -DPROJECT_USE_ROOT6=1
+    cmake ../clasdigi/. -DCMAKE_INSTALL_PREFIX=$HOME
     make install
+
+### Then build and install c12sim
 
     git clone git@gitlab.com:whit2333/c12sim.git
     mkdir c12sim_build
@@ -40,22 +42,11 @@ problems. (UPDATE YOUR COMPILER!)
     make ../c12sim/. -DCMAKE_INSTALL_PREFIX=../c12run
     make install
 
-Run the simulation
+###Run the simulation
 
     cd ../c12run
-    ./bin/c12sim share/C12SIM/examples/vis.mac 
+    ./bin/c12sim share/c12sim/vis.mac 
 
-Using git 
---------- 
-
-First you will want to do the following if you have never used git:
-
-    git config --global user.name  "Your Name"
-    git config --global user.email "youremail@wherever"
-
-See the [git configuration 
-documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration) 
-for more details.
 
 Running options
 ---------------
@@ -68,5 +59,15 @@ The run number can be specified with the "--run" flag
 This creates the file EBL_sim_output_100.root.
 
 
+Using git --------- 
+
+First you will want to do the following if you have never used git:
+
+    git config --global user.name  "Your Name"
+    git config --global user.email "youremail@wherever"
+
+See the [git configuration 
+documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration) 
+for more details.
 
 
