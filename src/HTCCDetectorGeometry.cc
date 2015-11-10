@@ -37,8 +37,6 @@ HTCCDetectorGeometry::HTCCDetectorGeometry()
    G4NistManager* nist = G4NistManager::Instance();
    G4Material * default_mat   = nist->FindOrBuildMaterial("G4_AIR");
 
-
-   //______________________________________________________________________________
    //htccBigGasVolume  | root  |volume containing cherenkov gas  | 0 0 0  | 0 0 0  |ee99ff5   | Polycone  |0*deg 360*deg 4*counts 0*mm 15.8*mm 91.5*mm 150*mm 1742*mm 2300*mm 2300*mm 1589*mm -275*mm 181*mm 1046*mm 1740*mm  |           Component  |                  no  |     1   |     1   |     1   |   1   |   0   |                  no  | no  | no 
    int zplanes = 4; // number of planes in z directions
    double rInner[] = { 0*mm, 15.8*mm, 91.5*mm, 150*mm };
@@ -1516,6 +1514,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
 
 G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region )
 {
+   std::cout << " HTCCDetectorGeometry::PlacePhysicalVolume \n";
    using namespace CLHEP;
    using namespace clas12::geo;
    int index    = region-1;
@@ -1536,19 +1535,6 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
    // --------------------------------------------
    G4RotationMatrix * sector_rot = new G4RotationMatrix();
    sector_rot->rotateZ( 60.0*CLHEP::deg*(sec-1) );
-
-   //G4VSolid * temp = new G4Tubs("temp_wedge2",0,3.0*m, 4.0*m, 0.0*deg, 360.0*deg);
-   //G4LogicalVolume * temp_log = new G4LogicalVolume(temp, fGasMaterial, "asdf");
-   //G4VPhysicalVolume * temp_phys = new G4PVPlacement(
-   //      0,
-   //      G4ThreeVector(0,0,0),
-   //      temp_log,          // its logical volume
-   //      "asdf", // its name
-   //      htcc_log,                       // its mother (logical) volume
-   //      false,                        // no boolean operations
-   //      0,                     // its copy number
-   //      false);                        // check for overlaps
-
    G4VPhysicalVolume * sector_phys = new G4PVPlacement(
          sector_rot, 
          G4ThreeVector(0,0,0),

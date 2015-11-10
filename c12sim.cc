@@ -208,7 +208,7 @@ int main(int argc,char** argv)
 
    // This connects the phyics to the parallel world (and sensitive detectors)
    //physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
-   //physicsList->ReplacePhysics(new G4IonQMDPhysics());
+   ////physicsList->ReplacePhysics(new G4IonQMDPhysics());
    //physicsList->SetDefaultCutValue(0.005*um);
 
    //G4VModularPhysicsList* physicsList = new QBBC;

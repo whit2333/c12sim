@@ -19,6 +19,7 @@
 
 class RecoilChamberDetectorGeometry;
 class DriftChamberDetectorGeometry;
+class HTCCDetectorGeometry;
 
 class SimulationMessenger;
 
@@ -35,6 +36,7 @@ class SimulationManager {
 
       RecoilChamberDetectorGeometry * fRecoilChamberGeo;
       DriftChamberDetectorGeometry  * fDriftChamberGeo;
+      HTCCDetectorGeometry          * fHTCCGeo;
 
    public:
 
@@ -66,6 +68,7 @@ class SimulationManager {
 
       DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
       RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
+      HTCCDetectorGeometry * GetHTCCDetectorGeometry();
 
 
    private:

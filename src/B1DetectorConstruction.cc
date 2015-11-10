@@ -121,6 +121,7 @@ B1DetectorConstruction::B1DetectorConstruction() :
    wire_hex_log = 0;
    fDriftChamber = 0;//new DriftChamberDetectorGeometry();
    fRecoilChamber = 0;
+   fHTCC = 0;
 }
 //___________________________________________________________________
 
@@ -408,43 +409,44 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    // ------------------------------------------------------------------------
    // Drift chamber
+   // ------------------------------------------------------------------------
+   std::cout << " Drift chamber construction \n";
    fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
    fDriftChamber->BuildLogicalVolumes();
-
    // Sectors
    for(int i = 1; i<=6; i++ ) {
-
       // Region I
       fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
-
-      ////// Region II
+      // Region II
       fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
-
-      ////// Region III
-      //fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
+      // Region III
+      fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
    }
+
+   // ------------------------------------------------------------------------
+   // HTCC  
+   // ------------------------------------------------------------------------
+   std::cout << " HTCC construction \n";
+   fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
+   fHTCC->BuildLogicalVolumes();
+   fHTCC->PlacePhysicalVolume( world_log, 1, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 2, 2);
+   fHTCC->PlacePhysicalVolume( world_log, 3, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 4, 2);
+   fHTCC->PlacePhysicalVolume( world_log, 5, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-
+   std::cout << " Recoil chamber construction \n";
    fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
    fRecoilChamber->He10CO2   = He10CO2;
    fRecoilChamber->HeiC4H10  = HeiC4H10;
    fRecoilChamber->Tungsten  = Tungsten; 
    fRecoilChamber->Mylar     = Mylar;
-   //fRecoilChamber->PlacePhysicalVolume( world_log);
+   fRecoilChamber->PlacePhysicalVolume( world_log);
 
-   // ------------------------------------------------------------------------
-   // HTCC  
-   HTCCDetectorGeometry * htcc = new HTCCDetectorGeometry();
-   htcc->BuildLogicalVolumes();
-   htcc->PlacePhysicalVolume( world_log, 1, 1);
-   htcc->PlacePhysicalVolume( world_log, 2, 2);
-   htcc->PlacePhysicalVolume( world_log, 3, 1);
-   htcc->PlacePhysicalVolume( world_log, 4, 2);
-   htcc->PlacePhysicalVolume( world_log, 5, 1);
-   htcc->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // beam vacuum  
@@ -457,12 +459,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //blue      = 192.0/256.0;
    //alpha     = 0.4;
 
-
    //if(!beampipe_mat)   beampipe_mat   = new G4Material("beampipe_mat", /*z=*/1.0, /*a=*/1.01*g/mole, density, kStateGas,temperature,pressure);
    //if(!beampipe_solid) beampipe_solid  = new G4Tubs("beampipe_solid", 0.0, beampipe_diameter/2.0, beampipe_length/2.0, 0.0, 360.*deg );
    //if(!beampipe_log  ) beampipe_log   = new G4LogicalVolume(beampipe_solid, beampipe_mat,"beampipe_log");
    //if(!beampipe_phys ) beampipe_phys  = new G4PVPlacement(0,beampipe_pos, beampipe_log, "beampipe_phys",world_log,false,0,checkOverlaps);                                  
-
    //G4Colour            beampipe_color {red, green, blue, alpha };   // Gray 
    //G4VisAttributes   * beampipe_vis   = new G4VisAttributes(beampipe_color);
    //beampipe_log->SetVisAttributes(beampipe_vis);

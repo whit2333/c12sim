@@ -27,6 +27,7 @@
 #include <sys/file.h>
 #include "RecoilChamberDetectorGeometry.h"
 #include "DriftChamberDetectorGeometry.h"
+#include "HTCCDetectorGeometry.h"
 
 
 SimulationManager* SimulationManager::fgSimulationManager = 0;
@@ -43,6 +44,7 @@ SimulationManager::SimulationManager () {
    fOutputTreeName      = "clasdigi_hits";
    fRecoilChamberGeo    = nullptr;
    fDriftChamberGeo     = nullptr;
+   fHTCCGeo             = nullptr;
    fInputFileName       = "data/lundfiles/eg_LH2_full_4.lund";
 }
 //______________________________________________________________________________
@@ -149,6 +151,14 @@ RecoilChamberDetectorGeometry * SimulationManager::GetRecoilDetectorGeometry(){
       fRecoilChamberGeo = new RecoilChamberDetectorGeometry();
    }
    return fRecoilChamberGeo;
+}
+//______________________________________________________________________________
+
+HTCCDetectorGeometry * SimulationManager::GetHTCCDetectorGeometry(){
+   if(!fHTCCGeo) {
+      fHTCCGeo = new HTCCDetectorGeometry();
+   }
+   return fHTCCGeo;
 }
 //______________________________________________________________________________
 

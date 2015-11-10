@@ -47,7 +47,7 @@ class RecoilChamberDetectorGeometry {
       G4double  DeltaR = 2.0*mm;
       G4double  NTLay  = 6.0;//4.; // Number of T layers
       G4double  NsLay  = 3.0;//5.; // Number of s layers 
-      G4double  steAng = 1.0*deg;
+      G4double  steAng = 10.0*deg;
 
       G4Material* He10CO2;
       G4Material* HeiC4H10;
