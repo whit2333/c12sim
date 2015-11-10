@@ -58,8 +58,8 @@ The run number can be specified with the "--run" flag
 
 This creates the file EBL_sim_output_100.root.
 
-
-Using git --------- 
+Using git
+--------- 
 
 First you will want to do the following if you have never used git:
 
