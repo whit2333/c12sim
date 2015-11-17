@@ -41,10 +41,10 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-   std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
+   //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
 
    if( false ) {//fInputLundFile.is_open() ){
-      std::cout << " khjasdfkjasdflkjasdfkj\n";
+      //std::cout << " khjasdfkjasdflkjasdfkj\n";
       fThrownEvent.ReadLundEvent(fInputLundFile);
       int npart = fThrownEvent.GetNParticles();
       for(int i = 0; i<npart; i++){

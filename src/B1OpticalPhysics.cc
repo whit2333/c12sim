@@ -39,7 +39,7 @@ void B1OpticalPhysics::ConstructProcess()
   fScintProcess->SetTrackSecondariesFirst(true);
 
   fCerenkovProcess = new G4Cerenkov();
-  fCerenkovProcess->SetMaxNumPhotonsPerStep(300);
+  fCerenkovProcess->SetMaxNumPhotonsPerStep(200);
   fCerenkovProcess->SetTrackSecondariesFirst(true);
 
   fAbsorptionProcess      = new G4OpAbsorption();

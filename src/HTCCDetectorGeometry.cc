@@ -43,15 +43,6 @@ HTCCDetectorGeometry::HTCCDetectorGeometry()
    double rOuter[] = { 1742*mm, 2300*mm, 2300*mm, 1589*mm };
    double zPlane[] = { -275*mm, 181*mm, 1046*mm, 1740*mm };
 
-   //for(int zpl=0; zpl<zplanes; zpl++)
-   //{
-   //   // notice that the order should be different
-   //   // why didn't I put z first in the constructor as in geant4?
-   //   // might have to change it later
-   //   rInner[zpl] = dimensions[3 + 0*zplanes + zpl] ;
-   //   rOuter[zpl] = dimensions[3 + 1*zplanes + zpl] ;
-   //   zPlane[zpl] = dimensions[3 + 2*zplanes + zpl] ;
-   //}
    htccBigGasVolume_solid = new G4Polycone("htccBigGasVolume_solid",            ///< name
          0,  ///< Initial Phi starting angle
          360*deg,  ///< Total Phi angle
@@ -1537,7 +1528,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
    sector_rot->rotateZ( 60.0*CLHEP::deg*(sec-1) );
    G4VPhysicalVolume * sector_phys = new G4PVPlacement(
          sector_rot, 
-         G4ThreeVector(0,0,0),
+         G4ThreeVector(1,0,0),
          sector_wedge_log,          // its logical volume
          Form("sector_wedge_phys%d",sec), // its name
          htcc_log,                       // its mother (logical) volume
@@ -1704,32 +1695,32 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
    new G4PVPlacement(
         &pmt_4_sector3_1_rot, 
          pmt_4_sector3_1_trans,
-         pmt_4_sector3_1_log,          // its logical volume
-        "pmt_4_sector3_1_phys", // its name
-         sector_wedge_log,                       // its mother (logical) volume
-         false,                        // no boolean operations
-         0,                     // its copy number
-         check_mirror_overlaps);                        // check for overlaps
+         pmt_4_sector3_1_log,   
+        "pmt_4_sector3_1_phys", 
+         sector_wedge_log,      
+         false,                 
+         0,                     
+         check_mirror_overlaps);
    // winston cone
    new G4PVPlacement(
         &wc_4_sector3_1_rot, 
          wc_4_sector3_1_trans,
-         wc_4_sector3_1_log,          // its logical volume
-        "wc_4_sector3_1_phys", // its name
-         sector_wedge_log,                       // its mother (logical) volume
-         false,                        // no boolean operations
-         0,                     // its copy number
-         check_mirror_overlaps);                        // check for overlaps
+         wc_4_sector3_1_log,   
+        "wc_4_sector3_1_phys", 
+         sector_wedge_log,     
+         false,                
+         0,                    
+         check_mirror_overlaps);
    // pmt
    new G4PVPlacement(
         &pmt_4_sector2_2_rot, 
          pmt_4_sector2_2_trans,
-         pmt_4_sector2_2_log,          // its logical volume
-        "pmt_4_sector2_2_phys", // its name
-         sector_wedge_log,                       // its mother (logical) volume
-         false,                        // no boolean operations
-         0,                     // its copy number
-         check_mirror_overlaps);                        // check for overlaps
+         pmt_4_sector2_2_log,    
+        "pmt_4_sector2_2_phys",  
+         sector_wedge_log,       
+         false,                  
+         0+4,                      
+         check_mirror_overlaps); 
    // winston cone
    new G4PVPlacement(
         &wc_4_sector2_2_rot, 
@@ -1738,7 +1729,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "wc_4_sector2_2_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         0+4,                     // its copy number
          check_mirror_overlaps);                        // check for overlaps
 
    // --------------------------------------
@@ -1750,7 +1741,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "pmt_3_sector3_1_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         1,                     // its copy number
          check_mirror_overlaps);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
@@ -1760,7 +1751,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "wc_3_sector3_1_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         1,                     // its copy number
          check_mirror_overlaps);                        // check for overlaps
    // pmt
    new G4PVPlacement(
@@ -1770,7 +1761,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "pmt_3_sector2_2_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         1+4,                     // its copy number
          check_mirror_overlaps);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
@@ -1780,7 +1771,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "wc_3_sector2_2_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         1+4,                     // its copy number
          check_mirror_overlaps);                        // check for overlaps
 
    // --------------------------------------
@@ -1792,7 +1783,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "pmt_2_sector3_1_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         2,                     // its copy number
          false);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
@@ -1802,7 +1793,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "wc_2_sector3_1_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         2,                     // its copy number
          false);                        // check for overlaps
    // pmt
    new G4PVPlacement(
@@ -1812,7 +1803,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "pmt_2_sector2_2_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         2+4,                     // its copy number
          false);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
@@ -1822,7 +1813,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "wc_2_sector2_2_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         2+4,                     // its copy number
          false);                        // check for overlaps
 
    // --------------------------------------
@@ -1834,7 +1825,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "pmt_1_sector3_1_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         3,                     // its copy number
          false);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
@@ -1844,7 +1835,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "wc_1_sector3_1_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         3,                     // its copy number
          false);                        // check for overlaps
    // pmt
    new G4PVPlacement(
@@ -1854,7 +1845,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "pmt_1_sector2_2_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         3+4,                     // its copy number
          false);                        // check for overlaps
    // winston cone
    new G4PVPlacement(
@@ -1864,7 +1855,7 @@ void HTCCDetectorGeometry::PlaceMirrors(G4VPhysicalVolume * mother_phys)
         "wc_1_sector2_2_phys", // its name
          sector_wedge_log,                       // its mother (logical) volume
          false,                        // no boolean operations
-         0,                     // its copy number
+         3+4,                     // its copy number
          false);                        // check for overlaps
 
    G4LogicalSkinSurface * wc1 = new G4LogicalSkinSurface("wc_1", wc_4_sector2_2_log , OpSurface);

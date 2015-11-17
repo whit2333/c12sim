@@ -22,6 +22,8 @@
 
 using ss = std::stringstream;
 
+//______________________________________________________________________________
+
 B1RunAction::B1RunAction(G4int rn) : G4UserRunAction(),
    fRunNumber(rn), fRun(nullptr)
 { 
@@ -29,23 +31,6 @@ B1RunAction::B1RunAction(G4int rn) : G4UserRunAction(),
 
    SimulationManager * simManager = SimulationManager::GetInstance();
    simManager->SetRunNumber(fRunNumber);
-   // add new units for dose
-   //const G4double milligray = 1.e-3*gray;
-   //const G4double microgray = 1.e-6*gray;
-   //const G4double nanogray  = 1.e-9*gray;  
-   //const G4double picogray  = 1.e-12*gray;
-
-   //new G4UnitDefinition("milligray", "milliGy" , "Dose", milligray);
-   //new G4UnitDefinition("microgray", "microGy" , "Dose", microgray);
-   //new G4UnitDefinition("nanogray" , "nanoGy"  , "Dose", nanogray);
-   //new G4UnitDefinition("picogray" , "picoGy"  , "Dose", picogray);        
-
-   // Create analysis manager
-   //G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   //analysisManager->SetVerboseLevel(1);
-   //analysisManager->SetFirstHistoId(1);
-
-
 }
 //______________________________________________________________________________
 
@@ -56,18 +41,19 @@ B1RunAction::~B1RunAction()
 G4Run* B1RunAction::GenerateRun()
 {
    //std::cout << " start B1RunAction::GenerateRun\n";
+   std::cout << " Sensitive Detectors:\n";
    G4SDManager::GetSDMpointer()->ListTree();
 
    G4RunManager      * runManager = G4RunManager::GetRunManager();
    SimulationManager * simManager = SimulationManager::GetInstance();
    //simManager->SetRunNumber(fRunNumber);
 
-   G4cout << "  - Creating Run Number " << fRunNumber << "   " << G4endl;
+   G4cout << " - Creating Run Number " << fRunNumber << "   " << G4endl;
 
    std::string filename = simManager->OutputFileName();
 
-   G4cout << "  - file " << filename << "   " << G4endl;
-   G4cout << "  - Creating dir " << simManager->fOutputDirectoryName << "   " << G4endl;
+   //G4cout << " - file " << filename << "   " << G4endl;
+   //G4cout << " - Creating dir " << simManager->fOutputDirectoryName << "   " << G4endl;
    gSystem->mkdir(simManager->fOutputDirectoryName.c_str(),true);
 
    simManager->fOutputFile = new TFile(filename.c_str(), "RECREATE" );

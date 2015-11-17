@@ -22,6 +22,8 @@
 #include "G4StepLimiterPhysics.hh"
 #include "Randomize.hh"
 #include "B1OpticalPhysics.hh"
+#include "FTFP_BERT.hh"
+#include "CLAS12_QGSP_BIC.hh"
 
 #include "B1ParallelWorldConstruction.hh"
 #include "G4ParallelWorldPhysics.hh"
@@ -201,15 +203,17 @@ int main(int argc,char** argv)
    G4PhysListFactory     factory;
    //QGSP_BIC_EMY QGSP_BERT_HP_PEN
    G4VModularPhysicsList * physicsList =  factory.GetReferencePhysList("QGSP_BIC_LIV");
-   physicsList->RegisterPhysics(new B1OpticalPhysics());
+   //G4VModularPhysicsList* physicsList = new CLAS12_QGSP_BIC(paraWorldName,false);
 
+   // This connects the phyics to the parallel world (and sensitive detectors)
+   //physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
+   //physicsList->ReplacePhysics(new G4IonQMDPhysics());
+   //physicsList->SetDefaultCutValue(0.005*um);
+
+   physicsList->RegisterPhysics(new B1OpticalPhysics());
    // This is needed to make use of the G4UserLimits applied to logical volumes.
    physicsList->RegisterPhysics(new G4StepLimiterPhysics());
 
-   // This connects the phyics to the parallel world (and sensitive detectors)
-   physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
-   //physicsList->ReplacePhysics(new G4IonQMDPhysics());
-   //physicsList->SetDefaultCutValue(0.005*um);
 
    //G4VModularPhysicsList* physicsList = new QBBC;
    physicsList->SetVerboseLevel(1);

@@ -416,11 +416,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // Sectors
    for(int i = 1; i<=6; i++ ) {
       // Region I
-      fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
+      fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 1);
       // Region II
-      fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
+      fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 2);
       // Region III
-      fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
+      fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 3);
    }
 
    // ------------------------------------------------------------------------
@@ -445,7 +445,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fRecoilChamber->HeiC4H10  = HeiC4H10;
    fRecoilChamber->Tungsten  = Tungsten; 
    fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlacePhysicalVolume( world_log);
+   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------

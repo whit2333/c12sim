@@ -77,7 +77,9 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    using namespace CLHEP;
    using namespace clas12::geo;
    using namespace clas12::geo::DC;
-   G4VisAttributes * vs = new G4VisAttributes(G4Colour(0.0,0.9,0.1));
+   G4VisAttributes * vs = new G4VisAttributes(G4Colour(0.5,0.0,0.5));
+   vs->SetDaughtersInvisible(true);
+   vs->SetForceWireframe(true);
 
    G4VisAttributes * vs2 = new G4VisAttributes(G4Colour(0.3,0.5,0.2));//G4VisAttributes::GetInvisible());//
    //vs2->SetDaughtersInvisible(true);
@@ -155,7 +157,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
       G4VSolid* unionMoved3 = new G4IntersectionSolid(Form("BoxCylinderMoved3%d",super_layer), subtraction_box3, unionMoved2,      yRot3, zTrans);
       G4VSolid* wire_hex_solid = unionMoved3;
 
-      for( int layer = 1; layer<=6; layer++ ) {
+      for( int layer = 1; layer<=1; layer++ ) {
 
          for(int i = 1;i<=112; i++ ) {
 
@@ -206,9 +208,11 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
             // Only visualize one sector (otherwise painfully slow)
             //if(sector == 1 ) {
                if(layer%2 == 0 ) {
-                  wire_log->SetVisAttributes(vs_even);
+                  //wire_log->SetVisAttributes(vs_even);
+                  wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
                } else {
-                  wire_log->SetVisAttributes(vs_odd);
+                  //wire_log->SetVisAttributes(vs_odd);
+                  wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
                }
                //wire_log->SetVisAttributes(vs_odd);
             //} else {
@@ -234,7 +238,7 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlacePhysicalVolume(G4LogicalV
    G4VPhysicalVolume * phys = new G4PVPlacement(
          G4Transform3D(
             RegionRotation(sec,region),
-            RegionTranslation(sec, region)
+            G4ThreeVector(0,0,20.0*CLHEP::cm)+ RegionTranslation(sec, region)
          ),
          fEmptyRegions_log[index],          // its logical volume
          Form("region%d_phys",region), // its name
@@ -253,15 +257,15 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlaceParallelPhysicalVolume(G4
    int index    = region-1;
    int grouping = (sec-1)*3 + (region-1);
 
-   std::cout << "sec      : " << sec << std::endl;
-   std::cout << "region   : " << region << std::endl;
-   std::cout << "index    : " << index << std::endl;
-   std::cout << "grouping : " << grouping << std::endl;
+   //std::cout << "sec      : " << sec << std::endl;
+   //std::cout << "region   : " << region << std::endl;
+   //std::cout << "index    : " << index << std::endl;
+   //std::cout << "grouping : " << grouping << std::endl;
 
    G4VPhysicalVolume * phys = new G4PVPlacement(
          G4Transform3D(
             RegionRotation(sec,region),
-            RegionTranslation(sec, region)
+            G4ThreeVector(0,0,20.0*CLHEP::cm) + RegionTranslation(sec, region)
          ),
          fRegions_log[index],          // its logical volume
          Form("region%d_phys",region), // its name

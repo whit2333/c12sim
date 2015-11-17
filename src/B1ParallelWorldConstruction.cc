@@ -92,19 +92,19 @@ void B1ParallelWorldConstruction::Construct()
    // ------------------------------------------------------------------------
    // Drift Chamber
    // ------------------------------------------------------------------------
-   DriftChamberDetectorGeometry * fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
-   // Sectors
-   for(int i = 1; i<=6; i++ ) {
+   //DriftChamberDetectorGeometry * fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
+   //// Sectors
+   //for(int i = 1; i<=6; i++ ) {
 
-      // Region I
-      fDriftChamber->PlaceParallelPhysicalVolume( worldLogical, i, 1);
+   //   // Region I
+   //   fDriftChamber->PlaceParallelPhysicalVolume( worldLogical, i, 1);
 
-      // Region II
-      fDriftChamber->PlaceParallelPhysicalVolume( worldLogical, i, 2);
+   //   // Region II
+   //   fDriftChamber->PlaceParallelPhysicalVolume( worldLogical, i, 2);
 
-      // Region III
-      fDriftChamber->PlaceParallelPhysicalVolume( worldLogical, i, 3);
-   }
+   //   // Region III
+   //   fDriftChamber->PlaceParallelPhysicalVolume( worldLogical, i, 3);
+   //}
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
@@ -114,7 +114,7 @@ void B1ParallelWorldConstruction::Construct()
    //fRecoilChamber->HeiC4H10  = HeiC4H10;
    //fRecoilChamber->Tungsten  = Tungsten; 
    //fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( worldLogical);
+   //fRecoilChamber->PlaceParallelPhysicalVolume( worldLogical);
 
    // ------------------------------------------------------------------------
    // HTCC

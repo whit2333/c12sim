@@ -35,6 +35,7 @@ HTCCSensitiveDetector::HTCCSensitiveDetector(G4String name, G4int Nchan)
    if( !fDiscModule ) {
       std::cout << "Error : No DiscModule \n";
    }
+   fDiscModule->Print();
 
    fTDCModule        = fCrate->GetCrateModule<TDC>(1);
    if( !fTDCModule ) {
@@ -80,33 +81,42 @@ G4bool HTCCSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHistory* )
 
    G4Track * theTrack = aStep->GetTrack();
 
+
    if( theTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition() &&
         aStep->GetPreStepPoint()->GetStepStatus()== fGeomBoundary ) 
    {
+
       // The photon has just entered the boundary
 
-      G4int   copyNo     = theTrack->GetVolume()->GetCopyNo();
+      G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPostStepPoint()->GetTouchable());
+      int     sector     = touchable->GetReplicaNumber(1);
+      int     pmt_number = touchable->GetReplicaNumber(0);
+      int     channel    = pmt_number + 8*(sector-1);
+
       double  track_time = theTrack->GetGlobalTime()/CLHEP::ns;
+
+      std::cout << "track_time " << track_time << "\n";
+      std::cout << "channel    " << channel    << "\n";
+      std::cout << "pmt_number " << pmt_number << "\n";
+      std::cout << "sector     " << sector     << "\n";
 
       clas12::hits::TDCHit * tdc_hit = 0;
 
-      if(copyNo < fNumberOfChannels)
+      if(channel < fNumberOfChannels)
       {
-         //std::cout << track_time << "\n";
-
-         bool disc_fired      = fDiscModule->GetChannel(copyNo).Count(track_time);
+         bool disc_fired      = fDiscModule->GetChannel(channel).Count(track_time);
          bool trig_disc_fired = fTrigDiscModule->GetChannel(0).Count(track_time);
 
-         bool latched  = fDiscModule->GetChannel(copyNo).fLatched;
+         bool latched  = fDiscModule->GetChannel(channel).fLatched;
          bool latched2 = fTrigDiscModule->GetChannel(0).fLatched;
 
-         fADCModule->GetChannel(copyNo).Count();
+         fADCModule->GetChannel(channel).Count();
 
          if( (trig_disc_fired && latched ) || (disc_fired && latched2 ) )
          {
-            int tdc_value = fTDCModule->GetChannel(copyNo).Readout();
-            tdc_hit = fHTCCHitsEvent->AddTDCHit(copyNo,tdc_value,track_time);
-            //tdc_hit->Print();
+            int tdc_value = fTDCModule->GetChannel(channel).Readout();
+            tdc_hit = fHTCCHitsEvent->AddTDCHit(channel,tdc_value,track_time);
+            tdc_hit->Print();
          }
       }
 
