@@ -109,7 +109,7 @@ void B1ParallelWorldConstruction::Construct()
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   RecoilChamberDetectorGeometry * fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   //RecoilChamberDetectorGeometry * fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
    //fRecoilChamber->He10CO2   = He10CO2;
    //fRecoilChamber->HeiC4H10  = HeiC4H10;
    //fRecoilChamber->Tungsten  = Tungsten; 
@@ -119,7 +119,7 @@ void B1ParallelWorldConstruction::Construct()
    // ------------------------------------------------------------------------
    // HTCC
    // ------------------------------------------------------------------------
-   HTCCDetectorGeometry * fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
+   //HTCCDetectorGeometry * fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
    //fHTCC->He10CO2   = He10CO2;
    //fHTCC->HeiC4H10  = HeiC4H10;
    //fHTCC->Tungsten  = Tungsten; 
