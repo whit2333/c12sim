@@ -192,9 +192,9 @@ int main(int argc,char** argv)
    // Detector construction with parallel world 
    G4String                        paraWorldName = "ParallelWorld";
    B1DetectorConstruction        * realWorld     = new B1DetectorConstruction();
-   //B1ParallelWorldConstruction * parallelWorld = new B1ParallelWorldConstruction(paraWorldName);
+   B1ParallelWorldConstruction * parallelWorld = new B1ParallelWorldConstruction(paraWorldName);
 
-   //realWorld->RegisterParallelWorld(parallelWorld);
+   realWorld->RegisterParallelWorld(parallelWorld);
    runManager->SetUserInitialization(realWorld);
 
    // Physics list
@@ -207,8 +207,8 @@ int main(int argc,char** argv)
    physicsList->RegisterPhysics(new G4StepLimiterPhysics());
 
    // This connects the phyics to the parallel world (and sensitive detectors)
-   //physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
-   ////physicsList->ReplacePhysics(new G4IonQMDPhysics());
+   physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
+   //physicsList->ReplacePhysics(new G4IonQMDPhysics());
    //physicsList->SetDefaultCutValue(0.005*um);
 
    //G4VModularPhysicsList* physicsList = new QBBC;

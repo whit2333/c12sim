@@ -66,7 +66,6 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
       G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
       G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
 
-
       // layer/superlayer/wire comes from channel
       int channel  = touchable->GetReplicaNumber(0);
       int layer    = (channel/112)%6 + 1;

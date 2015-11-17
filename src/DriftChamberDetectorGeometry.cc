@@ -139,7 +139,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    G4ThreeVector zTrans(0, 0, 0);
 
    // -----------------------------------------------------------------------------
-   for( int super_layer = 1; super_layer <=1; super_layer++) {
+   for( int super_layer = 1; super_layer <=6; super_layer++) {
 
       // Has to be really long for some reason, otherwise there is a seg fault...
       G4double hex_length = 3500*cm;
@@ -199,15 +199,21 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
                   wire_log,          // its logical volume
                   Form("sl%d_%d_%d_phys",super_layer,layer,i),
                   fRegions_log[SuperLayerRegionIndex[super_layer-1]],  
-                  true,                        // no boolean operations
+                  false,                        // no boolean operations
                   channel,                           // its copy number
                   check_overlaps ); // surface check
 
-            if(layer%2 == 0 ) {
-               wire_log->SetVisAttributes(vs_even);
-            } else {
-               wire_log->SetVisAttributes(vs_odd);
-            }
+            // Only visualize one sector (otherwise painfully slow)
+            //if(sector == 1 ) {
+               if(layer%2 == 0 ) {
+                  wire_log->SetVisAttributes(vs_even);
+               } else {
+                  wire_log->SetVisAttributes(vs_odd);
+               }
+               //wire_log->SetVisAttributes(vs_odd);
+            //} else {
+            //   wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+            //}
 
          }
       }
@@ -246,6 +252,11 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlaceParallelPhysicalVolume(G4
    using namespace clas12::geo;
    int index    = region-1;
    int grouping = (sec-1)*3 + (region-1);
+
+   std::cout << "sec      : " << sec << std::endl;
+   std::cout << "region   : " << region << std::endl;
+   std::cout << "index    : " << index << std::endl;
+   std::cout << "grouping : " << grouping << std::endl;
 
    G4VPhysicalVolume * phys = new G4PVPlacement(
          G4Transform3D(

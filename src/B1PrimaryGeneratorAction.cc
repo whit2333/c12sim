@@ -28,7 +28,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAc
    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
    fParticleGun->SetParticleEnergy(4.0*GeV); // kinetic energy (not total)
 
-   std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
+   //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
    fInputLundFile.open(SimulationManager::GetInstance()->InputFileName().c_str());
 }
 //______________________________________________________________________________
