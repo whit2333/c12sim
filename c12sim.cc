@@ -23,7 +23,7 @@
 #include "Randomize.hh"
 #include "B1OpticalPhysics.hh"
 #include "FTFP_BERT.hh"
-#include "CLAS12_QGSP_BIC.hh"
+//#include "CLAS12_QGSP_BIC.hh"
 
 #include "B1ParallelWorldConstruction.hh"
 #include "G4ParallelWorldPhysics.hh"
