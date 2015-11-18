@@ -6,7 +6,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4OpticalSurface.hh"
 #include "G4Material.hh"
-#include "G4Material.hh"
+#include "G4VisAttributes.hh"
 #include "G4RotationMatrix.hh"
 #include "HTCCSensitiveDetector.h"
 #include "SensitiveRegionDetector.h"
@@ -20,6 +20,11 @@ class HTCCDetectorGeometry {
       std::array<G4LogicalVolume*,3> fRegions_log;
       std::array<G4LogicalVolume*,3> fEmptyRegions_log;
       std::array<G4VSolid*,3>        fRegions_solid;
+
+      std::array<G4VisAttributes*,8> fMirror_vis;
+      std::array<G4LogicalVolume*,8> fMirror_log;
+      std::array<G4LogicalVolume*,8> fPMT_log;
+      std::array<G4LogicalVolume*,8> fWC_log;
 
    protected:
       G4VSolid        * HTCC_OuterCutCylinder_solid        ;

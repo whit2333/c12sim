@@ -91,7 +91,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
          fParticleGun->SetParticleDefinition(particle);
       }
 
-      fParticleGun->SetParticleEnergy((0.1 + 1.0*G4UniformRand())*GeV); // kinetic energy (not total)
+      fParticleGun->SetParticleEnergy((0.5 + 8.0*G4UniformRand())*GeV); // kinetic energy (not total)
       fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
 
       G4double size = 1.0; 

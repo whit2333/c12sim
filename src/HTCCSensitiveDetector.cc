@@ -95,10 +95,10 @@ G4bool HTCCSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHistory* )
 
       double  track_time = theTrack->GetGlobalTime()/CLHEP::ns;
 
-      std::cout << "track_time " << track_time << "\n";
-      std::cout << "channel    " << channel    << "\n";
-      std::cout << "pmt_number " << pmt_number << "\n";
-      std::cout << "sector     " << sector     << "\n";
+      //std::cout << "track_time " << track_time << "\n";
+      //std::cout << "channel    " << channel    << "\n";
+      //std::cout << "pmt_number " << pmt_number << "\n";
+      //std::cout << "sector     " << sector     << "\n";
 
       clas12::hits::TDCHit * tdc_hit = 0;
 
@@ -116,7 +116,7 @@ G4bool HTCCSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHistory* )
          {
             int tdc_value = fTDCModule->GetChannel(channel).Readout();
             tdc_hit = fHTCCHitsEvent->AddTDCHit(channel,tdc_value,track_time);
-            tdc_hit->Print();
+            //tdc_hit->Print();
          }
       }
 

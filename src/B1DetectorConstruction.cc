@@ -482,7 +482,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    // create a field
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
-   C12MagneticField * magField = new C12MagneticField();//false,false);
+   C12MagneticField * magField = new C12MagneticField(true,true);
 
    // set it as the default field
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager(); // set it as the default field

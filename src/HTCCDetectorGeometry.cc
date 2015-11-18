@@ -1436,6 +1436,13 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    vs3->SetForceSolid(false);
    vs3->SetForceWireframe(true);
 
+   for(int i = 0; i<8; i++) {
+      fMirror_vis[i] = new G4VisAttributes(G4Colour(0.0,0.1+float(i)/10.0,0.8-float(i)/10.0, 0.5 ));//G4VisAttributes::GetInvisible());//;
+      fMirror_vis[i]->SetForceSolid(true);
+      //vs3->SetForceWireframe(true);
+   }
+
+
    sector_wedge_log = new G4LogicalVolume(sector_wedge_solid, fGasMaterial, "sector_wedge_log");
    sector_wedge_log->SetVisAttributes(vs3);
 
@@ -1468,6 +1475,15 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    mirror_2_sector3_1_log = new G4LogicalVolume(mirror_2_sector3_1_solid, mirror_mat, "mirror_2_sector3_1_log");
    mirror_1_sector3_1_log = new G4LogicalVolume(mirror_1_sector3_1_solid, mirror_mat, "mirror_1_sector3_1_log");
 
+   fMirror_log[0] = mirror_4_sector2_2_log ;
+   fMirror_log[1] = mirror_3_sector2_2_log ;
+   fMirror_log[2] = mirror_2_sector2_2_log ;
+   fMirror_log[3] = mirror_1_sector2_2_log ;
+   fMirror_log[4] = mirror_4_sector3_1_log ;
+   fMirror_log[5] = mirror_3_sector3_1_log ;
+   fMirror_log[6] = mirror_2_sector3_1_log ;
+   fMirror_log[7] = mirror_1_sector3_1_log ;
+
    //-----------------------------------------------------------------------------
 
    pmt_4_sector3_1_log = new G4LogicalVolume(pmt_4_sector3_1_solid , pmt_mat , "pmt_4_sector3_1_log");
@@ -1499,6 +1515,32 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    pmt_2_sector2_2_log->SetSensitiveDetector(fSensitiveDetector);
    pmt_1_sector3_1_log->SetSensitiveDetector(fSensitiveDetector);
    pmt_1_sector2_2_log->SetSensitiveDetector(fSensitiveDetector);
+
+   fPMT_log[0] = pmt_4_sector2_2_log ;
+   fPMT_log[1] = pmt_3_sector2_2_log ;
+   fPMT_log[2] = pmt_2_sector2_2_log ;
+   fPMT_log[3] = pmt_1_sector2_2_log ;
+   fPMT_log[4] = pmt_4_sector3_1_log ;
+   fPMT_log[5] = pmt_3_sector3_1_log ;
+   fPMT_log[6] = pmt_2_sector3_1_log ;
+   fPMT_log[7] = pmt_1_sector3_1_log ;
+
+   fWC_log[0] = wc_4_sector2_2_log ;
+   fWC_log[1] = wc_3_sector2_2_log ;
+   fWC_log[2] = wc_2_sector2_2_log ;
+   fWC_log[3] = wc_1_sector2_2_log ;
+   fWC_log[4] = wc_4_sector3_1_log ;
+   fWC_log[5] = wc_3_sector3_1_log ;
+   fWC_log[6] = wc_2_sector3_1_log ;
+   fWC_log[7] = wc_1_sector3_1_log ;
+
+   // Visual attributes
+   for(int i = 0; i< 8; i++) {
+    fMirror_log[i]->SetVisAttributes( fMirror_vis[i] );
+    fPMT_log[i]->SetVisAttributes( fMirror_vis[i] );
+    fWC_log[i]->SetVisAttributes( fMirror_vis[i] );
+   }
+
 
 }
 //______________________________________________________________________________

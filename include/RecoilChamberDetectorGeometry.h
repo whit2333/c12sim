@@ -12,17 +12,25 @@
 
 #include "DCWire.h"
 
+/** Recoil Chamber.
+ * 
+ *  Note: Each "layer" consists of multiple radial wires. Typically
+ *  there is only 3 wires radailly with the middle one being a sense wire.
+ *  
+ */
 class RecoilChamberDetectorGeometry {
 
    private:
 
-      std::array<G4VSolid*,         8> fWireVolume_solid;
-      std::array<G4LogicalVolume*,  8> fWireVolume_log;
-      std::array<G4VPhysicalVolume*,8> fWireVolume_phys;
+      std::array<std::array<G4VSolid*,         4 >, 8> fWireVolume_solid;
+      std::array<std::array<G4LogicalVolume*,  4 >, 8> fWireVolume_log;
+      std::array<std::array<G4VPhysicalVolume*,4 >, 8> fWireVolume_phys;
+      std::array<std::array<G4RotationMatrix* ,4 >, 8> fWireVolume_rot;
 
       std::array<double,8>             fLayerRadius;
       std::array<double,8>             fLayerNwires;
       std::array<double,8>             fDeltaPhi;  
+      std::array<double,8>             fLayerSteroAngle;  
 
    public:
 
@@ -42,11 +50,12 @@ class RecoilChamberDetectorGeometry {
       G4double  lengthOfTheWire        = 30.*cm;   // not the "hight"
       G4double  startAngleOfTheWire    = 0.*deg;
       G4double  spanningAngleOfTheWire = 360.*deg; 
-      G4double  DeltaP                 = 2.0*mm; // wire separation around the circumference. 
+      G4double  DeltaP                 = 2.0*mm; // *desired* wire separation around the circumference. 
                                                  // This number is only approximate if it does not divide the circumference
+
       G4double  DeltaR = 2.0*mm;
-      G4double  NTLay  = 6.0;//4.; // Number of T layers
-      G4double  NsLay  = 3.0;//5.; // Number of s layers 
+      G4double  fNLayers = 4.0;//NTLay  = 1.0;//4.; // Number of T layers
+      G4double  NsLay  = 3.0;//5.; // Number of s layers  // wire planes (cylinders) per layer
       G4double  steAng = 10.0*deg;
 
       G4Material* He10CO2;
@@ -61,9 +70,12 @@ class RecoilChamberDetectorGeometry {
       RecoilChamberDetectorGeometry();
       ~RecoilChamberDetectorGeometry();
 
+      G4ThreeVector GetIntersectionPoint(const G4ThreeVector x0, const G4ThreeVector x1, const G4ThreeVector p0, const G4ThreeVector norm);
       void BuildLogicalVolumes();
       void BuildUnitCells();
-      
+      G4VSolid * BuildWireSolid(int layer, int radial_wire_number);
+      void  PlaceCells(G4LogicalVolume * mother, int layer, double z_rotation, int wire_number );
+
       G4VPhysicalVolume * PlacePhysicalVolume(G4LogicalVolume * mother);
       G4VPhysicalVolume * PlaceParallelPhysicalVolume(G4LogicalVolume * mother);
 
