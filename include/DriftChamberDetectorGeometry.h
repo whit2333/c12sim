@@ -20,6 +20,7 @@ class DriftChamberDetectorGeometry {
       std::array<G4LogicalVolume*,3> fRegions_log;
       std::array<G4LogicalVolume*,3> fEmptyRegions_log;
       std::array<G4VSolid*,3> fRegions_solid;
+      std::array<G4VSolid*,3> fClippingRegions_solid;
 
    public:
 
@@ -29,6 +30,10 @@ class DriftChamberDetectorGeometry {
       G4VSolid * fRegion1_solid;
       G4VSolid * fRegion2_solid;
       G4VSolid * fRegion3_solid;
+
+      G4VSolid * fClippingRegion1_solid;
+      G4VSolid * fClippingRegion2_solid;
+      G4VSolid * fClippingRegion3_solid;
 
       G4LogicalVolume * fRegion1_log;
       G4LogicalVolume * fRegion2_log;

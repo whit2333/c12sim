@@ -108,34 +108,34 @@ G4VSolid * RecoilChamberDetectorGeometry::BuildWireSolid(int layer, int radial_w
    double overlap_size = 0.1*mm;
    double PhiWire = fDeltaPhi.at(layer);
 
-   std::cout << "Layer  " << layer << std::endl;
-   std::cout << "radial " << radial_wire_number << std::endl;
+   //std::cout << "Layer  " << layer << std::endl;
+   //std::cout << "radial " << radial_wire_number << std::endl;
 
    G4double Rlay  = fLayerRadius.at(layer) + DeltaR*double(radial_wire_number);
    G4double Rlay2 = fLayerRadius.at(layer) + DeltaR*double(radial_wire_number+1);
 
-   std::cout << "Rlay " << Rlay << std::endl;
-   std::cout << "Rlay2 " << Rlay2 << std::endl;
+   //std::cout << "Rlay " << Rlay << std::endl;
+   //std::cout << "Rlay2 " << Rlay2 << std::endl;
    
    G4double xw0_L = (Rlay * cos(-0.5*PhiWire));
    G4double yw0_L = (Rlay * sin(-0.5*PhiWire));
    G4double xw1_L = (Rlay * cos(0.5*PhiWire));
    G4double yw1_L = (Rlay * sin(0.5*PhiWire));
 
-   std::cout << "xw0_L " << xw0_L << std::endl;
-   std::cout << "yw0_L " << yw0_L << std::endl;
-   std::cout << "xw1_L " << xw1_L << std::endl;
-   std::cout << "yw1_L " << yw1_L << std::endl;
+   //std::cout << "xw0_L " << xw0_L << std::endl;
+   //std::cout << "yw0_L " << yw0_L << std::endl;
+   //std::cout << "xw1_L " << xw1_L << std::endl;
+   //std::cout << "yw1_L " << yw1_L << std::endl;
 
    G4double xv0_L = (Rlay2 * cos(-0.5*PhiWire));
    G4double yv0_L = (Rlay2 * sin(-0.5*PhiWire));
    G4double xv1_L = (Rlay2 * cos(0.5*PhiWire));
    G4double yv1_L = (Rlay2 * sin(0.5*PhiWire));
 
-   std::cout << "xv0_L " << xv0_L << std::endl;
-   std::cout << "yv0_L " << yv0_L << std::endl;
-   std::cout << "xv1_L " << xv1_L << std::endl;
-   std::cout << "yv1_L " << yv1_L << std::endl;
+   //std::cout << "xv0_L " << xv0_L << std::endl;
+   //std::cout << "yv0_L " << yv0_L << std::endl;
+   //std::cout << "xv1_L " << xv1_L << std::endl;
+   //std::cout << "yv1_L " << yv1_L << std::endl;
 
    G4ThreeVector p0_L { xw0_L, yw0_L, -lengthOfTheWire/2.0 };
    G4ThreeVector p1_L { xw1_L, yw1_L, -lengthOfTheWire/2.0 };
@@ -181,14 +181,14 @@ G4VSolid * RecoilChamberDetectorGeometry::BuildWireSolid(int layer, int radial_w
    G4TwoVector pp6_L { q6_L.x(), q6_L.y() };
    G4TwoVector pp7_L { q7_L.x(), q7_L.y() };
 
-   std::cout << "pp0_L " << pp0_L <<std::endl;
-   std::cout << "pp1_L " << pp1_L <<std::endl;
-   std::cout << "pp2_L " << pp2_L <<std::endl;
-   std::cout << "pp3_L " << pp3_L <<std::endl;
-   std::cout << "pp4_L " << pp4_L <<std::endl;
-   std::cout << "pp5_L " << pp5_L <<std::endl;
-   std::cout << "pp6_L " << pp6_L <<std::endl;
-   std::cout << "pp7_L " << pp7_L <<std::endl;
+   //std::cout << "pp0_L " << pp0_L <<std::endl;
+   //std::cout << "pp1_L " << pp1_L <<std::endl;
+   //std::cout << "pp2_L " << pp2_L <<std::endl;
+   //std::cout << "pp3_L " << pp3_L <<std::endl;
+   //std::cout << "pp4_L " << pp4_L <<std::endl;
+   //std::cout << "pp5_L " << pp5_L <<std::endl;
+   //std::cout << "pp6_L " << pp6_L <<std::endl;
+   //std::cout << "pp7_L " << pp7_L <<std::endl;
 
    std::vector<G4TwoVector> trap_points_L = {
       pp0_L, pp1_L, pp3_L,  pp2_L, 

@@ -201,8 +201,8 @@ int main(int argc,char** argv)
 
    // Physics list
    G4PhysListFactory     factory;
-   //QGSP_BIC_EMY QGSP_BERT_HP_PEN
-   G4VModularPhysicsList * physicsList =  factory.GetReferencePhysList("QGSP_BIC_LIV");
+   //QGSP_BIC_EMY QGSP_BERT_HP_PEN QGSP_BIC_LIV
+   G4VModularPhysicsList * physicsList =  factory.GetReferencePhysList("FTFP_BERT");
    //G4VModularPhysicsList* physicsList = new CLAS12_QGSP_BIC(paraWorldName,false);
 
    // This connects the phyics to the parallel world (and sensitive detectors)

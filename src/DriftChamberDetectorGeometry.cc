@@ -9,6 +9,7 @@
 #include "G4PVPlacement.hh"
 #include "CLHEP/Units/PhysicalConstants.h"
 #include "G4UserLimits.hh"
+#include "G4Polyhedra.hh"
 
 DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
 {
@@ -29,9 +30,15 @@ DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
    G4VSolid * temp_box    = new G4Box("DC_placement_box_solid",5*m,5*m,5*m);
    G4VSolid * temp_region = 0;
 
+   // RI
    temp_region    = new G4GenericTrap("R1trap_solid",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
    fRegion1_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(1)) );
 
+   //temp_box    = new G4Box("clipping_DC_placement_box_solid",1*m,1*m,1*m);
+   temp_region    = new G4GenericTrap("clippingR1trap_solid",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
+   fClippingRegion1_solid = new G4IntersectionSolid("ClippingRI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(1)) );
+
+   // RII
    temp_region    = new G4GenericTrap("R2trap_solid",  clas12::geo::RegionTrapWidth(2), clas12::geo::RegionTrapPoints(2));
    fRegion2_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(2)) );
 
@@ -42,6 +49,9 @@ DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
    fRegions_solid[1] = fRegion2_solid;
    fRegions_solid[2] = fRegion3_solid;
 
+   fClippingRegions_solid[0] = fClippingRegion1_solid;
+   fClippingRegions_solid[1] = fClippingRegion1_solid;
+   fClippingRegions_solid[2] = fClippingRegion1_solid;
    //fRegion1_solid = new G4GenericTrap("RItrap",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
    //fRegion2_solid = new G4GenericTrap("RIItrap", clas12::geo::RegionTrapWidth(2), clas12::geo::RegionTrapPoints(2));
    //fRegion3_solid = new G4GenericTrap("RIIItrap",clas12::geo::RegionTrapWidth(3), clas12::geo::RegionTrapPoints(3));
@@ -80,6 +90,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    G4VisAttributes * vs = new G4VisAttributes(G4Colour(0.5,0.0,0.5));
    //vs->SetDaughtersInvisible(true);
    vs->SetForceWireframe(true);
+   //vs->SetForceSolid(true);
 
    G4VisAttributes * vs2 = new G4VisAttributes(G4Colour(0.3,0.5,0.2));//G4VisAttributes::GetInvisible());//
    //vs2->SetDaughtersInvisible(true);
@@ -144,19 +155,24 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    for( int super_layer = 1; super_layer <=6; super_layer++) {
 
       // Has to be really long for some reason, otherwise there is a seg fault...
-      G4double hex_length = 1000.0*cm;
+      G4double hex_length = 100.0*m;
 
-      G4VSolid * subtraction_box  = new G4Box(Form("wire_hex_solid%d",super_layer),  hex_length, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
-      G4VSolid * subtraction_box1 = new G4Box(Form("wire_hex_solid1%d",super_layer), hex_length, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
-      G4VSolid * subtraction_box2 = new G4Box(Form("wire_hex_solid2%d",super_layer), hex_length, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
-      G4VSolid * subtraction_box3 = new G4Box(Form("bigbox%d",super_layer),          hex_length, 10.0*cm, 10.0*cm );
+      double zPlane[] =  {-hex_length/2.0,hex_length/2.0};
+      double rInner[] =  {0.0,0.0};
+      double rOuter[] = {LayerWireSpacing[super_layer-1]/2.0-0.001*mm,LayerWireSpacing[super_layer-1]/2.0-0.001*mm };
+      G4VSolid * hex_polyhedra = new G4Polyhedra("hex_polyhedra",0.0,360.0*degree, 6, 2, zPlane, rInner, rOuter );
 
-      G4VSolid* unionMoved  = new G4IntersectionSolid(Form("BoxCylinderMoved%d",super_layer),  subtraction_box,  subtraction_box1, yRot,  zTrans);
-      G4VSolid* unionMoved2 = new G4IntersectionSolid(Form("BoxCylinderMoved2%d",super_layer), unionMoved,       subtraction_box2, yRot2, zTrans);
+      //G4VSolid * subtraction_box  = new G4Box(Form("wire_hex_solid%d",super_layer),  hex_length/2.0, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
+      //G4VSolid * subtraction_box1 = new G4Box(Form("wire_hex_solid1%d",super_layer), hex_length/2.0, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
+      //G4VSolid * subtraction_box2 = new G4Box(Form("wire_hex_solid2%d",super_layer), hex_length/2.0, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
+      //G4VSolid * subtraction_box3 = new G4Box(Form("bigbox%d",super_layer),          hex_length/2.0, 10.0*cm, 10.0*cm );
+      //G4VSolid* unionMoved  = new G4IntersectionSolid(Form("BoxCylinderMoved%d",super_layer),  subtraction_box,  subtraction_box1, yRot,  zTrans);
+      //G4VSolid* unionMoved2 = new G4IntersectionSolid(Form("BoxCylinderMoved2%d",super_layer), unionMoved,       subtraction_box2, yRot2, zTrans);
 
       // This operation puts the hex tube in a box with the proper orientation ( with flat sides against in-row adjacent)
-      G4VSolid* unionMoved3 = new G4IntersectionSolid(Form("BoxCylinderMoved3%d",super_layer), subtraction_box3, unionMoved2,      yRot3, zTrans);
-      G4VSolid* wire_hex_solid = unionMoved3;
+      //G4VSolid* unionMoved3 = new G4IntersectionSolid(Form("BoxCylinderMoved3%d",super_layer), subtraction_box3, unionMoved2,      yRot3, zTrans);
+
+      G4VSolid* wire_hex_solid = hex_polyhedra;//unionMoved3;
 
       for( int layer = 1; layer<=6; layer++ ) {
 
@@ -167,6 +183,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
             G4RotationMatrix * aRot  = new G4RotationMatrix();
             G4RotationMatrix * noRot = new G4RotationMatrix();
             (*aRot) = clas12::geo::LayerWireRotation(super_layer);
+            aRot->rotateY(90.0*degree);
             G4ThreeVector zero_trans(0.0,0.0,0.0);
             G4ThreeVector wire_trans = clas12::geo::ToWireMidPlane(super_layer,layer,i);
 
@@ -192,13 +209,13 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
             wire_log->SetSensitiveDetector( fSensitiveDetector ) ;
 
             G4double maxStep = 0.1*mm; // forces many steps on the order of the average length for creating ion pair
-            wire_log->SetUserLimits(new G4UserLimits(maxStep));
+            //wire_log->SetUserLimits(new G4UserLimits(maxStep));
 
             //check_overlaps = true;
             //if( super_layer >=5 ) check_overlaps = true;
 
             G4VPhysicalVolume * phys = new G4PVPlacement(
-                  G4Transform3D( *noRot, zero_trans),
+                  0, zero_trans,
                   wire_log,          // its logical volume
                   Form("sl%d_%d_%d_phys",super_layer,layer,i),
                   fRegions_log[SuperLayerRegionIndex[super_layer-1]],  
@@ -208,7 +225,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
             // Only visualize one sector (otherwise painfully slow)
             //if(sector == 1 ) {
-            if(TMath::Abs(channel%112-20) <= 2 ) {
+            if(TMath::Abs(channel%112-99) <= 2 ) {
                if(layer%2 == 0 ) {
                   wire_log->SetVisAttributes(vs_even);
                   //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
