@@ -85,9 +85,19 @@ example,
     c12sim --output=MYOUTPUT --dir=some/directory --run=99
 
 causes the output file of the first run to be 
-<code>some/directory/MYOUTPUT99.root</code>
+<code>some/directory/MYOUTPUT99.root</code>.
 
+### Other options
 
+Mostly you will want to run without visualizing and run a specific macro.
+To do so you can use the following options
+
+    c12sim -b some_macro.mac
+
+This will exit after executing <code>some_macro.mac</code>.
+If a gui and visualization is not desired:
+
+    c12sim --vis=0 --gui=0
 
 
 Using git
