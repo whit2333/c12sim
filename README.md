@@ -23,9 +23,15 @@ thus avoiding unnecessary computation and IO.
 Build and Install
 -----------------
 
-Standard cmake build assuming you have geant4 installed.
-Note that you need a compiler that supports c++14, otherwise you will have 
+Standard cmake build assuming you have geant4 and root installed.
+Also note that you need a compiler that supports c++14, otherwise you will have 
 problems. (UPDATE YOUR COMPILER!)
+
+The following sections show how to build clasdigi and c12sim. The installation 
+of c12sim is selected to be a separate director but this can be any standard 
+location as it only installs the binary and a shared data directory. The shared 
+data (installed in share/c12sim) contains various default macros used for 
+visualization along with other useful examples.
 
 ### First install ClasDigi
 
@@ -42,21 +48,47 @@ problems. (UPDATE YOUR COMPILER!)
     make ../c12sim/. -DCMAKE_INSTALL_PREFIX=../c12run
     make install
 
-###Run the simulation
+### Run the simulation
 
     cd ../c12run
-    ./bin/c12sim share/c12sim/vis.mac 
-
+    ./bin/c12sim
 
 Running options
 ---------------
 
-The default  will run 1000 events  and save histograms to run file "0".
+### Basics
+
+Running the simulation without any arguments will open a Qt gui along with a 
+visualization of the detectors. 
+
+### Run number
+
 The run number can be specified with the "--run" flag
 
-    ./bin/c12sim  --run=100
+    c12sim  --run=100
 
-This creates the file EBL_sim_output_100.root.
+This sets the run number to 100. The default value is 0.
+When the standard geant4 command to generate events is invoked, ie,
+
+    /run/beamOn 5000
+
+This creates the output file <code>data/rootfiles/clas12sim100.root</code>. If 
+<code> /run/beamOn</code> is invoked again, the run number is incremented and 
+<code>data/rootfiles/clas12sim101.root</code> is created. Note that the event 
+numbers of this second file start from where the previous run left off.
+
+### Output
+
+The output file (base)name and directory can be provided as arguments. For 
+example,
+
+    c12sim --output=MYOUTPUT --dir=some/directory --run=99
+
+causes the output file of the first run to be 
+<code>some/directory/MYOUTPUT99.root</code>
+
+
+
 
 Using git
 --------- 

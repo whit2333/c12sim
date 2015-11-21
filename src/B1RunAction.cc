@@ -59,7 +59,7 @@ G4Run* B1RunAction::GenerateRun()
    simManager->fOutputFile = new TFile(filename.c_str(), "RECREATE" );
    simManager->fOutputFile->cd();
 
-   simManager->fOutputTree = new TTree(simManager->fOutputTreeName.c_str(),"Clas12 gemc output");
+   simManager->fOutputTree = new TTree(simManager->fOutputTreeName.c_str(),"Clas12 simulation output");
    simManager->fOutputTree->Branch(
          "HitsEvent",
          "clas12::hits::CLAS12HitsEvent",
@@ -165,6 +165,7 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
    B1EventAction * evAction  = (B1EventAction*)(runManager->GetUserEventAction());
    if(evAction ) evAction->Reset();
 
+   simManager->SetRunNumber(simManager->GetRunNumber()+1);
 
 }
 //______________________________________________________________________________

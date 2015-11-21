@@ -42,10 +42,10 @@ class SimulationManager {
 
       SimulationMessenger           * fSimulationMessenger;
       clas12::hits::CLAS12HitsEvent * fEvent;
-      std::string                     fOutputDirectoryName;
       TFile                         * fOutputFile;
-      std::string                     fOutputFileName;
       TTree                         * fOutputTree;
+      std::string                     fOutputDirectoryName;
+      std::string                     fOutputFileName;
       std::string                     fOutputTreeName;
       std::string                     fInputFileName;
 
@@ -62,6 +62,12 @@ class SimulationManager {
       std::string OutputFileName() const ;
       std::string OutputTreeName() const ;
       std::string InputFileName() const ;
+
+
+      void SetOutputDirectoryName( std::string  s ) { fOutputDirectoryName = s;}
+      void SetOutputFileName     ( std::string  s ) { fOutputFileName      = s;}
+      void SetOutputTreeName     ( std::string  s ) { fOutputTreeName      = s;}
+      void SetInputFileName      ( std::string  s ) { fInputFileName       = s;}
 
       int GetEventNumber() const { return(fEvent->fEventNumber); };
       int ReadRunNumber(const char * fname = "run_number.txt");

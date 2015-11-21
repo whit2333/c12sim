@@ -40,7 +40,7 @@ SimulationManager::SimulationManager () {
    fOutputFile          = 0;
    fOutputTree          = 0;
    fOutputDirectoryName = "data/rootfiles";
-   fOutputFileName      = "clas12gemc";
+   fOutputFileName      = "clas12sim";
    fOutputTreeName      = "clasdigi_hits";
    fRecoilChamberGeo    = nullptr;
    fDriftChamberGeo     = nullptr;

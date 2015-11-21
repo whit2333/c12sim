@@ -25,6 +25,8 @@
 #include "FTFP_BERT.hh"
 //#include "CLAS12_QGSP_BIC.hh"
 
+#include "SimulationManager.h"
+
 #include "B1ParallelWorldConstruction.hh"
 #include "G4ParallelWorldPhysics.hh"
 
@@ -39,14 +41,19 @@ void print_help() {
 
    std::cout << "usage: c12sim [options] [macro file]    \n";
    std::cout << "Options:                               \n";
-   std::cout << "    --run=#, -r         set file \"run\" number\n";
-   std::cout << "    --gui=#, -g         set to 1 (default) to use qt gui or\n";
-   std::cout << "                        0 to use command line\n";
-   std::cout << "    --vis=#, -V         set to 1 (default) to visualization geometry and events\n";
-   std::cout << "                        0 to turn off visualization\n";
-   std::cout << "    --interactive, -I   run in interactive mode (default)\n";
-   std::cout << "    --init, -N          run without initializing G4 kernel\n";
-   std::cout << "    --batch, -b         run in batch mode\n"; 
+   std::cout << "    -r, --run=NUMBER         Set simulation \"run\" NUMBER\n";
+   std::cout << "    -i, --input=FILE         Set the input file from which events will be read\n";
+   std::cout << "    -o, --output=NAME        Set the output file name which will have the run number appended\n";
+   std::cout << "                             Default is \"clas12sim\". Note this is just the file basename; use -D to set the directory \n";
+   std::cout << "    -D, --dir=NAME           Set the output directory. The default is \"data/rootfiles/\"\n";
+   std::cout << "    -t, --treename=NAME      Set the output tree name. The default is \"clasdigi_hits\"\n";
+   std::cout << "    -g, --gui=#              Set to 1 (default) to use qt gui or\n";
+   std::cout << "                             0 to use command line\n";
+   std::cout << "    -V, --vis=#              set to 1 (default) to visualization geometry and events\n";
+   std::cout << "                             0 to turn off visualization\n";
+   std::cout << "    -I, --interactive        run in interactive mode (default)\n";
+   std::cout << "    -N, --init               run without initializing G4 kernel\n";
+   std::cout << "    -b, --batch              run in batch mode\n"; 
 }
 
 //______________________________________________________________________________
@@ -58,6 +65,7 @@ int main(int argc,char** argv)
    std::string  input_file_name   = "";
    std::string  output_file_name  = "";
    std::string  output_tree_name  = "";
+   std::string  output_dir        = "";
    std::string  theRest           = "";
    bool         run_manager_init  = false;
    bool         use_gui           = true;
@@ -79,13 +87,14 @@ int main(int argc,char** argv)
       {"batch",       no_argument,        0, 'b'},
       {"input",       required_argument,  0, 'i'},
       {"output",      required_argument,  0, 'o'},
-      {"tree",        required_argument,  0, 't'},
+      {"dir",         required_argument,  0, 'D'},
+      {"treename",    required_argument,  0, 't'},
       {"help",        no_argument,        0, 'h'},
       {"init",        no_argument,        0, 'N'},
       {0,0,0,0}
    };
    while(iarg != -1) {
-      iarg = getopt_long(argc, argv, "o:h:g:r:V:ibhI", longopts, &index);
+      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:bhIN", longopts, &index);
 
       switch (iarg)
       {
@@ -127,6 +136,10 @@ int main(int argc,char** argv)
             output_tree_name = optarg;
             break;
 
+         case 'D':
+            output_dir = optarg;
+            break;
+
          case 'N':
             run_manager_init = true;
             break;
@@ -159,10 +172,11 @@ int main(int argc,char** argv)
       theRest        += argv[i];
    }
 
-   std::cout << " the rest of the arguments: " << theRest << std::endl;
-   std::cout << "input  : " << input_file_name << std::endl;
-   std::cout << "output : " << output_file_name << std::endl;
-   std::cout << "  tree : " << output_tree_name << std::endl;
+   //std::cout << " the rest of the arguments: " << theRest << std::endl;
+   //std::cout << "input  : " << input_file_name << std::endl;
+   //std::cout << "output : " << output_file_name << std::endl;
+   //std::cout << "  tree : " << output_tree_name << std::endl;
+   //std::cout << "  dir  : " << output_dir << std::endl;
 
    //---------------------------------------------------------------------------
 
@@ -189,14 +203,30 @@ int main(int argc,char** argv)
    G4RunManager* runManager = new G4RunManager;
 #endif
 
-   // Set mandatory initialization classes
-   //
-   // Detector construction with parallel world 
-   G4String                        paraWorldName = "ParallelWorld";
-   B1DetectorConstruction        * realWorld     = new B1DetectorConstruction();
-   B1ParallelWorldConstruction * parallelWorld = new B1ParallelWorldConstruction(paraWorldName);
+   SimulationManager * simManager = SimulationManager::GetInstance();
+   if( input_file_name.size() != 0 ) {
+      simManager->SetInputFileName( input_file_name );
+   }
+   if( output_file_name.size() != 0 ) {
+      simManager->SetOutputFileName( output_file_name );
+   }
+   if( output_tree_name.size() != 0 ) {
+      simManager->SetOutputTreeName( output_tree_name );
+   }
+   if( output_dir.size() != 0 ) {
+      simManager->SetOutputDirectoryName( output_dir );
+   }
 
-   realWorld->RegisterParallelWorld(parallelWorld);
+
+   B1DetectorConstruction      * realWorld     = new B1DetectorConstruction();
+
+   // Detector construction with parallel world 
+   // Not using the parallel world because there is a bug in it. 
+   // http://bugzilla-geant4.kek.jp/show_bug.cgi?id=1800
+   //G4String                      paraWorldName = "ParallelWorld";
+   //B1ParallelWorldConstruction * parallelWorld = new B1ParallelWorldConstruction(paraWorldName);
+   //realWorld->RegisterParallelWorld(parallelWorld);
+
    runManager->SetUserInitialization(realWorld);
 
    // Physics list
@@ -204,6 +234,7 @@ int main(int argc,char** argv)
    //QGSP_BIC_EMY QGSP_BERT_HP_PEN QGSP_BIC_LIV
    G4VModularPhysicsList * physicsList =  factory.GetReferencePhysList("FTFP_BERT");
    //G4VModularPhysicsList* physicsList = new CLAS12_QGSP_BIC(paraWorldName,false);
+   //G4VModularPhysicsList* physicsList = new QBBC;
 
    // This connects the phyics to the parallel world (and sensitive detectors)
    //physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));
@@ -214,8 +245,6 @@ int main(int argc,char** argv)
    // This is needed to make use of the G4UserLimits applied to logical volumes.
    physicsList->RegisterPhysics(new G4StepLimiterPhysics());
 
-
-   //G4VModularPhysicsList* physicsList = new QBBC;
    physicsList->SetVerboseLevel(1);
    runManager->SetUserInitialization(physicsList);
 
