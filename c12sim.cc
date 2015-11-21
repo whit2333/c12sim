@@ -29,11 +29,72 @@
 
 #include "B1ParallelWorldConstruction.hh"
 #include "G4ParallelWorldPhysics.hh"
+#include <string>
+#include <iostream>
+#include <cstdio>
+#include <memory>
+
+std::string exec(const char* cmd) {
+   std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+   if (!pipe) return "ERROR";
+   char buffer[128];
+   std::string result = "";
+   while (!feof(pipe.get())) {
+      if (fgets(buffer, 128, pipe.get()) != NULL)
+         result += buffer;
+   }
+   return result;
+}
 
 bool fexists(const std::string& filename) {
    std::ifstream ifile(filename.c_str());
    if( ifile ) return true;
    return false;
+}
+//______________________________________________________________________________
+void print_field_dir()
+{
+   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
+
+}
+//______________________________________________________________________________
+
+void check_field_maps()
+{
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
+   bool failed = false;
+
+   if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
+      std::cerr << "Error: Solenoid field map missing!" << std::endl;
+      std::cerr << "file \""C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat\" not found. " << std::endl;
+      failed = true;
+   }
+   if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
+      std::cerr << "Error: Torus field map missing!" << std::endl;
+      std::cerr << "file \""C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat\" not found. " << std::endl;
+      failed = true;
+   }
+   if(failed) {
+      std::cerr << "Use \"c12sim --dl-field-maps\" to download and install the field maps" << std::endl;
+      exit(0);
+   }
+}
+
+void download_field_maps()
+{
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
+
+   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
+   if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
+      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat" << std::endl;
+      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
+   }
+   if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
+      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat" << std::endl;
+      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
+   }
 }
 //______________________________________________________________________________
 
@@ -54,6 +115,8 @@ void print_help() {
    std::cout << "    -I, --interactive        run in interactive mode (default)\n";
    std::cout << "    -N, --init               run without initializing G4 kernel\n";
    std::cout << "    -b, --batch              run in batch mode\n"; 
+   std::cout << "    -f, --field-dir          print the field dir\n"; 
+   std::cout << "    -F, --dl-field-maps      downloads the field maps into the field dir\n"; 
 }
 
 //______________________________________________________________________________
@@ -91,10 +154,12 @@ int main(int argc,char** argv)
       {"treename",    required_argument,  0, 't'},
       {"help",        no_argument,        0, 'h'},
       {"init",        no_argument,        0, 'N'},
+      {"field-dir",   no_argument,        0, 'f'},
+      {"dl-field-maps",no_argument,       0, 'F'},
       {0,0,0,0}
    };
    while(iarg != -1) {
-      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:bhIN", longopts, &index);
+      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:bhINfF", longopts, &index);
 
       switch (iarg)
       {
@@ -157,6 +222,17 @@ int main(int argc,char** argv)
             exit(0);
             break;
 
+         case 'f':
+            print_field_dir();
+            exit(0);
+            break;
+
+         case 'F':
+            download_field_maps();
+            exit(0);
+            break;
+
+
          case '?':
             print_help();
             exit(EXIT_FAILURE);
@@ -171,6 +247,8 @@ int main(int argc,char** argv)
    for (int i = optind; i < argc; i++) {
       theRest        += argv[i];
    }
+
+   check_field_maps();
 
    //std::cout << " the rest of the arguments: " << theRest << std::endl;
    //std::cout << "input  : " << input_file_name << std::endl;
