@@ -21,9 +21,12 @@
 //G4Allocator<MyHit> MyHitAllocator;
 
 //______________________________________________________________________________
-HTCCSensitiveDetector::HTCCSensitiveDetector(G4String name, G4int Nchan)
-   : G4VSensitiveDetector(name), fNumberOfChannels(Nchan),
-   fCountAllPhotons(true), fSavePhotonPositions(false)
+
+HTCCSensitiveDetector::HTCCSensitiveDetector(G4String name, G4int Nchan) : 
+   G4VSensitiveDetector(name), 
+   fNumberOfChannels(Nchan),
+   fCountAllPhotons(true),
+   fSavePhotonPositions(false)
 {
    using namespace clas12::DAQ;
    DAQManager * daq_manager = DAQManager::GetManager();
@@ -35,7 +38,7 @@ HTCCSensitiveDetector::HTCCSensitiveDetector(G4String name, G4int Nchan)
    if( !fDiscModule ) {
       std::cout << "Error : No DiscModule \n";
    }
-   fDiscModule->Print();
+   //fDiscModule->Print();
 
    fTDCModule        = fCrate->GetCrateModule<TDC>(1);
    if( !fTDCModule ) {
@@ -59,12 +62,13 @@ HTCCSensitiveDetector::HTCCSensitiveDetector(G4String name, G4int Nchan)
 
    SimulationManager * sim_manager  = SimulationManager::GetInstance();
    fHTCCHitsEvent = &(sim_manager->fEvent->fHTCCEvent);
+}
+//______________________________________________________________________________
 
-}
+HTCCSensitiveDetector::~HTCCSensitiveDetector()
+{ }
 //______________________________________________________________________________
-HTCCSensitiveDetector::~HTCCSensitiveDetector() {
-}
-//______________________________________________________________________________
+
 void HTCCSensitiveDetector::Initialize(G4HCofThisEvent* hitsCollectionOfThisEvent)
 {
    fCrate->Clear();
@@ -77,7 +81,9 @@ void HTCCSensitiveDetector::Initialize(G4HCofThisEvent* hitsCollectionOfThisEven
 
 }
 //______________________________________________________________________________
-G4bool HTCCSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHistory* ) {
+
+G4bool HTCCSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHistory* )
+{
 
    G4Track * theTrack = aStep->GetTrack();
 
@@ -125,7 +131,9 @@ G4bool HTCCSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHistory* )
    return true;
 }
 //______________________________________________________________________________
-void HTCCSensitiveDetector::EndOfEvent ( G4HCofThisEvent* ) {
+
+void HTCCSensitiveDetector::EndOfEvent ( G4HCofThisEvent* )
+{
 
    clas12::hits::ADCHit * adc_hit = 0;
    for(int i = 0; i<fNumberOfChannels; i++) {
@@ -133,7 +141,7 @@ void HTCCSensitiveDetector::EndOfEvent ( G4HCofThisEvent* ) {
       adc_hit = fHTCCHitsEvent->AddADCHit(i,adc_value);
       //adc_hit->Print();
    }
-
+   fTrigDiscModule->Print();
    //clas12::DAQ::DAQManager& daq_manager = clas12::DAQ::DAQManager::GetManager();
    //for(int i = 0; i< daq_manager.fScalers.size(); i++ ) {
    //   daq_manager.fScalers[i].Print();
@@ -141,7 +149,9 @@ void HTCCSensitiveDetector::EndOfEvent ( G4HCofThisEvent* ) {
 
 }
 //______________________________________________________________________________
-G4double HTCCSensitiveDetector::QE ( G4double photonEnergy ) const {
+
+G4double HTCCSensitiveDetector::QE ( G4double photonEnergy ) const
+{
    return 0.20;
 }
 //______________________________________________________________________________

@@ -20,26 +20,18 @@
 class RecoilChamberDetectorGeometry;
 class DriftChamberDetectorGeometry;
 class HTCCDetectorGeometry;
-
 class SimulationMessenger;
 
 /** The simulation manager singleton class.
- *
  */
 class SimulationManager {
 
-   private: 
-      SimulationManager( );
-      static SimulationManager* fgSimulationManager;
-
    private:
-
       RecoilChamberDetectorGeometry * fRecoilChamberGeo;
       DriftChamberDetectorGeometry  * fDriftChamberGeo;
       HTCCDetectorGeometry          * fHTCCGeo;
 
    public:
-
       SimulationMessenger           * fSimulationMessenger;
       clas12::hits::CLAS12HitsEvent * fEvent;
       TFile                         * fOutputFile;
@@ -48,6 +40,10 @@ class SimulationManager {
       std::string                     fOutputFileName;
       std::string                     fOutputTreeName;
       std::string                     fInputFileName;
+
+   private: 
+      SimulationManager( );
+      static SimulationManager* fgSimulationManager;
 
    public:
       ~SimulationManager();
@@ -63,7 +59,6 @@ class SimulationManager {
       std::string OutputTreeName() const ;
       std::string InputFileName() const ;
 
-
       void SetOutputDirectoryName( std::string  s ) { fOutputDirectoryName = s;}
       void SetOutputFileName     ( std::string  s ) { fOutputFileName      = s;}
       void SetOutputTreeName     ( std::string  s ) { fOutputTreeName      = s;}
@@ -74,8 +69,7 @@ class SimulationManager {
 
       DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
       RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
-      HTCCDetectorGeometry * GetHTCCDetectorGeometry();
-
+      HTCCDetectorGeometry          * GetHTCCDetectorGeometry();
 
    private:
 
