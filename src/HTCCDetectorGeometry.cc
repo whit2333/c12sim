@@ -1562,7 +1562,7 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
             mother,                       // its mother (logical) volume
             false,                        // no boolean operations
             0,                     // its copy number
-            false);                        // check for overlaps
+            true);                        // check for overlaps
    }
 
    // --------------------------------------------
@@ -1570,13 +1570,13 @@ G4VPhysicalVolume * HTCCDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * 
    sector_rot->rotateZ( 60.0*CLHEP::deg*(sec-1) );
    G4VPhysicalVolume * sector_phys = new G4PVPlacement(
          sector_rot, 
-         G4ThreeVector(1,0,0),
+         G4ThreeVector(0,0,0),
          sector_wedge_log,          // its logical volume
          Form("sector_wedge_phys%d",sec), // its name
          htcc_log,                       // its mother (logical) volume
          false,                        // no boolean operations
          sec,                     // its copy number
-         false);                        // check for overlaps
+         true);                        // check for overlaps
    //G4UserLimits * scoring_limits = new G4UserLimits(1.0*mm);
    //sector_wedge_log->SetUserLimits(scoring_limits);
 

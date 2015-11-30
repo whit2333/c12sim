@@ -25,9 +25,12 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include <sys/file.h>
+
 #include "RecoilChamberDetectorGeometry.h"
 #include "DriftChamberDetectorGeometry.h"
 #include "HTCCDetectorGeometry.h"
+#include "SolenoidDetectorGeometry.h"
+#include "TorusDetectorGeometry.h"
 
 
 SimulationManager* SimulationManager::fgSimulationManager = 0;
@@ -37,14 +40,19 @@ SimulationManager::SimulationManager () {
 
    fSimulationMessenger = new SimulationMessenger ( this );
    fEvent               = new clas12::hits::CLAS12HitsEvent();
+   fTriggerEvent        = new clas12::hits::TriggerEvent();
    fOutputFile          = 0;
    fOutputTree          = 0;
    fOutputDirectoryName = "data/rootfiles";
    fOutputFileName      = "clas12sim";
    fOutputTreeName      = "clasdigi_hits";
+
    fRecoilChamberGeo    = nullptr;
    fDriftChamberGeo     = nullptr;
    fHTCCGeo             = nullptr;
+   fSolenoidGeo         = nullptr;
+   fTorusGeo            = nullptr;
+
    fInputFileName       = "data/lundfiles/eg_LH2_full_4.lund";
 }
 //______________________________________________________________________________
@@ -52,6 +60,8 @@ SimulationManager::SimulationManager () {
 SimulationManager::~SimulationManager()
 {
    delete fSimulationMessenger;
+   delete fEvent;
+   delete fTriggerEvent;
 }
 //______________________________________________________________________________
 
@@ -159,6 +169,21 @@ HTCCDetectorGeometry * SimulationManager::GetHTCCDetectorGeometry(){
       fHTCCGeo = new HTCCDetectorGeometry();
    }
    return fHTCCGeo;
+}
+//______________________________________________________________________________
+SolenoidDetectorGeometry * SimulationManager::GetSolenoidDetectorGeometry(){
+   if(!fSolenoidGeo) {
+      fSolenoidGeo = new SolenoidDetectorGeometry();
+   }
+   return fSolenoidGeo;
+}
+//______________________________________________________________________________
+
+TorusDetectorGeometry * SimulationManager::GetTorusDetectorGeometry(){
+   if(!fTorusGeo) {
+      fTorusGeo = new TorusDetectorGeometry();
+   }
+   return fTorusGeo;
 }
 //______________________________________________________________________________
 

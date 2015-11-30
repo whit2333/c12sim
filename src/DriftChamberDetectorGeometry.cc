@@ -157,9 +157,11 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
       // Has to be really long for some reason, otherwise there is a seg fault...
       G4double hex_length = 100.0*m;
 
+      double sqrt3Over2 = 1.0/2.0;//TMath::Sqrt(3.0);//2.0;
+
       double zPlane[] =  {-hex_length/2.0,hex_length/2.0};
       double rInner[] =  {0.0,0.0};
-      double rOuter[] = {LayerWireSpacing[super_layer-1]/2.0-0.001*mm,LayerWireSpacing[super_layer-1]/2.0-0.001*mm };
+      double rOuter[] = {sqrt3Over2*LayerWireSpacing[super_layer-1], sqrt3Over2*LayerWireSpacing[super_layer-1] };
       G4VSolid * hex_polyhedra = new G4Polyhedra("hex_polyhedra",0.0,360.0*degree, 6, 2, zPlane, rInner, rOuter );
 
       //G4VSolid * subtraction_box  = new G4Box(Form("wire_hex_solid%d",super_layer),  hex_length/2.0, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );

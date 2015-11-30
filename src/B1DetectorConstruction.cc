@@ -118,10 +118,11 @@ B1DetectorConstruction::B1DetectorConstruction() :
    //nDriftChamberVols = 0;
    //fDriftChamber_SD =  new DriftChamberSensitiveDetector("DCIonPairSD",6*8);
 
-   wire_hex_log = 0;
-   fDriftChamber = 0;//new DriftChamberDetectorGeometry();
+   fDriftChamber  = 0;//new DriftChamberDetectorGeometry();
    fRecoilChamber = 0;
-   fHTCC = 0;
+   fHTCC          = 0;
+   fSolenoid      = 0;
+   fTorus         = 0;
 }
 //___________________________________________________________________
 
@@ -475,12 +476,24 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // Way to access a material
    Mylar = man->FindOrBuildMaterial("G4_MYLAR");
 
+   // ------------------------------------------------------------------------
+   // Solenoid Geometry
+   // ------------------------------------------------------------------------
+   fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
+   fSolenoid->BuildLogicalVolumes();
+   fSolenoid->PlacePhysicalVolume( world_log );
 
-   ///////////////////////////////////////////////////////////////////////////
-   //------------------------- Magnetic field ------------------------------//
-   ///////////////////////////////////////////////////////////////////////////
+   // ------------------------------------------------------------------------
+   // Torus Geometry
+   // ------------------------------------------------------------------------
+   //fTorus = SimulationManager::GetInstance()->GetTorusDetectorGeometry();
+   //fTorus->BuildLogicalVolumes();
+   //fTorus->PlacePhysicalVolume( world_log );
 
-   // create a field
+   // ------------------------------------------------------------------------
+   // Magnetic field
+   // ------------------------------------------------------------------------
+
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
    C12MagneticField * magField = new C12MagneticField(true,true);
 

@@ -7,6 +7,9 @@
 #include "DriftChamberSensitiveDetector.h"
 #include "RecoilChamberDetectorGeometry.h"
 #include "HTCCDetectorGeometry.h"
+#include "SolenoidDetectorGeometry.h"
+#include "TorusDetectorGeometry.h"
+
 #include "G4SystemOfUnits.hh"
 
 class G4VPhysicalVolume;
@@ -211,7 +214,9 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       HTCCDetectorGeometry           * fHTCC;
       RecoilChamberDetectorGeometry  * fRecoilChamber;
       DriftChamberDetectorGeometry   * fDriftChamber;
-      G4LogicalVolume   * wire_hex_log   ;
+      SolenoidDetectorGeometry       * fSolenoid;
+      TorusDetectorGeometry          * fTorus;
+
 
    protected:
       void DefineMaterials();

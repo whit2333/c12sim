@@ -8,6 +8,7 @@
 #include "globals.hh"
 
 #include "CLAS12HitsEvent.h"
+#include "TriggerEvent.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -20,6 +21,9 @@
 class RecoilChamberDetectorGeometry;
 class DriftChamberDetectorGeometry;
 class HTCCDetectorGeometry;
+class SolenoidDetectorGeometry;
+class TorusDetectorGeometry;
+
 class SimulationMessenger;
 
 /** The simulation manager singleton class.
@@ -30,16 +34,20 @@ class SimulationManager {
       RecoilChamberDetectorGeometry * fRecoilChamberGeo;
       DriftChamberDetectorGeometry  * fDriftChamberGeo;
       HTCCDetectorGeometry          * fHTCCGeo;
+      SolenoidDetectorGeometry      * fSolenoidGeo;
+      TorusDetectorGeometry         * fTorusGeo;
 
    public:
       SimulationMessenger           * fSimulationMessenger;
-      clas12::hits::CLAS12HitsEvent * fEvent;
       TFile                         * fOutputFile;
       TTree                         * fOutputTree;
       std::string                     fOutputDirectoryName;
       std::string                     fOutputFileName;
       std::string                     fOutputTreeName;
       std::string                     fInputFileName;
+
+      clas12::hits::CLAS12HitsEvent * fEvent;
+      clas12::hits::TriggerEvent    * fTriggerEvent;
 
    private: 
       SimulationManager( );
@@ -70,6 +78,8 @@ class SimulationManager {
       DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
       RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
       HTCCDetectorGeometry          * GetHTCCDetectorGeometry();
+      SolenoidDetectorGeometry      * GetSolenoidDetectorGeometry();
+      TorusDetectorGeometry         * GetTorusDetectorGeometry();
 
    private:
 

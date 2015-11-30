@@ -117,6 +117,7 @@ void print_help() {
    std::cout << "    -b, --batch              run in batch mode\n"; 
    std::cout << "    -f, --field-dir          print the field dir\n"; 
    std::cout << "    -F, --dl-field-maps      downloads the field maps into the field dir\n"; 
+   std::cout << "    -R, --rand=NUMBER        set the random number seed\n";
 }
 
 //______________________________________________________________________________
@@ -135,6 +136,7 @@ int main(int argc,char** argv)
    bool         use_vis           = true;
    bool         is_interactive    = true;
    bool         has_macro_file    = false;
+   int          set_rand_seed     = -1;
 
    //---------------------------------------------------------------------------
 
@@ -156,10 +158,11 @@ int main(int argc,char** argv)
       {"init",        no_argument,        0, 'N'},
       {"field-dir",   no_argument,        0, 'f'},
       {"dl-field-maps",no_argument,       0, 'F'},
+      {"rand",        required_argument,  0, 'R'},
       {0,0,0,0}
    };
    while(iarg != -1) {
-      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:bhINfF", longopts, &index);
+      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:bhINfF", longopts, &index);
 
       switch (iarg)
       {
@@ -232,6 +235,10 @@ int main(int argc,char** argv)
             exit(0);
             break;
 
+         case 'R':
+            set_rand_seed = atoi( optarg );
+            break;
+
 
          case '?':
             print_help();
@@ -272,6 +279,9 @@ int main(int argc,char** argv)
    // Choose the Random engine
    G4Random::setTheEngine(new CLHEP::RanecuEngine);
    G4long seed = time(NULL);
+   if( set_rand_seed != -1 ) {
+      seed = long(set_rand_seed);
+   }
    CLHEP::HepRandom::setTheSeed(seed);
 
    // Construct the default run manager
