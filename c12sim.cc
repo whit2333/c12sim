@@ -105,6 +105,8 @@ void print_help() {
    std::cout << "    -r, --run=NUMBER         Set simulation \"run\" NUMBER\n";
    std::cout << "    -i, --input=FILE         Set the input file from which events will be read\n";
    std::cout << "    -o, --output=NAME        Set the output file name which will have the run number appended\n";
+   std::cout << "    -n, --events=#           Causes the execution of the ui command \"/run/beamOn #\".\n";
+   std::cout << "                             This happens just before exiting (in the case of batch mode) or returning to UI prompt.\n";
    std::cout << "                             Default is \"clas12sim\". Note this is just the file basename; use -D to set the directory \n";
    std::cout << "    -D, --dir=NAME           Set the output directory. The default is \"data/rootfiles/\"\n";
    std::cout << "    -t, --treename=NAME      Set the output tree name. The default is \"clasdigi_hits\"\n";
