@@ -23,6 +23,7 @@ class DriftChamberDetectorGeometry;
 class HTCCDetectorGeometry;
 class SolenoidDetectorGeometry;
 class TorusDetectorGeometry;
+class BeamlineDetectorGeometry;
 
 class SimulationMessenger;
 
@@ -31,11 +32,20 @@ class SimulationMessenger;
 class SimulationManager {
 
    private:
-      RecoilChamberDetectorGeometry * fRecoilChamberGeo;
-      DriftChamberDetectorGeometry  * fDriftChamberGeo;
-      HTCCDetectorGeometry          * fHTCCGeo;
-      SolenoidDetectorGeometry      * fSolenoidGeo;
-      TorusDetectorGeometry         * fTorusGeo;
+      RecoilChamberDetectorGeometry * fRecoilChamberGeo = nullptr;
+      DriftChamberDetectorGeometry  * fDriftChamberGeo  = nullptr;
+      HTCCDetectorGeometry          * fHTCCGeo          = nullptr;
+      SolenoidDetectorGeometry      * fSolenoidGeo      = nullptr;
+      TorusDetectorGeometry         * fTorusGeo         = nullptr;
+      BeamlineDetectorGeometry      * fBeamlineGeo      = nullptr;
+
+   public:
+      DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
+      RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
+      HTCCDetectorGeometry          * GetHTCCDetectorGeometry();
+      SolenoidDetectorGeometry      * GetSolenoidDetectorGeometry();
+      TorusDetectorGeometry         * GetTorusDetectorGeometry();
+      BeamlineDetectorGeometry      * GetBeamlineDetectorGeometry();
 
    public:
       SimulationMessenger           * fSimulationMessenger;
@@ -75,11 +85,6 @@ class SimulationManager {
       int GetEventNumber() const { return(fEvent->fEventNumber); };
       int ReadRunNumber(const char * fname = "run_number.txt");
 
-      DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
-      RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
-      HTCCDetectorGeometry          * GetHTCCDetectorGeometry();
-      SolenoidDetectorGeometry      * GetSolenoidDetectorGeometry();
-      TorusDetectorGeometry         * GetTorusDetectorGeometry();
 
    private:
 

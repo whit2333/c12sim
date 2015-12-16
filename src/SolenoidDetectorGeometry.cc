@@ -47,6 +47,10 @@ SolenoidDetectorGeometry::~SolenoidDetectorGeometry()
 void SolenoidDetectorGeometry::BuildLogicalVolumes()
 {
    fSolenoid_log = new G4LogicalVolume(fSolenoid_solid, fSolenoid_mat, "fSolenoid_log");
+   fSolenoid_vis = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
+   fSolenoid_vis->SetForceWireframe(true);
+   fSolenoid_log->SetVisAttributes(fSolenoid_vis);
+
 }
 //______________________________________________________________________________
 

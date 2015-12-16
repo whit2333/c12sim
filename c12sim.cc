@@ -126,6 +126,7 @@ int main(int argc,char** argv)
 {
 
    int          run_number        = 0;
+   int          number_of_events  = -1;
    std::string  input_file_name   = "";
    std::string  output_file_name  = "";
    std::string  output_tree_name  = "";
@@ -154,6 +155,7 @@ int main(int argc,char** argv)
       {"output",      required_argument,  0, 'o'},
       {"dir",         required_argument,  0, 'D'},
       {"treename",    required_argument,  0, 't'},
+      {"events",      required_argument,  0, 'n'},
       {"help",        no_argument,        0, 'h'},
       {"init",        no_argument,        0, 'N'},
       {"field-dir",   no_argument,        0, 'f'},
@@ -162,7 +164,7 @@ int main(int argc,char** argv)
       {0,0,0,0}
    };
    while(iarg != -1) {
-      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:bhINfF", longopts, &index);
+      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:bhINfF", longopts, &index);
 
       switch (iarg)
       {
@@ -190,6 +192,10 @@ int main(int argc,char** argv)
 
          case 'r':
             run_number = atoi( optarg );
+            break;
+
+         case 'n':
+            number_of_events = atoi( optarg );
             break;
 
          case 'g':
@@ -341,6 +347,8 @@ int main(int argc,char** argv)
 
    // Initialize G4 kernel
    runManager->Initialize();
+   // This constructs  the geometry and many other things. It might be best to leave this 
+   // to a UI command...
 
    // Initialize visualization
    //
@@ -379,6 +387,10 @@ int main(int argc,char** argv)
          std::cout << " executing " << command+fileName << std::endl;
          UImanager->ApplyCommand(command+fileName);
       }
+   }
+   if( number_of_events > 0) {
+      G4String command = "/run/beamOn " + std::to_string(number_of_events);
+      UImanager->ApplyCommand( command );
    }
 
    if( is_interactive )  {

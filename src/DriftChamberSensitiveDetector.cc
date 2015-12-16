@@ -20,6 +20,7 @@
 #include "SimulationManager.h"
 #include "DriftChamberIonPairHit.h"
 #include "DriftChamberParticleHit.h"
+#include "DCWire.h"
 
 
 //______________________________________________________________________________
@@ -60,25 +61,34 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
 
    if( ion_pair || first_step ) {
 
-      const G4ThreeVector& pos_global = aStep->GetPreStepPoint()->GetPosition();
+      G4ThreeVector pos_global = aStep->GetPreStepPoint()->GetPosition();
       double time = aStep->GetPreStepPoint()->GetGlobalTime()/ns;
 
       G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
       G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
 
+      const int NWiresPerSector = 6*6*112;
       // layer/superlayer/wire comes from channel
-      int channel  = touchable->GetReplicaNumber(0);
-      int layer    = (channel/112)%6 + 1;
-      int wire     = channel%112 + 1;
+      int sec_chan    = touchable->GetReplicaNumber(0); 
+      int sector      = touchable->GetReplicaNumber(1);
+      int channel     = sec_chan + (sector-1)*NWiresPerSector;
+      int super_layer = clas12::geo::DCWire::GetSuperLayer(channel);
+      int layer       = clas12::geo::DCWire::GetLayer(channel);
+      int wire        = clas12::geo::DCWire::GetWire(channel);
+      int region      = super_layer/2 + 1;
 
+      //std::cout << " sec_chan " << sec_chan << std::endl;
+      //std::cout << " sector " << sector << std::endl;
+      //std::cout << " wire " << wire << std::endl;
       // grouping is the placement of the sector/region
-      int grouping    = touchable->GetReplicaNumber(1);
-      int sector      = grouping/3+1;
-      int region      = grouping%3+1;
-      int super_layer = (channel/112)/6 + (grouping%3)*2 + 1;
-      int pdg         = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
-      TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,time);
+      //int grouping    = touchable->GetReplicaNumber(1);
+      //int sector      = grouping/3+1;
+      //int region      = grouping%3+1;
+      //int super_layer = (channel/112)/6 + (grouping%3)*2 + 1;
 
+      int pdg         = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
+
+      TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,time);
 
       if(ion_pair) {
          DriftChamberIonPairHit * ahit = fDCHitsEvent->AddIonPairHit( pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
@@ -90,6 +100,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
          ahit->fDCWire.fSuperLayer     = super_layer;
          ahit->fDCWire.fLayer          = layer;
          ahit->fDCWire.fWire           = wire;
+         ahit->fDCWire.fChannel        = channel;
          ahit->fPDGCode                = pdg;
 
          if( step_length == 0.0 ) {
@@ -114,6 +125,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
             part_hit->fDCWire.fSuperLayer = super_layer;
             part_hit->fDCWire.fLayer      = layer;
             part_hit->fDCWire.fWire       = wire;
+            part_hit->fDCWire.fChannel    = channel;
          }
       }
 

@@ -31,98 +31,27 @@
 #include "HTCCDetectorGeometry.h"
 #include "G4ExtrudedSolid.hh"
 
-//___________________________________________________________________
-
 
 B1DetectorConstruction::B1DetectorConstruction() : 
    G4VUserDetectorConstruction(), 
-   world_x                      ( 10.0*m                  ),
-   world_y                      ( 10.0*m                  ),
-   world_z                      ( 16.0*m                  ),
-   radiator_thickness           ( 6.0*mm                 ),
-   collimator_target_center_gap ( 4.0*cm                 ),
-   collimator_ID                ( 1.0*cm                 ),
-   collimator_OD                ( 2.54*cm                ),
-   outer_collimator_ID          ( 2.54*cm                ),
-   outer_collimator_OD          ( 4.0*2.54*cm            ),
-   collimator_diameter          ( 8.0*cm            ),
-   collimator_z_end             ( 0.0*cm            ),
-   radiator_collimator_gap      ( 1.0*mm                 ),
-   collimator_length            ( 4.0*cm                 ),
-   beampipe_length              ( 1.0*cm ),
-   beampipe_diameter            ( 8.0*cm  ),
-   radiator_diameter            ( 8.0*cm  ),
-   scoring_diameter             ( 20.0*cm ),
-   scoring_length               ( 0.01*mm    ),
-   window_diameter              ( 1.0*cm  ),
-   window_thickness             ( 8.0*mm  ),
-   scoring2_diameter            ( 20.0*cm ),
-   scoring2_length              ( 0.01*mm    ),
-   fScoringVolume               ( 0),
+   world_x( 10.0*m ),
+   world_y( 10.0*m ),
+   world_z( 16.0*m ),
    fHasBeenBuilt(false)
 {
    fMessenger = new B1DetectorMessenger(this);
-   fCollimatorMatName = "G4_Cu";
-   scoring_det      = 0;
-   scoring2_det     = 0;
 
    world_mat        = 0;
    world_solid      = 0;
    world_log        = 0;
    world_phys       = 0;
 
-   beampipe_mat     = 0;
-   beampipe_solid   = 0;
-   beampipe_log     = 0;
-   beampipe_phys    = 0;
-   radiator_mat     = 0;
-   radiator_solid   = 0;
-   radiator_log     = 0;
-   radiator_phys    = 0;
-   collimator_mat   = 0;
-   collimator_solid = 0;
-   collimator_log   = 0;
-   collimator_phys  = 0;
-   collimator2_mat   = 0;
-   collimator2_solid = 0;
-   collimator2_log   = 0;
-   collimator2_phys  = 0;
-   outer_collimator_mat   = 0;
-   outer_collimator_solid = 0;
-   outer_collimator_log   = 0;
-   outer_collimator_phys  = 0;
-   scoring_mat      = 0;
-   scoring_solid    = 0;
-   scoring_log      = 0;
-   scoring_phys     = 0;
-   window_mat       = 0;
-   window_solid     = 0;
-   window_log       = 0;
-   window_phys      = 0;
-   scoring2_mat     = 0;
-   scoring2_solid   = 0;
-   scoring2_log     = 0;
-   scoring2_phys    = 0;
-
-   drift_chamber_log     = 0;
-   drift_chamber_phys    = 0;
-   htcc_log     = 0;
-   htcc_phys    = 0;
-
-   G4SDManager* SDMan = G4SDManager::GetSDMpointer();
-
-   //fCherenkov_PMTArray = new PMTArraySensitiveDetector("PMTArray",6*8);
-   //SDMan->AddNewDetector(fCherenkov_PMTArray);
-
-   //nCherenkovPMT = 0;
-   //nDriftChamberVols = 0;
-   //fDriftChamber_SD =  new DriftChamberSensitiveDetector("DCIonPairSD",6*8);
-
    fDriftChamber  = 0;//new DriftChamberDetectorGeometry();
    fRecoilChamber = 0;
    fHTCC          = 0;
    fSolenoid      = 0;
    fTorus         = 0;
+   fBeamline      = 0;
 }
 //___________________________________________________________________
 
@@ -157,23 +86,20 @@ void B1DetectorConstruction::Rebuild()
 
 void B1DetectorConstruction::CalculatePositions()
 {
-   beampipe_pos     = { 0, 0, -beampipe_length/2.0 - radiator_thickness/2.0 };
-   radiator_pos     = { 0, 0, 0.0 };
-   collimator_pos   = { 0, 0, collimator_length/4.0 + radiator_thickness/2.0 + radiator_collimator_gap };
-   collimator2_pos   = { 0, 0, 3.0*collimator_length/4.0 + radiator_thickness/2.0 + radiator_collimator_gap };
-   outer_collimator_pos   = { 0, 0, collimator_length/2.0 + radiator_thickness/2.0 + radiator_collimator_gap };
-   collimator_z_end = collimator_length + radiator_thickness/2.0 + radiator_collimator_gap;
-   scoring_pos      = { 0, 0, radiator_thickness/2.0 + radiator_collimator_gap/2.0 };
-   window_pos       = { 0, 0, collimator_z_end - window_thickness/2.0 };
-   scoring2_pos     = { 0, 0, collimator_z_end + collimator_target_center_gap };
+   //beampipe_pos     = { 0, 0, -beampipe_length/2.0 - radiator_thickness/2.0 };
+   //radiator_pos     = { 0, 0, 0.0 };
+   //collimator_pos   = { 0, 0, collimator_length/4.0 + radiator_thickness/2.0 + radiator_collimator_gap };
+   //collimator2_pos   = { 0, 0, 3.0*collimator_length/4.0 + radiator_thickness/2.0 + radiator_collimator_gap };
+   //outer_collimator_pos   = { 0, 0, collimator_length/2.0 + radiator_thickness/2.0 + radiator_collimator_gap };
+   //collimator_z_end = collimator_length + radiator_thickness/2.0 + radiator_collimator_gap;
+   //scoring_pos      = { 0, 0, radiator_thickness/2.0 + radiator_collimator_gap/2.0 };
+   //window_pos       = { 0, 0, collimator_z_end - window_thickness/2.0 };
+   //scoring2_pos     = { 0, 0, collimator_z_end + collimator_target_center_gap };
 }
 //______________________________________________________________________________
 
 void B1DetectorConstruction::DefineMaterials()
 {
-   ///////////////////////
-   //---- Materials ----//
-   ///////////////////////
 
    G4double a, z, density;
    G4int nel;
@@ -224,7 +150,6 @@ void B1DetectorConstruction::DefineMaterials()
    He_Target = new G4Material("He", density, ncomponents=1,
          kStateGas,temperature,pressure);
    He_Target->AddElement(elHe, fractionmass=1.);
-   //--
 
    //--For the clear space around the target (1 atm)
    pressure    = 1.0*atmosphere;
@@ -286,6 +211,13 @@ void B1DetectorConstruction::DefineMaterials()
    Deuterium = new G4Material("DeuteriumGas", density, ncomponents=1, kStateGas, temperature, pressure); 
    Deuterium->AddElement(ele_D,100.*perCent);
 
+   /////////////
+   //-- LH2 --//
+   /////////////
+   density   = 0.07085*g/cm3; //g/cm^3
+   LH2 = new G4Material("LH2", density, ncomponents=1); 
+   LH2->AddElement(H,100.*perCent);
+
    /////////////////
    //---- Air ----//
    /////////////////
@@ -319,7 +251,6 @@ void B1DetectorConstruction::DefineMaterials()
    ////////////////////////
    //-- Carbon dioxyde --//
    ////////////////////////
-
 
    a_noUnit = 44.01;
    pressure = 1.*atmosphere;
@@ -359,7 +290,6 @@ void B1DetectorConstruction::DefineMaterials()
 
 G4VPhysicalVolume* B1DetectorConstruction::Construct()
 {  
-   //std::cout << "============================================================" << std::endl;
    //std::cout << "B1DetectorConstruction::Construct()" << std::endl;
 
    DefineMaterials();
@@ -430,12 +360,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    std::cout << " HTCC construction \n";
    fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
    fHTCC->BuildLogicalVolumes();
-   fHTCC->PlacePhysicalVolume( world_log, 1, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 2, 2);
-   fHTCC->PlacePhysicalVolume( world_log, 3, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 4, 2);
-   fHTCC->PlacePhysicalVolume( world_log, 5, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 6, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 1, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 2, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 3, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 4, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 5, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
@@ -446,7 +376,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fRecoilChamber->HeiC4H10  = HeiC4H10;
    fRecoilChamber->Tungsten  = Tungsten; 
    fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -471,10 +401,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //G4UserLimits * scoring_limits = new G4UserLimits(0.004*um);
    //scoring_log->SetUserLimits(scoring_limits);
 
-   G4NistManager* man = nist;//G4NistManager::Instance();
+   //G4NistManager* man = nist;//G4NistManager::Instance();
 
    // Way to access a material
-   Mylar = man->FindOrBuildMaterial("G4_MYLAR");
+   Mylar = nist->FindOrBuildMaterial("G4_MYLAR");
 
    // ------------------------------------------------------------------------
    // Solenoid Geometry
@@ -491,11 +421,18 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //fTorus->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
+   // Beamline
+   // ------------------------------------------------------------------------
+   fBeamline = SimulationManager::GetInstance()->GetBeamlineDetectorGeometry();
+   fBeamline->BuildLogicalVolumes();
+   fBeamline->PlacePhysicalVolume( world_log );
+
+   // ------------------------------------------------------------------------
    // Magnetic field
    // ------------------------------------------------------------------------
 
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
-   C12MagneticField * magField = new C12MagneticField(true,true);
+   C12MagneticField * magField = new C12MagneticField(/*torusOn=*/ true, true );
 
    // set it as the default field
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager(); // set it as the default field
@@ -513,48 +450,38 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    fieldMgr->SetMinimumEpsilonStep( minEps );
    fieldMgr->SetMaximumEpsilonStep( maxEps );
-   fieldMgr->SetDeltaOneStep( 0.1e-4 * mm );  // 0.5 micrometer
-
+   fieldMgr->SetDeltaOneStep( 0.5e-4 * mm );  // 0.5 micrometer
    G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
 
+   // ------------------------------------------------------------------------
+   // Target
+   // ------------------------------------------------------------------------
 
-
-
-   ///////////////////////////////////////////////////////////////////////////
-   //------------------------------ Target ---------------------------------//
-   ///////////////////////////////////////////////////////////////////////////
-
-   //--Creating the geometry
    G4ThreeVector target_pos {target_posX, target_posY, target_posZ};
 
-   G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, hightOfTheTarget, startAngleOfTheTarget,spanningAngleOfTheTarget);
+   G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength, 0.0, 360.0*CLHEP::degree);
 
-   G4Material * target_mat = Deuterium;
+   G4Material * target_mat = LH2;//Deuterium;
    G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
 
-   //jnew G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
-   //j      false,           //no boolean operation
-   //j      0,               //copy number
-   //j      checkOverlaps);  //overlaps checking
+   new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
+         false,           //no boolean operation
+         0,               //copy number
+         checkOverlaps);  //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
-   G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.));
+   G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.,0.3));
    // Set the forced wireframe style 
-   TargetVisAtt->SetForceWireframe(true);
+   //TargetVisAtt->SetForceWireframe(true);
    // Assignment of the visualization attributes to the logical volume
    logicTarget->SetVisAttributes(TargetVisAtt);
-   //--
 
 
+   // ------------------------------------------------------------------------
+   // Kapton layer
+   // ------------------------------------------------------------------------
 
-
-
-   ///////////////////////////////////////////////////////////////////////////
-   //---------------------------- Kapton layer -----------------------------//
-   ///////////////////////////////////////////////////////////////////////////
-
-   //--Creating the geometry
    G4ThreeVector kapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
 
    G4Tubs* kapton_cyl = new G4Tubs("KaptonCylinder", innerRadiusOfTheKapton, outerRadiusOfTheKapton, hightOfTheKapton, startAngleOfTheKapton, spanningAngleOfTheKapton);
@@ -580,17 +507,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    KaptonVisAtt->SetForceWireframe(true);
    // Assignment of the visualization attributes to the logical volume
    logicKapton->SetVisAttributes(KaptonVisAtt);
-   //--
 
 
-
-
-
-   ///////////////////////////////////////////////////////////////////////////
-   //---------------------------- Clear Space ------------------------------//
-   ///////////////////////////////////////////////////////////////////////////
-
-   //--Creating the geometry
+   // ------------------------------------------------------------------------
+   // Clear Space
+   // ------------------------------------------------------------------------
    G4ThreeVector around_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
 
    G4Tubs* around = new G4Tubs("ClearSpace", innerRadiusOfAround, outerRadiusOfAround, hightOfAround, startAngleOfAround, spanningAngleOfAround);
@@ -616,15 +537,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    AroundVisAtt->SetForceWireframe(true);
    // Assignment of the visualization attributes to the logical volume
    logicAround->SetVisAttributes(AroundVisAtt);
-   //--
 
 
+   // ------------------------------------------------------------------------
+   // Mylar layer around clear space
+   // ------------------------------------------------------------------------
 
-   ///////////////////////////////////////////////////////////////////////////
-   //--------------------- Mylar layer around clear space-------------------//
-   ///////////////////////////////////////////////////////////////////////////
-
-   //--Creating the geometry
    G4ThreeVector Oclkapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
 
    G4Tubs* Oclkapton_cyl = new G4Tubs("OclKaptonCylinder",
@@ -653,16 +571,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    KaptonVisAtt->SetForceWireframe(true);
    // Assignment of the visualization attributes to the logical volume
    logicOclKapton->SetVisAttributes(OclKaptonVisAtt);
-   //--
+   
+   // ------------------------------------------------------------------------
+   // Outisde Mylar layer
+   // ------------------------------------------------------------------------
 
-
-
-
-   ///////////////////////////////////////////////////////////////////////////
-   //------------------------ Outisde Mylar layer --------------------------//
-   ///////////////////////////////////////////////////////////////////////////
-
-   //--Creating the geometry
    G4ThreeVector okapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
 
    G4Tubs* okapton_cyl = new G4Tubs("OKaptonCylinder", innerRadiusOfTheOKapton, outerRadiusOfTheOKapton, hightOfTheOKapton, startAngleOfTheOKapton, spanningAngleOfTheOKapton);
@@ -688,13 +601,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    OKaptonVisAtt->SetForceWireframe(true);
    // Assignment of the visualization attributes to the logical volume
    logicOKapton->SetVisAttributes(OKaptonVisAtt);
-   //--
 
 
-
-   ///////////////////////////////////////////////////////////////////////////
-   //--------------------------- Sci Detector ------------------------------//
-   ///////////////////////////////////////////////////////////////////////////
+   // ------------------------------------------------------------------------
+   // Sci Detector 
+   // ------------------------------------------------------------------------
 
    //--Creating the geometry
    G4ThreeVector SiDetector_pos = G4ThreeVector(SiDetector_posX, SiDetector_posY, SiDetector_posZ);
@@ -722,52 +633,53 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    SiDetectorVisAtt->SetForceWireframe(true);
    // Assignment of the visualization attributes to the logical volume
    logicSiDetector->SetVisAttributes(SiDetectorVisAtt);
-   //--
 
-   //--Making it a sensitive detector
    //G4String SiDetectorSDname = "/mydet/SiDetector";
    //SiDetectorSD * siDetectorSD = new SiDetectorSD(SiDetectorSDname);
    //SDman->AddNewDetector(siDetectorSD);
    //logicSiDetector->SetSensitiveDetector(siDetectorSD);
-   //--
 
-
-
-   //fScoringVolume = scoring2_log;
    fHasBeenBuilt = true;
 
    return world_phys;
 }
 //___________________________________________________________________
 
-void B1DetectorConstruction::SetCollimatorMaterial(G4String materialName)
-{
-   fCollimatorMatName = materialName;
+void     B1DetectorConstruction::ToggleCherenkov(bool l)
+{   
+   fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
+   fHTCC->SetGasIndexOfRefraction(l);
    if(fHasBeenBuilt) Rebuild();
 }
+
+//void B1DetectorConstruction::SetCollimatorMaterial(G4String materialName)
+//{
+//   fCollimatorMatName = materialName;
+//   if(fHasBeenBuilt) Rebuild();
+//}
+////______________________________________________________________________________
+//
+//void     B1DetectorConstruction::SetRadiatorCollimatorGap(G4double l)
+//{   
+//   radiator_collimator_gap = l; 
+//   if(fHasBeenBuilt) Rebuild();
+//}
+////______________________________________________________________________________
+//
+//void     B1DetectorConstruction::SetInnerCollimatorOD(G4double l)
+//{   
+//   collimator_OD       = l;
+//   outer_collimator_ID = l;
+//   if(fHasBeenBuilt) Rebuild();
+//}
 //______________________________________________________________________________
 
-void     B1DetectorConstruction::SetRadiatorCollimatorGap(G4double l)
-{   
-   radiator_collimator_gap = l; 
-   if(fHasBeenBuilt) Rebuild();
-}
-//______________________________________________________________________________
-
-void     B1DetectorConstruction::SetInnerCollimatorOD(G4double l)
-{   
-   collimator_OD       = l;
-   outer_collimator_ID = l;
-   if(fHasBeenBuilt) Rebuild();
-}
-//______________________________________________________________________________
-
-void     B1DetectorConstruction::SetCollimatorLength(G4double l)
-{   
-   collimator_length = l;
-   if(fHasBeenBuilt) Rebuild();
-}
-//______________________________________________________________________________
+//void     B1DetectorConstruction::SetCollimatorLength(G4double l)
+//{   
+//   collimator_length = l;
+//   if(fHasBeenBuilt) Rebuild();
+//}
+////______________________________________________________________________________
 
 void     B1DetectorConstruction::PrintConfigInfo() const
 {   

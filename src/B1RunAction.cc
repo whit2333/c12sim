@@ -49,11 +49,7 @@ G4Run* B1RunAction::GenerateRun()
    //simManager->SetRunNumber(fRunNumber);
 
    G4cout << " - Creating Run Number " << fRunNumber << "   " << G4endl;
-
    std::string filename = simManager->OutputFileName();
-
-   //G4cout << " - file " << filename << "   " << G4endl;
-   //G4cout << " - Creating dir " << simManager->fOutputDirectoryName << "   " << G4endl;
    gSystem->mkdir(simManager->fOutputDirectoryName.c_str(),true);
 
    simManager->fOutputFile = new TFile(filename.c_str(), "RECREATE" );

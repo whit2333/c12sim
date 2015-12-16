@@ -6,6 +6,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4Material.hh"
 #include "G4ThreeVector.hh"
+#include "G4VisAttributes.hh"
 
 class SolenoidDetectorGeometry {
 
@@ -16,6 +17,7 @@ class SolenoidDetectorGeometry {
       G4LogicalVolume   * fSolenoid_log;
       G4VPhysicalVolume * fSolenoid_phys;
       G4ThreeVector       fSolenoid_pos;
+      G4VisAttributes   * fSolenoid_vis;
 
    public:
       SolenoidDetectorGeometry();

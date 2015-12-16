@@ -202,7 +202,6 @@ class HTCCDetectorGeometry {
       void BuildMirrors();
       void PlaceMirrors(G4VPhysicalVolume *);
 
-      //HTCCSensitiveDetector * fSensitiveDetector;
       HTCCSensitiveDetector  * fSensitiveDetector;
 
       G4VSolid        * htccBigGasVolume_solid;
@@ -234,8 +233,9 @@ class HTCCDetectorGeometry {
       G4LogicalVolume * fEmptyRegion2_log;
       G4LogicalVolume * fEmptyRegion3_log;
 
-      G4Material * fGasMaterial;
-      G4OpticalSurface* OpSurface;
+      G4Material       * fGasMaterial;
+      G4OpticalSurface * OpSurface;
+      bool               fUseIndexOfRefraction;
 
    public:
       HTCCDetectorGeometry();
@@ -246,6 +246,7 @@ class HTCCDetectorGeometry {
       G4VPhysicalVolume * PlacePhysicalVolume(G4LogicalVolume * mother, int sec, int region);
       G4VPhysicalVolume * PlaceParallelPhysicalVolume(G4LogicalVolume * mother, int sec, int region);
 
+      void SetGasIndexOfRefraction(bool v = true){ fUseIndexOfRefraction = v; }
 };
 
 #endif

@@ -12,11 +12,6 @@ class G4UIcmdWithoutParameter;
 
 
 /// Messenger class that defines commands for B1DetectorConstruction.
-///
-/// It implements commands:
-/// - /B1/det/setTargetMaterial name
-/// - /B1/det/setChamberMaterial name
-/// - /B1/det/stepMax value unit
 
 class B1DetectorMessenger: public G4UImessenger
 {
@@ -32,7 +27,8 @@ class B1DetectorMessenger: public G4UImessenger
     G4UIdirectory*           fB1Directory;
     G4UIdirectory*           fDetDirectory;
 
-    G4UIcmdWithoutParameter    * fPrintConfigInfoCmd;
+    G4UIcmdWithAString        * fCherenkovOnCmd;
+    G4UIcmdWithoutParameter   * fPrintConfigInfoCmd;
     G4UIcmdWithAString        * fRadiatorMatCmd;
     G4UIcmdWithAString        * fCollimatorMatCmd;
     G4UIcmdWithADoubleAndUnit * fCollimatorLengthCmd;
@@ -44,6 +40,5 @@ class B1DetectorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fStepMaxCmd;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+

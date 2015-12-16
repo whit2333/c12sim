@@ -141,7 +141,7 @@ void HTCCSensitiveDetector::EndOfEvent ( G4HCofThisEvent* )
       adc_hit = fHTCCHitsEvent->AddADCHit(i,adc_value);
       //adc_hit->Print();
    }
-   fTrigDiscModule->Print();
+   //fTrigDiscModule->Print();
    //clas12::DAQ::DAQManager& daq_manager = clas12::DAQ::DAQManager::GetManager();
    //for(int i = 0; i< daq_manager.fScalers.size(); i++ ) {
    //   daq_manager.fScalers[i].Print();

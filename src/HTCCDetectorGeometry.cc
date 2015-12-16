@@ -1327,7 +1327,7 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
 {
 
    using namespace CLHEP;
-   bool check_overlaps = true;
+   bool check_overlaps = false;
 
    BuildMirrors();
 
@@ -1382,9 +1382,11 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
    // ---------------------------------------------
 
    G4MaterialPropertiesTable *MPT = new G4MaterialPropertiesTable();
-   //MPT->AddConstProperty("SCINTILLATIONYIELD",100./MeV);
-   MPT->AddProperty("RINDEX",ppckov,rindex,NUMENTRIES);
-   MPT->AddProperty("ABSLENGTH",ppckov,absorption,NUMENTRIES);
+   if(fUseIndexOfRefraction){
+      //MPT->AddConstProperty("SCINTILLATIONYIELD",100./MeV);
+      MPT->AddProperty("RINDEX",ppckov,rindex,NUMENTRIES);
+      MPT->AddProperty("ABSLENGTH",ppckov,absorption,NUMENTRIES);
+   }
    fGasMaterial->SetMaterialPropertiesTable(MPT);
 
    // ---------------------------------------------

@@ -51,7 +51,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
    //return;
 
 
-   if(event_number%10 == 0 )
+   if(event_number%1000 == 0 )
       std::cout <<  " End of Event " << event_number << " Routine..." << std::endl;
 
    // Increase event number. Notice: this is different than evt->GetEventID()

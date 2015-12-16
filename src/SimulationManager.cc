@@ -31,6 +31,7 @@
 #include "HTCCDetectorGeometry.h"
 #include "SolenoidDetectorGeometry.h"
 #include "TorusDetectorGeometry.h"
+#include "BeamlineDetectorGeometry.h"
 
 
 SimulationManager* SimulationManager::fgSimulationManager = 0;
@@ -52,6 +53,7 @@ SimulationManager::SimulationManager () {
    fHTCCGeo             = nullptr;
    fSolenoidGeo         = nullptr;
    fTorusGeo            = nullptr;
+   fBeamlineGeo         = nullptr;
 
    fInputFileName       = "data/lundfiles/eg_LH2_full_4.lund";
 }
@@ -184,6 +186,14 @@ TorusDetectorGeometry * SimulationManager::GetTorusDetectorGeometry(){
       fTorusGeo = new TorusDetectorGeometry();
    }
    return fTorusGeo;
+}
+//______________________________________________________________________________
+
+BeamlineDetectorGeometry * SimulationManager::GetBeamlineDetectorGeometry(){
+   if(!fBeamlineGeo) {
+      fBeamlineGeo = new BeamlineDetectorGeometry();
+   }
+   return fBeamlineGeo;
 }
 //______________________________________________________________________________
 

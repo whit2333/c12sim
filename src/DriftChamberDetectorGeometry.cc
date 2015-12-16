@@ -151,6 +151,11 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
    G4ThreeVector zTrans(0, 0, 0);
 
+   const int WiresPerLayer   = 112;
+   const int WiresPerSL      = 6*112;
+   const int WiresPerSector  = 6*6*112;
+   const int TotalWires      = 6*6*6*112;
+
    // -----------------------------------------------------------------------------
    for( int super_layer = 1; super_layer <=6; super_layer++) {
 
@@ -164,13 +169,6 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
       double rOuter[] = {sqrt3Over2*LayerWireSpacing[super_layer-1], sqrt3Over2*LayerWireSpacing[super_layer-1] };
       G4VSolid * hex_polyhedra = new G4Polyhedra("hex_polyhedra",0.0,360.0*degree, 6, 2, zPlane, rInner, rOuter );
 
-      //G4VSolid * subtraction_box  = new G4Box(Form("wire_hex_solid%d",super_layer),  hex_length/2.0, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
-      //G4VSolid * subtraction_box1 = new G4Box(Form("wire_hex_solid1%d",super_layer), hex_length/2.0, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
-      //G4VSolid * subtraction_box2 = new G4Box(Form("wire_hex_solid2%d",super_layer), hex_length/2.0, 10.0*cm, LayerWireSpacing[super_layer-1]/2.0-0.001*mm );
-      //G4VSolid * subtraction_box3 = new G4Box(Form("bigbox%d",super_layer),          hex_length/2.0, 10.0*cm, 10.0*cm );
-      //G4VSolid* unionMoved  = new G4IntersectionSolid(Form("BoxCylinderMoved%d",super_layer),  subtraction_box,  subtraction_box1, yRot,  zTrans);
-      //G4VSolid* unionMoved2 = new G4IntersectionSolid(Form("BoxCylinderMoved2%d",super_layer), unionMoved,       subtraction_box2, yRot2, zTrans);
-
       // This operation puts the hex tube in a box with the proper orientation ( with flat sides against in-row adjacent)
       //G4VSolid* unionMoved3 = new G4IntersectionSolid(Form("BoxCylinderMoved3%d",super_layer), subtraction_box3, unionMoved2,      yRot3, zTrans);
 
@@ -180,7 +178,17 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
          for(int i = 1;i<=112; i++ ) {
 
-            int channel = 112*(layer-1) + 6*112*((super_layer-1)%2) + (i-1);
+            int sl_ind     = super_layer-1;
+            int lay_ind    = layer-1;
+            int wire_ind   = i-1;
+
+            int channel = /*WiresPerSector*sec_ind +*/ WiresPerSL*sl_ind + WiresPerLayer*lay_ind + wire_ind;
+            //int channel = 112*(layer-1) + 6*112*((super_layer-1)%2) + (i-1);
+
+      //std::cout << " sl_ind " << sl_ind << std::endl;
+      //std::cout << " lay_ind " << lay_ind << std::endl;
+      //std::cout << " wire_ind " << wire_ind << std::endl;
+      //std::cout << " sec_chan " << channel << std::endl;
 
             G4RotationMatrix * aRot  = new G4RotationMatrix();
             G4RotationMatrix * noRot = new G4RotationMatrix();
@@ -221,7 +229,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
                   wire_log,          // its logical volume
                   Form("sl%d_%d_%d_phys",super_layer,layer,i),
                   fRegions_log[SuperLayerRegionIndex[super_layer-1]],  
-                  false,                        // no boolean operations
+                  true,                        // no boolean operations
                   channel,                           // its copy number
                   check_overlaps ); // surface check
 
@@ -264,13 +272,13 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlacePhysicalVolume(G4LogicalV
          G4Transform3D(
             RegionRotation(sec,region),
             G4ThreeVector(0,0,20.0*CLHEP::cm)+ RegionTranslation(sec, region)
-         ),
+            ),
          fEmptyRegions_log[index],          // its logical volume
          Form("region%d_phys",region), // its name
          mother,                       // its mother (logical) volume
          false,                        // no boolean operations
-         grouping,                     // its copy number
-         false);                        // check for overlaps
+         sec,                          // its copy number
+         false);                       // check for overlaps
 
    return phys;
 }
@@ -296,7 +304,7 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlaceParallelPhysicalVolume(G4
          Form("region%d_phys",region), // its name
          mother,                       // its mother (logical) volume
          false,                        // no boolean operations
-         grouping,                     // its copy number
+         sec,                     // its copy number
          false);                        // check for overlaps
 
    return phys;

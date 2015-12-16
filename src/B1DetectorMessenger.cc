@@ -17,6 +17,12 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction* Det) :
   fDetDirectory = new G4UIdirectory("/B1/det/");
   fDetDirectory->SetGuidance("Detector construction control");
 
+  fCherenkovOnCmd = new G4UIcmdWithAString("/B1/det/setCherenkov",this);
+  fCherenkovOnCmd->SetGuidance("Turn on cherenkov (by setting and index of refraction).");
+  fCherenkovOnCmd->SetParameterName("choice",false);
+  fCherenkovOnCmd->SetCandidates("on off");
+  fCherenkovOnCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
   fPrintConfigInfoCmd = new G4UIcmdWithoutParameter("/B1/det/printConfigInfo",this);
   fPrintConfigInfoCmd->SetGuidance("prints details of interest.");
   fPrintConfigInfoCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
@@ -86,14 +92,21 @@ B1DetectorMessenger::~B1DetectorMessenger()
 
 void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
-  if( command == fCollimatorMatCmd )
-   { fDetectorConstruction->SetCollimatorMaterial(newValue);}
+  if( command == fCherenkovOnCmd ) { 
+     bool res = false;
+     if( newValue == "on" ) {
+        res = true;
+     }
+     fDetectorConstruction->ToggleCherenkov(res);
+  }
+  //if( command == fCollimatorMatCmd )
+  // { fDetectorConstruction->SetCollimatorMaterial(newValue);}
 
-  if( command == fCollimatorLengthCmd )
-   { fDetectorConstruction->SetCollimatorLength( G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue));}
+  //if( command == fCollimatorLengthCmd )
+  // { fDetectorConstruction->SetCollimatorLength( G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue));}
 
-  if( command == fInnerCollimatorODCmd )
-   { fDetectorConstruction->SetInnerCollimatorOD( G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue));}
+  //if( command == fInnerCollimatorODCmd )
+  // { fDetectorConstruction->SetInnerCollimatorOD( G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue));}
 
   if( command == fPrintConfigInfoCmd )
    { fDetectorConstruction->PrintConfigInfo();}
