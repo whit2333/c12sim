@@ -10,6 +10,7 @@
 #include "CLHEP/Units/PhysicalConstants.h"
 #include "G4UserLimits.hh"
 #include "G4Polyhedra.hh"
+#include <algorithm>
 
 DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
 {
@@ -23,7 +24,9 @@ DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
    fSensitiveDetector2 = new SensitiveRegionDetector("DriftChamberRegion",6*3);
    SDMan->AddNewDetector(fSensitiveDetector2);
 
-   std::vector<G4TwoVector> points = RegionTrapPoints(1);
+   //std::vector<G4TwoVector> points = RegionTrapPoints(2);
+   //std::cout << clas12::geo::RegionTrapWidth(2) << std::endl;
+   //std::for_each(points.begin(), points.end(), [](G4TwoVector p){std::cout << p << std::endl;});
 
    // Huge box for geometric intersection with trapezoid  so that the placement
    // of the region is easier . 
@@ -31,6 +34,7 @@ DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
    G4VSolid * temp_region = 0;
 
    // RI
+   //temp_region    = new G4Box("R1trap_solid_BOX", 4.0*m, 4.0*m, 1.0*m); 
    temp_region    = new G4GenericTrap("R1trap_solid",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
    fRegion1_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(1)) );
 
@@ -41,6 +45,7 @@ DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
    // RII
    temp_region    = new G4GenericTrap("R2trap_solid",  clas12::geo::RegionTrapWidth(2), clas12::geo::RegionTrapPoints(2));
    fRegion2_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(2)) );
+
 
    temp_region    = new G4GenericTrap("R3trap_solid",  clas12::geo::RegionTrapWidth(3), clas12::geo::RegionTrapPoints(3));
    fRegion3_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(3)) );
@@ -159,24 +164,22 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    // -----------------------------------------------------------------------------
    for( int super_layer = 1; super_layer <=6; super_layer++) {
 
-      // Has to be really long for some reason, otherwise there is a seg fault...
-      G4double hex_length = 100.0*m;
-
-      double sqrt3Over2 = 1.0/2.0;//TMath::Sqrt(3.0);//2.0;
-
-      double zPlane[] =  {-hex_length/2.0,hex_length/2.0};
-      double rInner[] =  {0.0,0.0};
-      double rOuter[] = {sqrt3Over2*LayerWireSpacing[super_layer-1], sqrt3Over2*LayerWireSpacing[super_layer-1] };
-      G4VSolid * hex_polyhedra = new G4Polyhedra("hex_polyhedra",0.0,360.0*degree, 6, 2, zPlane, rInner, rOuter );
-
-      // This operation puts the hex tube in a box with the proper orientation ( with flat sides against in-row adjacent)
-      //G4VSolid* unionMoved3 = new G4IntersectionSolid(Form("BoxCylinderMoved3%d",super_layer), subtraction_box3, unionMoved2,      yRot3, zTrans);
-
-      G4VSolid* wire_hex_solid = hex_polyhedra;//unionMoved3;
-
       for( int layer = 1; layer<=6; layer++ ) {
 
-         for(int i = 1;i<=112; i++ ) {
+         for(int i = 1; i<=112; i++ ) {
+
+            // Has to be really long for some reason, otherwise there is a seg fault...
+            G4double hex_length = WireLength(super_layer,layer,i) - 3.0*cm;
+            double factor = 1.0/2.0;//TMath::Sqrt(3.0);//2.0;
+            double zPlane[] = {-hex_length/2.0,hex_length/2.0};
+            double rInner[] = {0.0,0.0};
+            double rOuter[] = {factor*LayerWireSpacing[super_layer-1], factor*LayerWireSpacing[super_layer-1] };
+
+            // This operation puts the hex tube in a box with the proper orientation ( with flat sides against in-row adjacent)
+            //G4VSolid* unionMoved3 = new G4IntersectionSolid(Form("BoxCylinderMoved3%d",super_layer), subtraction_box3, unionMoved2,      yRot3, zTrans);
+            G4VSolid * hex_polyhedra = new G4Polyhedra("hex_polyhedra",0.0,360.0*degree, 6, 2, zPlane, rInner, rOuter );
+            //G4VSolid * hex_polyhedra = new G4Box("hex_polyhedra_BOX",factor*LayerWireSpacing[super_layer-1]/2.0, factor*LayerWireSpacing[super_layer-1]/2.0, hex_length/2.0 - 1.0*cm );
+            G4VSolid * wire_hex_solid = hex_polyhedra;//unionMoved3;
 
             int sl_ind     = super_layer-1;
             int lay_ind    = layer-1;
@@ -185,17 +188,23 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
             int channel = /*WiresPerSector*sec_ind +*/ WiresPerSL*sl_ind + WiresPerLayer*lay_ind + wire_ind;
             //int channel = 112*(layer-1) + 6*112*((super_layer-1)%2) + (i-1);
 
-      //std::cout << " sl_ind " << sl_ind << std::endl;
-      //std::cout << " lay_ind " << lay_ind << std::endl;
-      //std::cout << " wire_ind " << wire_ind << std::endl;
-      //std::cout << " sec_chan " << channel << std::endl;
+            //std::cout << " sl_ind " << sl_ind << std::endl;
+            //std::cout << " lay_ind " << lay_ind << std::endl;
+            //std::cout << " wire_ind " << wire_ind << std::endl;
+            //std::cout << " sec_chan " << channel << std::endl;
+            //std::cout << " hex_length " << hex_length << std::endl;
 
             G4RotationMatrix * aRot  = new G4RotationMatrix();
             G4RotationMatrix * noRot = new G4RotationMatrix();
             (*aRot) = clas12::geo::LayerWireRotation(super_layer);
             aRot->rotateY(90.0*degree);
+            //aRot->rotateZ(-clas12::geo::DC::ThetaStereo[sl_ind/2]);
             G4ThreeVector zero_trans(0.0,0.0,0.0);
+
             G4ThreeVector wire_trans = clas12::geo::ToWireMidPlane(super_layer,layer,i);
+            wire_trans -= clas12::geo::WireStereoShift(super_layer,layer,i);
+
+            //G4ThreeVector wire_trans_subtract = 0.1*wire_trans;
 
             //if(layer==1 && super_layer==1 && i==88){
             //   std::cout << wire_trans <<std::endl;
@@ -203,15 +212,17 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
             // Wire placement happens when creating the solid by chopping off the ends
             // of the hex tube so that it fits inside the sector/region 
-            G4VSolid* wire_solid  = new G4IntersectionSolid(
-                  Form("sl%d_%d_%d_solid",super_layer,layer,i), 
-                  fRegions_solid[SuperLayerRegionIndex[super_layer-1]],  
-                  wire_hex_solid, 
-                  aRot,
-                  wire_trans
-                  );
+            // NOTE : this appears to have a bug in it!
+            //G4VSolid* wire_solid  = new G4IntersectionSolid(
+            //      Form("sl%d_%d_%d_solid",super_layer,layer,i), 
+            //      fRegions_solid[SuperLayerRegionIndex[super_layer-1]],  
+            //      wire_hex_solid, 
+            //      aRot,
+            //      wire_trans-wire_trans_subtract
+            //      );
+
             G4LogicalVolume  * wire_log = new G4LogicalVolume(
-                  wire_solid,
+                  wire_hex_solid,//wire_solid,
                   fGasMaterial, 
                   Form("sl%d_%d_%d_log",super_layer,layer,i)
                   );
@@ -223,20 +234,26 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
             //check_overlaps = true;
             //if( super_layer >=5 ) check_overlaps = true;
+            //check_overlaps = false;
+            //if(super_layer%2 == 0 ) {
+            //   if(i>60) {
+            //      check_overlaps = true;
+            //   }
+            //}
 
             G4VPhysicalVolume * phys = new G4PVPlacement(
-                  0, zero_trans,
+                  aRot, wire_trans,
                   wire_log,          // its logical volume
                   Form("sl%d_%d_%d_phys",super_layer,layer,i),
                   fRegions_log[SuperLayerRegionIndex[super_layer-1]],  
-                  true,                        // no boolean operations
+                  false,                        // no boolean operations
                   channel,                           // its copy number
                   check_overlaps ); // surface check
 
             // Only visualize one sector (otherwise painfully slow)
             //if(sector == 1 ) {
-            if(TMath::Abs(channel%112-99) <= 2 ) {
-               if(layer%2 == 0 ) {
+            if(TMath::Abs(channel%112-10) <= 5 ) {
+               if(super_layer%2 == 0 ) {
                   wire_log->SetVisAttributes(vs_even);
                   //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
                } else {

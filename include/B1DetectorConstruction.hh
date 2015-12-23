@@ -10,6 +10,8 @@
 #include "SolenoidDetectorGeometry.h"
 #include "TorusDetectorGeometry.h"
 #include "BeamlineDetectorGeometry.h"
+#include "MicromegasVertexTrackerDetectorGeometry.h"
+using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
 
 #include "G4SystemOfUnits.hh"
 
@@ -158,13 +160,13 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       G4LogicalVolume   * world_log   ;
       G4VPhysicalVolume * world_phys  ;
 
-      HTCCDetectorGeometry           * fHTCC;
-      RecoilChamberDetectorGeometry  * fRecoilChamber;
-      DriftChamberDetectorGeometry   * fDriftChamber;
-      SolenoidDetectorGeometry       * fSolenoid;
-      TorusDetectorGeometry          * fTorus;
-      BeamlineDetectorGeometry       * fBeamline;
-
+      HTCCDetectorGeometry           * fHTCC          = nullptr;
+      RecoilChamberDetectorGeometry  * fRecoilChamber = nullptr;
+      DriftChamberDetectorGeometry   * fDriftChamber  = nullptr;
+      SolenoidDetectorGeometry       * fSolenoid      = nullptr;
+      TorusDetectorGeometry          * fTorus         = nullptr;
+      BeamlineDetectorGeometry       * fBeamline      = nullptr;
+      MVTDetectorGeometry            * fMVT           = nullptr;
 
    protected:
       void DefineMaterials();

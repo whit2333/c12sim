@@ -32,7 +32,9 @@
 #include "SolenoidDetectorGeometry.h"
 #include "TorusDetectorGeometry.h"
 #include "BeamlineDetectorGeometry.h"
+#include "MicromegasVertexTrackerDetectorGeometry.h"
 
+using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
 
 SimulationManager* SimulationManager::fgSimulationManager = 0;
 //______________________________________________________________________________
@@ -54,6 +56,7 @@ SimulationManager::SimulationManager () {
    fSolenoidGeo         = nullptr;
    fTorusGeo            = nullptr;
    fBeamlineGeo         = nullptr;
+   fMVTGeo         = nullptr;
 
    fInputFileName       = "data/lundfiles/eg_LH2_full_4.lund";
 }
@@ -194,6 +197,14 @@ BeamlineDetectorGeometry * SimulationManager::GetBeamlineDetectorGeometry(){
       fBeamlineGeo = new BeamlineDetectorGeometry();
    }
    return fBeamlineGeo;
+}
+//______________________________________________________________________________
+
+MVTDetectorGeometry * SimulationManager::GetMVTDetectorGeometry(){
+   if(!fMVTGeo) {
+      fMVTGeo = new MVTDetectorGeometry();
+   }
+   return fMVTGeo;
 }
 //______________________________________________________________________________
 

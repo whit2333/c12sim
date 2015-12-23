@@ -24,8 +24,12 @@ class HTCCDetectorGeometry;
 class SolenoidDetectorGeometry;
 class TorusDetectorGeometry;
 class BeamlineDetectorGeometry;
-
 class SimulationMessenger;
+class MicromegasVertexTrackerDetectorGeometry;
+
+using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
+
+
 
 /** The simulation manager singleton class.
  */
@@ -38,6 +42,8 @@ class SimulationManager {
       SolenoidDetectorGeometry      * fSolenoidGeo      = nullptr;
       TorusDetectorGeometry         * fTorusGeo         = nullptr;
       BeamlineDetectorGeometry      * fBeamlineGeo      = nullptr;
+      MVTDetectorGeometry           * fMVTGeo           = nullptr;
+
 
    public:
       DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
@@ -46,6 +52,7 @@ class SimulationManager {
       SolenoidDetectorGeometry      * GetSolenoidDetectorGeometry();
       TorusDetectorGeometry         * GetTorusDetectorGeometry();
       BeamlineDetectorGeometry      * GetBeamlineDetectorGeometry();
+      MVTDetectorGeometry           * GetMVTDetectorGeometry();
 
    public:
       SimulationMessenger           * fSimulationMessenger;

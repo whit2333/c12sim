@@ -56,7 +56,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
    //G4Track * theTrack = aStep->GetTrack();
    double step_length = aStep->GetStepLength()/cm;
 
-   bool ion_pair   = does_step_create_ion_pair( step_length );
+   bool ion_pair   = false;//does_step_create_ion_pair( step_length );
    bool first_step = aStep->IsFirstStepInVolume();
 
    if( ion_pair || first_step ) {
@@ -114,7 +114,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
 
          G4ThreeVector  mom  = aStep->GetTrack()->GetMomentum();
          double         Etot = aStep->GetTrack()->GetTotalEnergy();
-         if(Etot/MeV > 10.0) { 
+         //if(Etot/MeV > 10.0) { 
             DriftChamberParticleHit * part_hit = fDCHitsEvent->AddParticleHit();
             part_hit->fPDGCode            = pdg;
             part_hit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
@@ -126,7 +126,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
             part_hit->fDCWire.fLayer      = layer;
             part_hit->fDCWire.fWire       = wire;
             part_hit->fDCWire.fChannel    = channel;
-         }
+         //}
       }
 
    }

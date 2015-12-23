@@ -428,10 +428,18 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fBeamline->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
+   // MVT
+   // ------------------------------------------------------------------------
+   fMVT = SimulationManager::GetInstance()->GetMVTDetectorGeometry();
+   fMVT->BuildLogicalVolumes();
+   fMVT->PlacePhysicalVolume( world_log );
+
+   // ------------------------------------------------------------------------
    // Magnetic field
    // ------------------------------------------------------------------------
 
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
+   //C12MagneticField * magField = new C12MagneticField(false,false );
    C12MagneticField * magField = new C12MagneticField(/*torusOn=*/ true, true );
 
    // set it as the default field
