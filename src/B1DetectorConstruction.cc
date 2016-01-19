@@ -48,6 +48,7 @@ B1DetectorConstruction::B1DetectorConstruction() :
 
    fDriftChamber  = 0;//new DriftChamberDetectorGeometry();
    fRecoilChamber = 0;
+   fRecoilHodo = 0;
    fHTCC          = 0;
    fSolenoid      = 0;
    fTorus         = 0;
@@ -380,6 +381,19 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
 
    // ------------------------------------------------------------------------
+   // Recoil Hodoscope
+   // ------------------------------------------------------------------------
+   std::cout << " Recoil Hodo construction \n";
+   fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
+   fRecoilHodo->BuildLogicalVolumes();
+   //fRecoilHodo->He10CO2   = He10CO2;
+   //fRecoilHodo->HeiC4H10  = HeiC4H10;
+   //fRecoilHodo->Tungsten  = Tungsten; 
+   //fRecoilHodo->Mylar     = Mylar;
+   fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
+
+
+   // ------------------------------------------------------------------------
    // beam vacuum  
    // ------------------------------------------------------------------------
    //density     = universe_mean_density;
@@ -425,22 +439,22 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    fBeamline = SimulationManager::GetInstance()->GetBeamlineDetectorGeometry();
    fBeamline->BuildLogicalVolumes();
-   fBeamline->PlacePhysicalVolume( world_log );
+   //fBeamline->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // MVT
    // ------------------------------------------------------------------------
    fMVT = SimulationManager::GetInstance()->GetMVTDetectorGeometry();
    fMVT->BuildLogicalVolumes();
-   fMVT->PlacePhysicalVolume( world_log );
+   //fMVT->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // Magnetic field
    // ------------------------------------------------------------------------
 
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
-   //C12MagneticField * magField = new C12MagneticField(false,false );
-   C12MagneticField * magField = new C12MagneticField(/*torusOn=*/ true, true );
+   C12MagneticField * magField = new C12MagneticField(false,false );
+   //C12MagneticField * magField = new C12MagneticField(/*torusOn=*/ true, true );
 
    // set it as the default field
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager(); // set it as the default field
@@ -472,10 +486,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    G4Material * target_mat = LH2;//Deuterium;
    G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
 
-   new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
-         false,           //no boolean operation
-         0,               //copy number
-         checkOverlaps);  //overlaps checking
+   //new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
+   //      false,           //no boolean operation
+   //      0,               //copy number
+   //      checkOverlaps);  //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour

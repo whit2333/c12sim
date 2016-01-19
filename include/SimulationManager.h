@@ -19,6 +19,7 @@
 #include <fcntl.h>
 
 class RecoilChamberDetectorGeometry;
+class RecoilHodoDetectorGeometry;
 class DriftChamberDetectorGeometry;
 class HTCCDetectorGeometry;
 class SolenoidDetectorGeometry;
@@ -37,6 +38,7 @@ class SimulationManager {
 
    private:
       RecoilChamberDetectorGeometry * fRecoilChamberGeo = nullptr;
+      RecoilHodoDetectorGeometry    * fRecoilHodoGeo    = nullptr;
       DriftChamberDetectorGeometry  * fDriftChamberGeo  = nullptr;
       HTCCDetectorGeometry          * fHTCCGeo          = nullptr;
       SolenoidDetectorGeometry      * fSolenoidGeo      = nullptr;
@@ -47,6 +49,7 @@ class SimulationManager {
 
    public:
       DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
+      RecoilHodoDetectorGeometry    * GetRecoilHodoDetectorGeometry();
       RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
       HTCCDetectorGeometry          * GetHTCCDetectorGeometry();
       SolenoidDetectorGeometry      * GetSolenoidDetectorGeometry();

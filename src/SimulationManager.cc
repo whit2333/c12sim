@@ -27,6 +27,7 @@
 #include <sys/file.h>
 
 #include "RecoilChamberDetectorGeometry.h"
+#include "RecoilHodoDetectorGeometry.h"
 #include "DriftChamberDetectorGeometry.h"
 #include "HTCCDetectorGeometry.h"
 #include "SolenoidDetectorGeometry.h"
@@ -50,13 +51,13 @@ SimulationManager::SimulationManager () {
    fOutputFileName      = "clas12sim";
    fOutputTreeName      = "clasdigi_hits";
 
-   fRecoilChamberGeo    = nullptr;
-   fDriftChamberGeo     = nullptr;
-   fHTCCGeo             = nullptr;
-   fSolenoidGeo         = nullptr;
-   fTorusGeo            = nullptr;
-   fBeamlineGeo         = nullptr;
-   fMVTGeo         = nullptr;
+   //fRecoilChamberGeo    = nullptr;
+   //fDriftChamberGeo     = nullptr;
+   //fHTCCGeo             = nullptr;
+   //fSolenoidGeo         = nullptr;
+   //fTorusGeo            = nullptr;
+   //fBeamlineGeo         = nullptr;
+   //fMVTGeo         = nullptr;
 
    fInputFileName       = "data/lundfiles/eg_LH2_full_4.lund";
 }
@@ -166,6 +167,14 @@ RecoilChamberDetectorGeometry * SimulationManager::GetRecoilDetectorGeometry(){
       fRecoilChamberGeo = new RecoilChamberDetectorGeometry();
    }
    return fRecoilChamberGeo;
+}
+//______________________________________________________________________________
+
+RecoilHodoDetectorGeometry * SimulationManager::GetRecoilHodoDetectorGeometry(){
+   if(!fRecoilHodoGeo) {
+      fRecoilHodoGeo = new RecoilHodoDetectorGeometry();
+   }
+   return fRecoilHodoGeo;
 }
 //______________________________________________________________________________
 
