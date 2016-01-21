@@ -86,7 +86,8 @@ RecoilHodoDetectorGeometry::RecoilHodoDetectorGeometry()
       1.58, 1.58, 1.58, 1.58
    };
 
-   fRadiator_pos  = {0.0, 0.0, 0.0};
+   fScint1_pos  = {0.0, 0.0, 0.0};
+   fScint2_pos  = {0.0, 0.0, 0.0};
 
    //fSensitiveDetector = new RecoilScintSensitiveDetector("RecoilScint",6*6*6*112);
    //SDMan->AddNewDetector(fSensitiveDetector);
@@ -197,9 +198,9 @@ void RecoilHodoDetectorGeometry::BuildMaterials()
    a = 12.01*g/mole;
    density   = 1.032*g/cm3;
    G4Element* elC  = new G4Element("Carbon"  , "C",  6.0, a);
-   fRadiator_mat = new G4Material("Scintillator", density, 2);
-   fRadiator_mat->AddElement(elC, 9);
-   fRadiator_mat->AddElement(elH, 10);
+   fScint1_mat = new G4Material("Scintillator", density, 2);
+   fScint1_mat->AddElement(elC, 9);
+   fScint1_mat->AddElement(elH, 10);
 
    G4MaterialPropertiesTable* Scnt_MPT = new G4MaterialPropertiesTable();
    Scnt_MPT->AddProperty("FASTCOMPONENT", emissionSpectrum[1].data(), emissionSpectrum[2].data(), emissionSpectrum[1].size());
@@ -219,7 +220,8 @@ void RecoilHodoDetectorGeometry::BuildMaterials()
    Scnt_MPT->AddProperty("ALPHASCINTILLATIONYIELD"   , relativeLightOutput[0].data(), relativeLightOutput[6].data(), relativeLightOutput[0].size());
 
    // The relative strength of the fast component as a fraction of total scintillation yield is given by the YIELDRATIO. 
-   fRadiator_mat->SetMaterialPropertiesTable(Scnt_MPT);
+   fScint1_mat->SetMaterialPropertiesTable(Scnt_MPT);
+   fScint2_mat = fScint1_mat;
 }
 //______________________________________________________________________________
 
@@ -249,45 +251,72 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
 
    // ------------------------------------------------------------------------
 
-   fPhotonDet1_pos   = { fScintLength/2.0 - ffPhotonDetThickness/2.0 ,0.0, 0.0 };
-   fPhotonDet2_pos   = { -fScintLength/2.0 + ffPhotonDetThickness/2.0,0.0, 0.0 };
+   fPhotonDet1_pos   = { fScintLength/2.0 - fPhotonDetThickness/2.0 ,0.0, 0.0 };
+   fPhotonDet2_pos   = { -fScintLength/2.0 + fPhotonDetThickness/2.0,0.0, 0.0 };
+   fPhotonDet3_pos   = fPhotonDet1_pos;
+   fPhotonDet4_pos   = fPhotonDet2_pos;
 
    // ------------------------------------------------------------------------
-   // scintillation radiator target centered at origin
+   // First layer scintillator bar  
    // ------------------------------------------------------------------------
    red       = 256.0/256.0;
    green     = 1.0/256.0;
    blue      = 1.0/256.0;
    alpha     = 0.4;
 
-   //if(fRadiator_phys) delete fRadiator_phys;
-   //if(fRadiator_log) delete fRadiator_log;
-   //if(fRadiator_solid) delete fRadiator_solid;
+   if(fScint1_log) delete fScint1_log;
+   if(fScint1_solid) delete fScint1_solid;
 
    double dy1 = fInnerRadius*tan(fScintDeltaTheta/2.0) - fScintWrapThickness;
-   double dy2 = dy1 + fScintThickness*tan(fScintDeltaTheta/2.0);
+   double dy2 = dy1 + fScint1Thickness*tan(fScintDeltaTheta/2.0);
 
-   //G4VSolid * scint_keystone_solid ;
-   fRadiator_solid = new G4Trd("scint_keystone_solid",
+   fScint1_solid = new G4Trd("scint_keystone_solid",
          fScintLength/2.0, fScintLength/2.0,// half-length along x at -dz and +dz
          dy1, dy2,                                // half-length along y at -dz and +dz
-         fScintThickness/2.0);
+         fScint1Thickness/2.0 - fScintWrapThickness);
    //G4VSolid * scint_box_solid      = new G4Box("scint_box_solid", fScintThickness/2.0, fScintWidth/2.0, fScintLength/2.0 );
-   //fRadiator_solid = new G4IntersectionSolid("fRadiator_solid", scint_box_solid, scint_keystone_solid); 
+   //fScint1_solid = new G4IntersectionSolid("fScint1_solid", scint_box_solid, scint_keystone_solid); 
 
-   fRadiator_log   = new G4LogicalVolume(fRadiator_solid, fRadiator_mat,"fRadiator_log");
-   //fRadiator_phys  = new G4PVPlacement(0,fRadiator_pos, fRadiator_log, "fRadiator_phys",world_log,false,0,checkOverlaps);                                  
-   G4Colour            fRadiator_color {red, green, blue, alpha };   // Gray 
-   G4VisAttributes   * fRadiator_vis   = new G4VisAttributes(fRadiator_color);
-   fRadiator_vis->SetForceWireframe(true);
-   fRadiator_log->SetVisAttributes(fRadiator_vis);
+   fScint1_log   = new G4LogicalVolume(fScint1_solid, fScint1_mat,"fScint1_log");
+   //fScint1_phys  = new G4PVPlacement(0,fScint1_pos, fScint1_log, "fScint1_phys",world_log,false,0,checkOverlaps);                                  
+   G4Colour            fScint1_color {red, green, blue, alpha };   // Gray 
+   G4VisAttributes   * fScint1_vis   = new G4VisAttributes(fScint1_color);
+   fScint1_vis->SetForceWireframe(true);
+   fScint1_log->SetVisAttributes(fScint1_vis);
 
-   G4UserLimits * fRadiator_limits = new G4UserLimits(0.5*mm);
-   fRadiator_log->SetUserLimits(fRadiator_limits);
+   G4UserLimits * fScint1_limits = new G4UserLimits(0.5*mm);
+   fScint1_log->SetUserLimits(fScint1_limits);
+
+   // ------------------------------------------------------------------------
+   // Second layer scintillator bar  
+   // ------------------------------------------------------------------------
+   red       = 0.0/256.0;
+   green     = 10.0/256.0;
+   blue      = 200.0/256.0;
+   alpha     = 0.4;
+
+   if(fScint2_log) delete fScint2_log;
+   if(fScint2_solid) delete fScint2_solid;
+
+   double dyy1 = (fInnerRadius + fScint1Thickness )*tan(fScintDeltaTheta/2.0) - fScintWrapThickness;
+   double dyy2 = dyy1 + fScint2Thickness*tan(fScintDeltaTheta/2.0);
+
+   fScint2_solid = new G4Trd("scint_keystone_solid",
+         fScintLength/2.0, fScintLength/2.0,// half-length along x at -dz and +dz
+         dyy1, dyy2,                                // half-length along y at -dz and +dz
+         fScint2Thickness/2.0 - fScintWrapThickness);
+   fScint2_log   = new G4LogicalVolume(fScint2_solid, fScint2_mat,"fScint2_log");
+   G4Colour            fScint2_color {red, green, blue, alpha };   // Gray 
+   G4VisAttributes   * fScint2_vis   = new G4VisAttributes(fScint2_color);
+   fScint2_vis->SetForceWireframe(true);
+   fScint2_log->SetVisAttributes(fScint2_vis);
+
+   G4UserLimits * fScint2_limits = new G4UserLimits(0.5*mm);
+   fScint2_log->SetUserLimits(fScint2_limits);
 
 
    // ------------------------------------------------------------------------
-   // photon detection surface 
+   // First scintillator photon detection surface 
    // ------------------------------------------------------------------------
    red       = 250.0/256.0;
    green     = 0.0/256.0;
@@ -298,49 +327,80 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    if(fPhotonDet1_log)   delete fPhotonDet1_log;
    if(fPhotonDet1_solid) delete fPhotonDet1_solid;
 
-   //fPhotonDet1_mat   = nist->FindOrBuildMaterial("G4_Al");
-   fPhotonDet1_mat   = fRadiator_mat;//nist->FindOrBuildMaterial("G4_Al");
+   fPhotonDet1_mat   = fScint1_mat;
    fPhotonDet1_solid = new G4Trd("fPhotonDet1_solid",
-         ffPhotonDetThickness/2.0, ffPhotonDetThickness/2.0,// half-length along x at -dz and +dz
-         dy1-fScintWrapThickness, dy2-fScintWrapThickness,                                // half-length along y at -dz and +dz
-         fScintThickness/2.0-fScintWrapThickness);
-   //fPhotonDet1_solid = new G4Box("fPhotonDet1_solid", fScintThickness/2.0, dy1 /*fScintWidth/2.0*/, ffPhotonDetThickness/2.0 );
+         fPhotonDetThickness/2.0, fPhotonDetThickness/2.0, // half-length along x at -dz and +dz
+         dy1-fScintWrapThickness, dy2-fScintWrapThickness, // half-length along y at -dz and +dz
+         fScint1Thickness/2.0-fScintWrapThickness);
    fPhotonDet1_log   = new G4LogicalVolume(fPhotonDet1_solid, fPhotonDet1_mat ,"fPhotonDet1_log");
-   fPhotonDet1_phys  = new G4PVPlacement(0,fPhotonDet1_pos, fPhotonDet1_log, "fPhotonDet1_phys",fRadiator_log,true,0,checkOverlaps);
+   fPhotonDet1_phys  = new G4PVPlacement(0,fPhotonDet1_pos, fPhotonDet1_log, "fPhotonDet1_phys",fScint1_log,true,0,checkOverlaps);
    G4Colour            fPhotonDet1_color {red, green, blue, alpha };   // Gray 
    G4VisAttributes   * fPhotonDet1_vis   = new G4VisAttributes(fPhotonDet1_color);
    fPhotonDet1_log->SetVisAttributes(fPhotonDet1_vis);
 
    if(!fPhotonDet1_det) fPhotonDet1_det = new BeamTestSD("/PM1");
-   //SetSensitiveDetector("fPhotonDet1_log",fPhotonDet1_det);
    G4SDManager* SDMan = G4SDManager::GetSDMpointer();
    SDMan->AddNewDetector(fPhotonDet1_det);
    fPhotonDet1_log->SetSensitiveDetector(fPhotonDet1_det);
 
    // ------------------------------------------------------------------------
-   red       = 250.0/256.0;
-   green     = 0.0/256.0;
-   blue      = 1.0/256.0;
-   alpha     = 0.4;
 
    if(fPhotonDet2_phys)  delete fPhotonDet2_phys;
    if(fPhotonDet2_log)   delete fPhotonDet2_log;
    if(fPhotonDet2_solid) delete fPhotonDet2_solid;
 
-   //fPhotonDet2_mat   = nist->FindOrBuildMaterial("G4_Al");
-   fPhotonDet2_mat   = fRadiator_mat;//nist->FindOrBuildMaterial("G4_Al");
-   fPhotonDet2_solid = fPhotonDet1_solid;//new G4Box("fPhotonDet2_solid", fScintThickness/2.0, dy1 /*fScintWidth/2.0*/, ffPhotonDetThickness/2.0 );
+   fPhotonDet2_mat   = fScint1_mat;
+   fPhotonDet2_solid = fPhotonDet1_solid;
    fPhotonDet2_log   = new G4LogicalVolume(fPhotonDet2_solid, fPhotonDet2_mat,"fPhotonDet2_log");
-   fPhotonDet2_phys  = new G4PVPlacement(0,fPhotonDet2_pos, fPhotonDet2_log, "fPhotonDet2_phys",fRadiator_log,true,0,checkOverlaps);
-   G4Colour            fPhotonDet2_color {red, green, blue, alpha };   // Gray 
-   G4VisAttributes   * fPhotonDet2_vis   = new G4VisAttributes(fPhotonDet2_color);
-   fPhotonDet2_log->SetVisAttributes(fPhotonDet2_vis);
+   fPhotonDet2_phys  = new G4PVPlacement(0,fPhotonDet2_pos, fPhotonDet2_log, "fPhotonDet2_phys",fScint1_log,true,0,checkOverlaps);
+   fPhotonDet2_log->SetVisAttributes(fPhotonDet1_vis);
 
    if(!fPhotonDet2_det) fPhotonDet2_det = new BeamTestSD("/PM2");
-   //SetSensitiveDetector("fPhotonDet2_log",fPhotonDet2_det);
-   //G4SDManager* SDMan = G4SDManager::GetSDMpointer();
    SDMan->AddNewDetector(fPhotonDet2_det);
    fPhotonDet2_log->SetSensitiveDetector(fPhotonDet2_det);
+
+   // ------------------------------------------------------------------------
+   // Second scintillator photon detection surface 
+   // ------------------------------------------------------------------------
+   red       = 0.0/256.0;
+   green     = 10.0/256.0;
+   blue      = 200.0/256.0;
+   alpha     = 0.4;
+
+   if(fPhotonDet3_phys)  delete fPhotonDet3_phys;
+   if(fPhotonDet3_log)   delete fPhotonDet3_log;
+   if(fPhotonDet3_solid) delete fPhotonDet3_solid;
+
+   fPhotonDet3_mat   = fScint2_mat;
+   fPhotonDet3_solid = new G4Trd("fPhotonDet3_solid",
+         fPhotonDetThickness/2.0, fPhotonDetThickness/2.0, // half-length along x at -dz and +dz
+         dyy1-fScintWrapThickness, dyy2-fScintWrapThickness, // half-length along y at -dz and +dz
+         fScint2Thickness/2.0-fScintWrapThickness);
+   fPhotonDet3_log   = new G4LogicalVolume(fPhotonDet3_solid, fPhotonDet3_mat ,"fPhotonDet3_log");
+   fPhotonDet3_phys  = new G4PVPlacement(0,fPhotonDet3_pos, fPhotonDet3_log, "fPhotonDet3_phys",fScint2_log,true,0,checkOverlaps);
+   G4Colour            fPhotonDet3_color {red, green, blue, alpha };   // Gray 
+   G4VisAttributes   * fPhotonDet3_vis   = new G4VisAttributes(fPhotonDet3_color);
+   fPhotonDet3_log->SetVisAttributes(fPhotonDet3_vis);
+
+   if(!fPhotonDet3_det) fPhotonDet3_det = new BeamTestSD("/PM3");
+   SDMan->AddNewDetector(fPhotonDet3_det);
+   fPhotonDet3_log->SetSensitiveDetector(fPhotonDet3_det);
+
+   // ------------------------------------------------------------------------
+
+   if(fPhotonDet4_phys)  delete fPhotonDet4_phys;
+   if(fPhotonDet4_log)   delete fPhotonDet4_log;
+   if(fPhotonDet4_solid) delete fPhotonDet4_solid;
+
+   fPhotonDet4_mat   = fScint2_mat;
+   fPhotonDet4_solid = fPhotonDet3_solid;
+   fPhotonDet4_log   = new G4LogicalVolume(fPhotonDet4_solid, fPhotonDet4_mat,"fPhotonDet4_log");
+   fPhotonDet4_phys  = new G4PVPlacement(0,fPhotonDet4_pos, fPhotonDet4_log, "fPhotonDet4_phys",fScint2_log,true,0,checkOverlaps);
+   fPhotonDet4_log->SetVisAttributes(fPhotonDet3_vis);
+
+   if(!fPhotonDet4_det) fPhotonDet4_det = new BeamTestSD("/PM4");
+   SDMan->AddNewDetector(fPhotonDet4_det);
+   fPhotonDet4_log->SetSensitiveDetector(fPhotonDet4_det);
 }
 //______________________________________________________________________________
 
@@ -351,7 +411,6 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry::PlacePhysicalVolume(
 {
    bool checkOverlaps = false;
 
-   //fRadiator_phys  = new G4PVPlacement(0,fRadiator_pos, fRadiator_log, "fRadiator_phys",mother,false,0,checkOverlaps);                                  
    // scintillator surface
    const    G4int NUM           = 2;
    G4double pp2[NUM]            = {1.6*eV, 8.0*eV};
@@ -373,47 +432,39 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry::PlacePhysicalVolume(
    OpSurfaceProperty->AddProperty("EFFICIENCY",  pp2,efficiency2,NUM);
    OpSurface->SetMaterialPropertiesTable(OpSurfaceProperty);
 
-   //G4LogicalBorderSurface* Surface  = new G4LogicalBorderSurface(
-   //      "scint world border surface",
-   //      fRadiator_phys,
-   //      mother_phys,
-   //      OpSurface  );
-
-   //G4LogicalBorderSurface* Surface2 = 0;
-   //if(adjacent_phys)  Surface2 = new G4LogicalBorderSurface(
-   //      "scint beampipe border surface",
-   //      fRadiator_phys,
-   //      adjacent_phys,
-   //      OpSurface     );
-
    G4RotationMatrix scint_rot = G4RotationMatrix::IDENTITY;
-   //scint_rot.rotateX(-1.0*CLHEP::pi/2.0);
    scint_rot.rotateY(1.0*CLHEP::pi/2.0);
-   G4ThreeVector step(fScintThickness/2.0 + fInnerRadius,0.0,0.0);
+   G4ThreeVector s1_pos = {fScint1Thickness/2.0 + fInnerRadius,0.0,0.0};
+   G4ThreeVector s2_pos = {fScint2Thickness/2.0 + fScint1Thickness + fInnerRadius,0.0,0.0};
 
-   double delta_phi = 360.0*CLHEP::degree/double(fScint_positions.size());
+   double delta_phi = 360.0*CLHEP::degree/double(fScint1_positions.size());
+   G4String name       = "";
 
-   for(int i = 0; i<fScint_positions.size(); i++) {
+   for(int i = 0; i<fScint1_positions.size(); i++) {
 
-      step.rotateZ(delta_phi);
+      s1_pos.rotateZ(delta_phi);
+      s2_pos.rotateZ(delta_phi);
       scint_rot.rotateZ(delta_phi);
 
-      fScint_positions[i] = fRadiator_pos + step;
+      fScint1_positions[i] = fScint1_pos + s1_pos;
+      fScint2_positions[i] = fScint2_pos + s2_pos;
+      
+      name                 = "fScint1_physicals_" + std::to_string(i);
+      fScint1_physicals[i] = new G4PVPlacement(
+            G4Transform3D(scint_rot,fScint1_positions[i]), 
+            fScint1_log, name, mother, false, i, checkOverlaps); 
+      name = "fScint1_borders_" + std::to_string(i);
+      fScint1_borders[i]  = new G4LogicalBorderSurface(name, fScint1_physicals[i], mother_phys, OpSurface );
 
-      G4String name       = "fScint_physicals_" + std::to_string(i);
-      std::cout << name <<std::endl;
-      std::cout << fRadiator_log <<std::endl;
-      std::cout << mother_phys <<std::endl;
-
-      fScint_physicals[i] = new G4PVPlacement(G4Transform3D(scint_rot,fScint_positions[i]), fRadiator_log, name,mother,false,i,checkOverlaps); 
-
-      name = "fScint_borders_" + std::to_string(i);
-      std::cout << name <<std::endl;
-      std::cout << name <<std::endl;
-      fScint_borders[i]  = new G4LogicalBorderSurface(name, fScint_physicals[i], mother_phys, OpSurface );
+      name                 = "fScint2_physicals_" + std::to_string(i);
+      fScint2_physicals[i] = new G4PVPlacement(
+            G4Transform3D(scint_rot,fScint2_positions[i]), 
+            fScint2_log, name, mother, false, i, checkOverlaps); 
+      name = "fScint2_borders_" + std::to_string(i);
+      fScint2_borders[i]  = new G4LogicalBorderSurface(name, fScint2_physicals[i], mother_phys, OpSurface );
    }
 
-   return fScint_physicals[0];
+   return fScint1_physicals[0];
 }
 //______________________________________________________________________________
 

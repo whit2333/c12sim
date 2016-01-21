@@ -26,6 +26,7 @@
 #include "G4ParticleDefinition.hh"
 #include <sys/file.h>
 
+#include "c12sim.h"
 #include "RecoilChamberDetectorGeometry.h"
 #include "RecoilHodoDetectorGeometry.h"
 #include "DriftChamberDetectorGeometry.h"
@@ -59,7 +60,7 @@ SimulationManager::SimulationManager () {
    //fBeamlineGeo         = nullptr;
    //fMVTGeo         = nullptr;
 
-   fInputFileName       = "data/lundfiles/eg_LH2_full_4.lund";
+   fInputFileName       = C12SIM_DEFAULT_EG_DIR "/lundfiles/eg_LH2_ep_2000.lund";
 }
 //______________________________________________________________________________
 

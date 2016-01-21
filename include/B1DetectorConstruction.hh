@@ -89,6 +89,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       G4double  hightOfAround = 200.*mm;
       G4double  startAngleOfAround = 0.*deg;
       G4double spanningAngleOfAround = 360.*deg;
+
       //--Mylar foil around the clear space
       G4double   innerRadiusOfTheOclKapton = 29.996*mm;
       G4double   outerRadiusOfTheOclKapton = 30.000*mm;

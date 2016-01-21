@@ -78,14 +78,14 @@ G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableH
 
       // layer/superlayer/wire comes from channel
       int channel  = touchable->GetReplicaNumber(0);
-      int layer    = (channel/112)%6 + 1;
-      int wire     = channel%112 + 1;
+      int layer    = 0;//(channel/112)%6 + 1;
+      int wire     = 0;//channel%112 + 1;
 
       // grouping is the placement of the sector/region
-      int grouping    = touchable->GetReplicaNumber(1);
-      int sector      = grouping/3+1;
-      int region      = grouping%3+1;
-      int super_layer = (channel/112)/6 + (grouping%3)*2 + 1;
+      int grouping    = 0;//touchable->GetReplicaNumber(1);
+      int sector      = 0;//grouping/3+1;
+      int region      = 0;//grouping%3+1;
+      int super_layer = 0;//(channel/112)/6 + (grouping%3)*2 + 1;
       int pdg         = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
       TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,time);
 
@@ -115,16 +115,12 @@ G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableH
          G4ThreeVector  mom  = aStep->GetTrack()->GetMomentum();
          double         Etot = aStep->GetTrack()->GetTotalEnergy();
          if(Etot/MeV > 10.0) { 
-            DriftChamberParticleHit * part_hit = fRCHitsEvent->AddParticleHit();
+            RecoilChamberParticleHit * part_hit = fRCHitsEvent->AddParticleHit();
             part_hit->fPDGCode            = pdg;
+            part_hit->fChannel            = channel;
             part_hit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
             part_hit->fGlobalPosition     = global_4vec;
             part_hit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, Etot/GeV);
-            part_hit->fDCWire.fSector     = sector;
-            part_hit->fDCWire.fRegion     = region;
-            part_hit->fDCWire.fSuperLayer = super_layer;
-            part_hit->fDCWire.fLayer      = layer;
-            part_hit->fDCWire.fWire       = wire;
          }
       }
 

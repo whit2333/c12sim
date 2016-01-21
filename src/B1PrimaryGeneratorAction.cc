@@ -42,6 +42,7 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
    //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
+   //if( !fInputLundFile.is_open() ) std::cout << " IS NOT OPEN\n";
 
    if( fInputLundFile.is_open() ){
       fThrownEvent.ReadLundEvent(fInputLundFile);
@@ -49,8 +50,8 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       for(int i = 0; i<npart; i++){
          TParticle * part = fThrownEvent.GetParticle(i);
          int pdgcode = part->GetPdgCode();
-         //std::cout << "PDG CODE " << pdgcode << "\n";
          //std::cout << "npart    " << npart << " i " << i << "\n";
+         //std::cout << "PDG CODE " << pdgcode << "\n";
          //std::cout << "npart2   " << fThrownEvent.GetNParticles() << " i " << i << "\n";
          G4ParticleDefinition* particle = particleTable->FindParticle(pdgcode);
          fParticleGun->SetParticleDefinition(particle);

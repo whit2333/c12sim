@@ -26,11 +26,15 @@ class RecoilHodoDetectorGeometry {
       std::array<double, 24>   fRefIndex;
 
       
-      G4ThreeVector       fRadiator_pos;
-      G4Material        * fRadiator_mat   = nullptr;
-      G4VSolid          * fRadiator_solid = nullptr;
-      G4LogicalVolume   * fRadiator_log   = nullptr;
-      //G4VPhysicalVolume * fRadiator_phys  = nullptr;
+      G4ThreeVector       fScint1_pos;
+      G4Material        * fScint1_mat   = nullptr;
+      G4VSolid          * fScint1_solid = nullptr;
+      G4LogicalVolume   * fScint1_log   = nullptr;
+
+      G4ThreeVector       fScint2_pos;
+      G4Material        * fScint2_mat   = nullptr;
+      G4VSolid          * fScint2_solid = nullptr;
+      G4LogicalVolume   * fScint2_log   = nullptr;
 
       G4ThreeVector       fPhotonDet1_pos ;
       G4Material        * fPhotonDet1_mat   = nullptr;
@@ -46,22 +50,44 @@ class RecoilHodoDetectorGeometry {
       G4VPhysicalVolume * fPhotonDet2_phys  = nullptr;
       BeamTestSD        * fPhotonDet2_det   = nullptr;
 
+      G4ThreeVector       fPhotonDet3_pos ;
+      G4Material        * fPhotonDet3_mat   = nullptr;
+      G4VSolid          * fPhotonDet3_solid = nullptr;
+      G4LogicalVolume   * fPhotonDet3_log   = nullptr;
+      G4VPhysicalVolume * fPhotonDet3_phys  = nullptr;
+      BeamTestSD        * fPhotonDet3_det   = nullptr;
+
+      G4ThreeVector       fPhotonDet4_pos;
+      G4Material        * fPhotonDet4_mat   = nullptr;
+      G4VSolid          * fPhotonDet4_solid = nullptr;
+      G4LogicalVolume   * fPhotonDet4_log   = nullptr;
+      G4VPhysicalVolume * fPhotonDet4_phys  = nullptr;
+      BeamTestSD        * fPhotonDet4_det   = nullptr;
+
+      const int fNScint                 = 60;
+      std::array<G4ThreeVector          , 60> fScint1_positions;
+      std::array<G4VPhysicalVolume*     , 60> fScint1_physicals;
+      std::array<G4LogicalBorderSurface*, 60> fScint1_borders;
+
+      std::array<G4ThreeVector          , 60> fScint2_positions;
+      std::array<G4VPhysicalVolume*     , 60> fScint2_physicals;
+      std::array<G4LogicalBorderSurface*, 60> fScint2_borders;
+
    public:
 
-      double fScintWrapThickness =  2.54*0.004*CLHEP::cm; 
-      double fScintGap           =  2.54*0.002*CLHEP::cm; 
-      double fScintWidth         =  1.0*CLHEP::cm;
-      double fScintLength        = 40.0*CLHEP::cm;
-      double fScintThickness     =  3.2*CLHEP::cm;
-      double ffPhotonDetThickness =  25.4*0.00002*CLHEP::mm;
+      double fScintWrapThickness  =  2.54*0.004*CLHEP::cm; 
+      double fScintGap            =  2.54*0.002*CLHEP::cm; 
 
-      double fInnerRadius        = 20*CLHEP::cm;
+      double fScintLength         = 30.0*CLHEP::cm;
+
+      double fScint1Thickness      =  2.0*CLHEP::mm;
+      double fScint2Thickness      = 10.0*CLHEP::mm;
+
+      double fPhotonDetThickness =  25.4*0.00002*CLHEP::mm;
+
+      double fInnerRadius        = 8.0*CLHEP::cm;
       double fScintDeltaTheta    = 6.0*CLHEP::degree; // angle subtended by bar 
 
-      const int fNScint     = 60;
-      std::array<G4ThreeVector     , 60>      fScint_positions;
-      std::array<G4VPhysicalVolume*, 60>      fScint_physicals;
-      std::array<G4LogicalBorderSurface*, 60> fScint_borders;
 
    public:
       RecoilHodoDetectorGeometry();

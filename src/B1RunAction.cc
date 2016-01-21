@@ -48,7 +48,7 @@ G4Run* B1RunAction::GenerateRun()
    SimulationManager * simManager = SimulationManager::GetInstance();
    //simManager->SetRunNumber(fRunNumber);
 
-   G4cout << " - Creating Run Number " << fRunNumber << "   " << G4endl;
+   std::cout << " - Creating Run Number " << fRunNumber << "   " << std::endl;
    std::string filename = simManager->OutputFileName();
    gSystem->mkdir(simManager->fOutputDirectoryName.c_str(),true);
 
