@@ -20,8 +20,8 @@ class B1RunAction : public G4UserRunAction
    public:
 
       G4int   fRunNumber;
-      G4Run * fRun;
-      clas12::sim::RunConfiguration * fRunConf;
+      G4Run * fRun  = nullptr;
+      clas12::sim::RunConfiguration * fRunConf = nullptr;
 
    public:
       B1RunAction(G4int rn = 0);

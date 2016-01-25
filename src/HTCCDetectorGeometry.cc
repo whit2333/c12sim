@@ -1381,13 +1381,13 @@ void HTCCDetectorGeometry::BuildLogicalVolumes()
 
    // ---------------------------------------------
 
-   G4MaterialPropertiesTable *MPT = new G4MaterialPropertiesTable();
    if(fUseIndexOfRefraction){
+      G4MaterialPropertiesTable *MPT = new G4MaterialPropertiesTable();
       //MPT->AddConstProperty("SCINTILLATIONYIELD",100./MeV);
       MPT->AddProperty("RINDEX",ppckov,rindex,NUMENTRIES);
       MPT->AddProperty("ABSLENGTH",ppckov,absorption,NUMENTRIES);
+      fGasMaterial->SetMaterialPropertiesTable(MPT);
    }
-   fGasMaterial->SetMaterialPropertiesTable(MPT);
 
    // ---------------------------------------------
 

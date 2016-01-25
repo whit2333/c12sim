@@ -110,6 +110,17 @@ int SimulationManager::ReadRunNumber(const char * fname )
 }
 //______________________________________________________________________________
 
+void SimulationManager::PrintConfig(std::ostream& s) const
+{
+   s << "Run Number : " << GetRunNumber() << std::endl;
+   s << "  fOutputDirectoryName : " << fOutputDirectoryName << std::endl;
+   s << "  fOutputFileName      : " << fOutputFileName      << std::endl;
+   s << "  fOutputTreeName      : " << fOutputTreeName      << std::endl;
+   s << "  fInputFileName       : " << fInputFileName       << std::endl;
+
+}
+//______________________________________________________________________________
+
 std::string SimulationManager::OutputFileName() const {
    std::string filename = fOutputDirectoryName;
    filename += "/";

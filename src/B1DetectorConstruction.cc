@@ -361,12 +361,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    std::cout << " HTCC construction \n";
    fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
    fHTCC->BuildLogicalVolumes();
-   //fHTCC->PlacePhysicalVolume( world_log, 1, 1);
-   //fHTCC->PlacePhysicalVolume( world_log, 2, 2);
-   //fHTCC->PlacePhysicalVolume( world_log, 3, 1);
-   //fHTCC->PlacePhysicalVolume( world_log, 4, 2);
-   //fHTCC->PlacePhysicalVolume( world_log, 5, 1);
-   //fHTCC->PlacePhysicalVolume( world_log, 6, 2);
+   //fHTCC->SetGasIndexOfRefraction(true);
+   fHTCC->PlacePhysicalVolume( world_log, 1, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 2, 2);
+   fHTCC->PlacePhysicalVolume( world_log, 3, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 4, 2);
+   fHTCC->PlacePhysicalVolume( world_log, 5, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
@@ -377,7 +378,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fRecoilChamber->HeiC4H10  = HeiC4H10;
    fRecoilChamber->Tungsten  = Tungsten; 
    fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -386,7 +387,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    std::cout << " Recoil Hodo construction \n";
    fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
    fRecoilHodo->BuildLogicalVolumes();
-   fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
+   //fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
 
 
    // ------------------------------------------------------------------------
@@ -435,7 +436,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    fBeamline = SimulationManager::GetInstance()->GetBeamlineDetectorGeometry();
    fBeamline->BuildLogicalVolumes();
-   //fBeamline->PlacePhysicalVolume( world_log );
+   fBeamline->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // MVT
@@ -482,10 +483,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    G4Material * target_mat = LH2;//Deuterium;
    G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
 
-   //new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
-   //      false,           //no boolean operation
-   //      0,               //copy number
-   //      checkOverlaps);  //overlaps checking
+   new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
+         false,           //no boolean operation
+         0,               //copy number
+         checkOverlaps);  //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour

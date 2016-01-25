@@ -233,9 +233,9 @@ class HTCCDetectorGeometry {
       G4LogicalVolume * fEmptyRegion2_log;
       G4LogicalVolume * fEmptyRegion3_log;
 
-      G4Material       * fGasMaterial;
-      G4OpticalSurface * OpSurface;
-      bool               fUseIndexOfRefraction;
+      G4Material       * fGasMaterial = nullptr;
+      G4OpticalSurface * OpSurface    = nullptr;
+      bool               fUseIndexOfRefraction = false;
 
    public:
       HTCCDetectorGeometry();

@@ -12,6 +12,7 @@
 #include "G4SDManager.hh"
 #include <string>
 #include <sstream>
+#include <fstream>
 #include "DAQManager.h"
 #include "SimulationManager.h"
 #include "Crate.h"
@@ -61,9 +62,11 @@ G4Run* B1RunAction::GenerateRun()
          "clas12::hits::CLAS12HitsEvent",
          &(simManager->fEvent)   );
 
+   if( fRunConf ) delete fRunConf;
    fRunConf = new clas12::sim::RunConfiguration(fRunNumber);
-   fRunConf->fInputTreeName = simManager->OutputTreeName();
-   fRunConf->fInputFileName = simManager->OutputFileName();
+   fRunConf->fOutputTreeName = simManager->OutputTreeName();
+   fRunConf->fOutputFileName = simManager->OutputFileName();
+   fRunConf->fInputFileName  = simManager->InputFileName();
 
    fRun = new B1Run(fRunNumber);
    //fRun = new G4Run();
@@ -92,6 +95,11 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
    ss file_name;
    file_name << "c12sim_output_" << fRunNumber;
    //analysisManager->OpenFile(file_name.str().c_str());
+
+   SimulationManager * simManager = SimulationManager::GetInstance();
+   simManager->PrintConfig();
+   fRunConf->Print();
+   fRunConf->fInputFileName = simManager->OutputFileName();
 }
 //______________________________________________________________________________
 
@@ -141,13 +149,20 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
    SimulationManager * simManager = SimulationManager::GetInstance();
 
-   fRunConf->fNSimulated = simManager->fEvent->fEventNumber;
+   fRunConf->fNSimulated = simManager->fEvent->fEventNumber + 1;
    fRunConf->Print();
+   simManager->PrintConfig();
+
+   std::ofstream log_out(std::string("data/log/run")+std::to_string(fRunNumber)+std::string(".log"));
+   simManager->PrintConfig(log_out);
+   fRunConf->Print(log_out);
+
 
    //DAQManager      * daq_manager   = clas12::DAQ::DAQManager::GetManager();
    //Crate           * crate         = daq_manager->GetCrate(0);
    //Module<Scaler>  * scaler_module = crate->GetCrateModule<Scaler>(2);
    //scaler_module->Print("v");
+
 
    simManager->fOutputTree->Write();
    simManager->fOutputFile->WriteObject(fRunConf,"Run_Config");

@@ -17,6 +17,7 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <fcntl.h>
+#include <iostream>
 
 class RecoilChamberDetectorGeometry;
 class RecoilHodoDetectorGeometry;
@@ -95,6 +96,8 @@ class SimulationManager {
       int GetEventNumber() const { return(fEvent->fEventNumber); };
       int ReadRunNumber(const char * fname = "run_number.txt");
 
+
+      void PrintConfig(std::ostream& s = std::cout) const;
 
    private:
 
