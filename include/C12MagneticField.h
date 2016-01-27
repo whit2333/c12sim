@@ -18,7 +18,7 @@ class C12MagneticField : public G4MagneticField {
       clas12::mag::SolenoidField fSolenoidField;
 
    public:
-      C12MagneticField(bool use_toroid = false, bool use_solenoid = true );
+      C12MagneticField(bool use_toroid = false, bool use_solenoid = true, double tor = 1.0, double sol = 1.0 );
       virtual ~C12MagneticField();
       G4ThreeVector GetFieldValue( const G4double Point[4]) const;
       virtual void  GetFieldValue( const G4double Point[4], G4double *Bfield ) const override;

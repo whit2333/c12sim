@@ -2,9 +2,12 @@
 #include "TVector3.h"
 #include "CLHEP/Units/SystemOfUnits.h"
 
-C12MagneticField::C12MagneticField(bool use_toroid, bool use_solenoid  ) : 
+C12MagneticField::C12MagneticField(
+      bool   use_toroid, bool use_solenoid,
+      double tor,        double sol
+      ) : 
    fUseToroid(use_toroid), fUseSolenoid(use_solenoid), 
-   fScaleToroid(1.0), fScaleSolenoid(1.0)
+   fScaleToroid(tor), fScaleSolenoid(sol)
 {
    if(fUseSolenoid) fSolenoidField.ReadMap();
    if(fUseToroid)   fToroidField.ReadMap();

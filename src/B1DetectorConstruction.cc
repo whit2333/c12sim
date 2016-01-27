@@ -298,6 +298,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // Get nist material manager
 
    G4NistManager* nist = G4NistManager::Instance();
+   SimulationManager * simMan =  SimulationManager::GetInstance();
 
    CalculatePositions();
 
@@ -450,8 +451,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
 
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
+   bool use_torus    = true;
+   bool use_solenoid = true;
+   if( simMan->GetSolenoidFieldScale() == 0.0 ) use_solenoid = false;
+   if( simMan->GetToroidFieldScale()   == 0.0 ) use_torus = false;
+   C12MagneticField * magField = new C12MagneticField(
+         use_torus,                     use_solenoid ,
+         simMan->GetToroidFieldScale(), simMan->GetSolenoidFieldScale() );
    //C12MagneticField * magField = new C12MagneticField(false,false );
-   C12MagneticField * magField = new C12MagneticField(/*torusOn=*/ true, true );
 
    // set it as the default field
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager(); // set it as the default field

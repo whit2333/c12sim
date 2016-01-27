@@ -1,4 +1,6 @@
 // the configured options and settings for Tutorial
+#ifndef C12SIM_HH
+
 #define C12SIM_MAJOR_VERSION @C12SIM_MAJOR_VERSION@
 #define C12SIM_MINOR_VERSION @C12SIM_MINOR_VERSION@
 #define C12SIM_PATCH_VERSION @C12SIM_PATCH_VERSION@
@@ -11,4 +13,16 @@
 #define C12SIM_CXX_LIBS       "@C12SIM_CXX_LIBS@"
 #define C12SIM_CXX_INC_DIR    "@C12SIM_CXX_INC_DIR@"
 #define C12SIM_PREFIX         "@CMAKE_INSTALL_PREFIX@"
+
+#include <string>
+#include <iostream>
+
+std::string  exec(const char* cmd);
+bool         fexists(const std::string& filename);
+void         print_field_dir();
+void         check_field_maps();
+void         download_field_maps();
+void         print_help();
+
+#endif
 

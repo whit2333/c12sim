@@ -1,127 +1,33 @@
 #include "c12sim.h"
-#include "B1DetectorConstruction.hh"
-#include "B1ActionInitialization.hh"
-#include "G4SystemOfUnits.hh"
+
+#include <cstdio>
+#include <memory>
 #include "getopt.h"
 
+#include "G4SystemOfUnits.hh"
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
 #else
 #include "G4RunManager.hh"
 #endif
-
 #include "G4UImanager.hh"
-#include "QBBC.hh"
 #include "G4UIQt.hh"
 #include "G4UIterminal.hh"
-#include <qmainwindow.h>
-
+#include "qmainwindow.h"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 #include "G4PhysListFactory.hh"
 #include "G4StepLimiterPhysics.hh"
-#include "Randomize.hh"
-#include "B1OpticalPhysics.hh"
 #include "FTFP_BERT.hh"
-//#include "CLAS12_QGSP_BIC.hh"
+#include "QBBC.hh"
+#include "Randomize.hh"
 
 #include "SimulationManager.h"
-
+#include "B1OpticalPhysics.hh"
+#include "B1DetectorConstruction.hh"
+#include "B1ActionInitialization.hh"
 #include "B1ParallelWorldConstruction.hh"
 #include "G4ParallelWorldPhysics.hh"
-#include <string>
-#include <iostream>
-#include <cstdio>
-#include <memory>
-
-std::string exec(const char* cmd) {
-   std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
-   if (!pipe) return "ERROR";
-   char buffer[128];
-   std::string result = "";
-   while (!feof(pipe.get())) {
-      if (fgets(buffer, 128, pipe.get()) != NULL)
-         result += buffer;
-   }
-   return result;
-}
-
-bool fexists(const std::string& filename) {
-   std::ifstream ifile(filename.c_str());
-   if( ifile ) return true;
-   return false;
-}
-//______________________________________________________________________________
-void print_field_dir()
-{
-   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
-
-}
-//______________________________________________________________________________
-
-void check_field_maps()
-{
-   //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
-   //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
-   bool failed = false;
-
-   if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
-      std::cerr << "Error: Solenoid field map missing!" << std::endl;
-      std::cerr << "file \""C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat\" not found. " << std::endl;
-      failed = true;
-   }
-   if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
-      std::cerr << "Error: Torus field map missing!" << std::endl;
-      std::cerr << "file \""C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat\" not found. " << std::endl;
-      failed = true;
-   }
-   if(failed) {
-      std::cerr << "Use \"c12sim --dl-field-maps\" to download and install the field maps" << std::endl;
-      exit(0);
-   }
-}
-
-void download_field_maps()
-{
-   //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
-   //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
-
-   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
-   if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
-      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat" << std::endl;
-      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
-   }
-   if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
-      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat" << std::endl;
-      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
-   }
-}
-//______________________________________________________________________________
-
-void print_help() {
-
-   std::cout << "usage: c12sim [options] [macro file]    \n";
-   std::cout << "Options:                               \n";
-   std::cout << "    -r, --run=NUMBER         Set simulation \"run\" NUMBER\n";
-   std::cout << "    -i, --input=FILE         Set the input file from which events will be read\n";
-   std::cout << "    -o, --output=NAME        Set the output file name which will have the run number appended\n";
-   std::cout << "    -n, --events=#           Causes the execution of the ui command \"/run/beamOn #\".\n";
-   std::cout << "                             This happens just before exiting (in the case of batch mode) or returning to UI prompt.\n";
-   std::cout << "                             Default is \"clas12sim\". Note this is just the file basename; use -D to set the directory \n";
-   std::cout << "    -D, --dir=NAME           Set the output directory. The default is \"data/rootfiles/\"\n";
-   std::cout << "    -t, --treename=NAME      Set the output tree name. The default is \"clasdigi_hits\"\n";
-   std::cout << "    -g, --gui=#              Set to 1 (default) to use qt gui or\n";
-   std::cout << "                             0 to use command line\n";
-   std::cout << "    -V, --vis=#              set to 1 (default) to visualization geometry and events\n";
-   std::cout << "                             0 to turn off visualization\n";
-   std::cout << "    -I, --interactive        run in interactive mode (default)\n";
-   std::cout << "    -N, --init               run without initializing G4 kernel\n";
-   std::cout << "    -b, --batch              run in batch mode\n"; 
-   std::cout << "    -f, --field-dir          print the field dir\n"; 
-   std::cout << "    -F, --dl-field-maps      downloads the field maps into the field dir\n"; 
-   std::cout << "    -R, --rand=NUMBER        set the random number seed\n";
-}
-
 //______________________________________________________________________________
 
 int main(int argc,char** argv)
@@ -140,6 +46,10 @@ int main(int argc,char** argv)
    bool         is_interactive    = true;
    bool         has_macro_file    = false;
    int          set_rand_seed     = -1;
+   double       torus_field_sign     = 1.0;
+   double       solenoid_field_sign  = 1.0;
+   double       torus_field_scale    = 1.0;
+   double       solenoid_field_scale = 1.0;
 
    //---------------------------------------------------------------------------
 
@@ -149,12 +59,12 @@ int main(int argc,char** argv)
    const struct option longopts[] =
    {
       {"run",         required_argument,  0, 'r'},
-      {"gui",         required_argument,  0, 'g'},
-      {"vis",         required_argument,  0, 'V'},
-      {"interactive", no_argument,        0, 'I'},
       {"batch",       no_argument,        0, 'b'},
       {"input",       required_argument,  0, 'i'},
       {"output",      required_argument,  0, 'o'},
+      {"gui",         required_argument,  0, 'g'},
+      {"vis",         required_argument,  0, 'V'},
+      {"interactive", no_argument,        0, 'I'},
       {"dir",         required_argument,  0, 'D'},
       {"treename",    required_argument,  0, 't'},
       {"events",      required_argument,  0, 'n'},
@@ -163,10 +73,13 @@ int main(int argc,char** argv)
       {"field-dir",   no_argument,        0, 'f'},
       {"dl-field-maps",no_argument,       0, 'F'},
       {"rand",        required_argument,  0, 'R'},
+      {"solenoid-field", required_argument,  0, 'S'},
+      {"toroid-field", required_argument,  0, 'T'},
+      {"torus-field", required_argument,  0, 'T'},
       {0,0,0,0}
    };
    while(iarg != -1) {
-      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:bhINfF", longopts, &index);
+      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:S:T:bhINfF", longopts, &index);
 
       switch (iarg)
       {
@@ -247,6 +160,40 @@ int main(int argc,char** argv)
             set_rand_seed = atoi( optarg );
             break;
 
+         case 'T':
+            if( std::string(optarg) == "in-bend") {
+               torus_field_sign = -1.0;
+            } else if( std::string(optarg) == "out-bend") {
+               torus_field_sign = 1.0;
+            } else {
+               try {
+                  torus_field_scale = std::stod( optarg );
+                  if(torus_field_scale < 0 ) torus_field_sign = -1.0;
+               } catch (const std::invalid_argument& ia) {
+                  std::cerr << "Invalid argument for torus field : " << optarg << '\n';
+                  exit(0);
+               }
+            }
+            break;
+
+         case 'S':
+            if( std::string(optarg) == "in-bend") {
+               solenoid_field_sign = -1.0;
+            } else if( std::string(optarg) == "out-bend") {
+               solenoid_field_sign = 1.0;
+            } else {
+               try {
+                  solenoid_field_scale = std::stod( optarg );
+                  if(solenoid_field_scale < 0 ) solenoid_field_sign = -1.0;
+               } catch (const std::invalid_argument& ia) {
+                  std::cerr << "Invalid argument for solenoid field : " << optarg << '\n';
+                  exit(0);
+               }
+            }
+            break;
+      //{"solenoid-field", required_argument,  0, 'S'},
+      //{"toroid-field", required_argument,  0, 'T'},
+      //{"torus-field", required_argument,  0, 'T'},
 
          case '?':
             print_help();
@@ -312,6 +259,9 @@ int main(int argc,char** argv)
    if( output_dir.size() != 0 ) {
       simManager->SetOutputDirectoryName( output_dir );
    }
+
+   simManager->SetSolenoidFieldScale( solenoid_field_sign*solenoid_field_scale );
+   simManager->SetToroidFieldScale( torus_field_sign*torus_field_scale );
 
 
    B1DetectorConstruction      * realWorld     = new B1DetectorConstruction();
@@ -409,3 +359,95 @@ int main(int argc,char** argv)
    delete runManager;
 }
 //______________________________________________________________________________
+
+std::string exec(const char* cmd) {
+   std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+   if (!pipe) return "ERROR";
+   char buffer[128];
+   std::string result = "";
+   while (!feof(pipe.get())) {
+      if (fgets(buffer, 128, pipe.get()) != NULL)
+         result += buffer;
+   }
+   return result;
+}
+//______________________________________________________________________________
+
+bool fexists(const std::string& filename) {
+   std::ifstream ifile(filename.c_str());
+   if( ifile ) return true;
+   return false;
+}
+//______________________________________________________________________________
+
+void print_field_dir()
+{
+   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
+
+}
+//______________________________________________________________________________
+
+void check_field_maps()
+{
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
+   bool failed = false;
+
+   if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
+      std::cerr << "Error: Solenoid field map missing!" << std::endl;
+      std::cerr << "file \""C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat\" not found. " << std::endl;
+      failed = true;
+   }
+   if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
+      std::cerr << "Error: Torus field map missing!" << std::endl;
+      std::cerr << "file \""C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat\" not found. " << std::endl;
+      failed = true;
+   }
+   if(failed) {
+      std::cerr << "Use \"c12sim --dl-field-maps\" to download and install the field maps" << std::endl;
+      exit(0);
+   }
+}
+
+void download_field_maps()
+{
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
+   //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
+
+   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
+   if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
+      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat" << std::endl;
+      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
+   }
+   if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
+      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat" << std::endl;
+      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
+   }
+}
+//______________________________________________________________________________
+
+void print_help() {
+
+   std::cout << "usage: c12sim [options] [macro file]    \n";
+   std::cout << "Options:                               \n";
+   std::cout << "    -r, --run=NUMBER         Set simulation \"run\" NUMBER\n";
+   std::cout << "    -i, --input=FILE         Set the input file from which events will be read\n";
+   std::cout << "    -o, --output=NAME        Set the output file name which will have the run number appended\n";
+   std::cout << "    -n, --events=#           Causes the execution of the ui command \"/run/beamOn #\".\n";
+   std::cout << "                             This happens just before exiting (in the case of batch mode) or returning to UI prompt.\n";
+   std::cout << "                             Default is \"clas12sim\". Note this is just the file basename; use -D to set the directory \n";
+   std::cout << "    -D, --dir=NAME           Set the output directory. The default is \"data/rootfiles/\"\n";
+   std::cout << "    -t, --treename=NAME      Set the output tree name. The default is \"clasdigi_hits\"\n";
+   std::cout << "    -g, --gui=#              Set to 1 (default) to use qt gui or\n";
+   std::cout << "                             0 to use command line\n";
+   std::cout << "    -V, --vis=#              set to 1 (default) to visualization geometry and events\n";
+   std::cout << "                             0 to turn off visualization\n";
+   std::cout << "    -I, --interactive        run in interactive mode (default)\n";
+   std::cout << "    -N, --init               run without initializing G4 kernel\n";
+   std::cout << "    -b, --batch              run in batch mode\n"; 
+   std::cout << "    -f, --field-dir          print the field dir\n"; 
+   std::cout << "    -F, --dl-field-maps      downloads the field maps into the field dir\n"; 
+   std::cout << "    -R, --rand=NUMBER        set the random number seed\n";
+}
+//______________________________________________________________________________
+

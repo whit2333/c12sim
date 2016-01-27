@@ -70,6 +70,9 @@ class SimulationManager {
       clas12::hits::CLAS12HitsEvent * fEvent;
       clas12::hits::TriggerEvent    * fTriggerEvent;
 
+      double                          fToroidFieldScale = 0.0;
+      double                          fSolenoidFieldScale = 0.0;
+
    private: 
       SimulationManager( );
       static SimulationManager* fgSimulationManager;
@@ -93,11 +96,16 @@ class SimulationManager {
       void SetOutputTreeName     ( std::string  s ) { fOutputTreeName      = s;}
       void SetInputFileName      ( std::string  s ) { fInputFileName       = s;}
 
-      int GetEventNumber() const { return(fEvent->fEventNumber); };
-      int ReadRunNumber(const char * fname = "run_number.txt");
-
+      int  GetEventNumber() const { return(fEvent->fEventNumber); };
+      int  ReadRunNumber(const char * fname = "run_number.txt");
 
       void PrintConfig(std::ostream& s = std::cout) const;
+
+
+      double    GetToroidFieldScale()   const { return fToroidFieldScale ;}
+      double    GetSolenoidFieldScale() const { return fSolenoidFieldScale ;}
+      void      SetToroidFieldScale(  double v) { fToroidFieldScale   = v;}
+      void      SetSolenoidFieldScale(double v) { fSolenoidFieldScale = v;}
 
    private:
 
