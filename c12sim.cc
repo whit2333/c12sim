@@ -339,7 +339,7 @@ int main(int argc,char** argv)
 
    physicsList->RegisterPhysics(new B1OpticalPhysics());
    // This is needed to make use of the G4UserLimits applied to logical volumes.
-   physicsList->RegisterPhysics(new G4StepLimiterPhysics());
+   //physicsList->RegisterPhysics(new G4StepLimiterPhysics());
 
    physicsList->SetVerboseLevel(1);
    runManager->SetUserInitialization(physicsList);

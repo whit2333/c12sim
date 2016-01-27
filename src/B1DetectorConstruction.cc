@@ -362,12 +362,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
    fHTCC->BuildLogicalVolumes();
    //fHTCC->SetGasIndexOfRefraction(true);
-   fHTCC->PlacePhysicalVolume( world_log, 1, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 2, 2);
-   fHTCC->PlacePhysicalVolume( world_log, 3, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 4, 2);
-   fHTCC->PlacePhysicalVolume( world_log, 5, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 6, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 1, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 2, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 3, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 4, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 5, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
@@ -450,8 +450,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
 
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
-   C12MagneticField * magField = new C12MagneticField(false,false );
-   //C12MagneticField * magField = new C12MagneticField(/*torusOn=*/ true, true );
+   //C12MagneticField * magField = new C12MagneticField(false,false );
+   C12MagneticField * magField = new C12MagneticField(/*torusOn=*/ true, true );
 
    // set it as the default field
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager(); // set it as the default field
@@ -464,12 +464,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    G4cout << "magnetic field at origin : ( " << myfield[0] << " , " << myfield[1] << " , " << G4BestUnit(myfield[2],"Magnetic flux density") << ")" << G4endl;;
 
    // Relative accuracy values:
-   G4double minEps= 1.0e-6;  //   Minimum & value for smallest steps
-   G4double maxEps= 1.0e-5;  //   Maximum & value for largest steps
+   G4double minEps= 1.0e-5;  //   Minimum & value for smallest steps
+   G4double maxEps= 1.0e-4;  //   Maximum & value for largest steps
 
    fieldMgr->SetMinimumEpsilonStep( minEps );
    fieldMgr->SetMaximumEpsilonStep( maxEps );
-   fieldMgr->SetDeltaOneStep( 0.5e-4 * mm );  // 0.5 micrometer
+   fieldMgr->SetDeltaOneStep( 5.0e-4 * mm );  // 0.5 micrometer
    G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
 
    // ------------------------------------------------------------------------

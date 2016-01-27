@@ -252,17 +252,18 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
             // Only visualize one sector (otherwise painfully slow)
             //if(sector == 1 ) {
-            if(TMath::Abs(channel%112-10) <= 5 ) {
-               if(super_layer%2 == 0 ) {
-                  wire_log->SetVisAttributes(vs_even);
-                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-               } else {
-                  wire_log->SetVisAttributes(vs_odd);
-                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-               }
-            }else {
+
+            //if(TMath::Abs(channel%112-10) <= 5 ) {
+            //   if(super_layer%2 == 0 ) {
+            //      wire_log->SetVisAttributes(vs_even);
+            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+            //   } else {
+            //      wire_log->SetVisAttributes(vs_odd);
+            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+            //   }
+            //}else {
                wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            }
+            //}
 
                //wire_log->SetVisAttributes(vs_odd);
             //} else {
