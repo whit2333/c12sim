@@ -54,7 +54,7 @@ class RecoilChamberDetectorGeometry {
                                                  // This number is only approximate if it does not divide the circumference
 
       G4double  DeltaR = 2.0*mm;
-      G4double  fNLayers = 4.0;//NTLay  = 1.0;//4.; // Number of T layers
+      G4double  fNLayers = 8.0;//NTLay  = 1.0;//4.; // Number of T layers
       G4double  NsLay  = 3.0;//5.; // Number of s layers  // wire planes (cylinders) per layer
       G4double  steAng = 10.0*deg;
 

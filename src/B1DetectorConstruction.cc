@@ -379,7 +379,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fRecoilChamber->HeiC4H10  = HeiC4H10;
    fRecoilChamber->Tungsten  = Tungsten; 
    fRecoilChamber->Mylar     = Mylar;
-   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -388,7 +388,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    std::cout << " Recoil Hodo construction \n";
    fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
    fRecoilHodo->BuildLogicalVolumes();
-   //fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
+   fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
 
 
    // ------------------------------------------------------------------------
