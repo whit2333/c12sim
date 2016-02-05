@@ -362,33 +362,33 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    std::cout << " HTCC construction \n";
    fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
    fHTCC->BuildLogicalVolumes();
-   //fHTCC->SetGasIndexOfRefraction(true);
-   //fHTCC->PlacePhysicalVolume( world_log, 1, 1);
-   //fHTCC->PlacePhysicalVolume( world_log, 2, 2);
-   //fHTCC->PlacePhysicalVolume( world_log, 3, 1);
-   //fHTCC->PlacePhysicalVolume( world_log, 4, 2);
-   //fHTCC->PlacePhysicalVolume( world_log, 5, 1);
-   //fHTCC->PlacePhysicalVolume( world_log, 6, 2);
+   fHTCC->SetGasIndexOfRefraction(false);
+   fHTCC->PlacePhysicalVolume( world_log, 1, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 2, 2);
+   fHTCC->PlacePhysicalVolume( world_log, 3, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 4, 2);
+   fHTCC->PlacePhysicalVolume( world_log, 5, 1);
+   fHTCC->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   std::cout << " Recoil chamber construction \n";
-   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
-   fRecoilChamber->He10CO2   = He10CO2;
-   fRecoilChamber->HeiC4H10  = HeiC4H10;
-   fRecoilChamber->Tungsten  = Tungsten; 
-   fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //std::cout << " Recoil chamber construction \n";
+   //fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   //fRecoilChamber->He10CO2   = He10CO2;
+   //fRecoilChamber->HeiC4H10  = HeiC4H10;
+   //fRecoilChamber->Tungsten  = Tungsten; 
+   //fRecoilChamber->Mylar     = Mylar;
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
    // Recoil Hodoscope
    // ------------------------------------------------------------------------
-   std::cout << " Recoil Hodo construction \n";
-   fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
-   fRecoilHodo->BuildLogicalVolumes();
-   fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
+   //std::cout << " Recoil Hodo construction \n";
+   //fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
+   //fRecoilHodo->BuildLogicalVolumes();
+   //fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
 
 
    // ------------------------------------------------------------------------
@@ -435,6 +435,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Beamline
    // ------------------------------------------------------------------------
+   std::cout << " beamline construction \n";
    fBeamline = SimulationManager::GetInstance()->GetBeamlineDetectorGeometry();
    fBeamline->BuildLogicalVolumes();
    fBeamline->PlacePhysicalVolume( world_log );
