@@ -448,6 +448,11 @@ void print_help() {
    std::cout << "    -f, --field-dir          print the field dir\n"; 
    std::cout << "    -F, --dl-field-maps      downloads the field maps into the field dir\n"; 
    std::cout << "    -R, --rand=NUMBER        set the random number seed\n";
+   std::cout << "    -S, --solenoid-field=B   Scale or turn off solenoid field\n";
+   std::cout << "    -T, --toroid-field=B     Scale or turn off solenoid field\n";
+   //   {"solenoid-field", required_argument,  0, 'S'},
+   //   {"toroid-field", required_argument,  0, 'T'},
+   //   {"torus-field", required_argument,  0, 'T'},
 }
 //______________________________________________________________________________
 

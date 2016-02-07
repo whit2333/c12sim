@@ -33,49 +33,50 @@ DriftChamberDetectorGeometry::DriftChamberDetectorGeometry()
    G4VSolid * temp_box    = new G4Box("DC_placement_box_solid",5*m,5*m,5*m);
    G4VSolid * temp_region = 0;
 
-   // RI
-   //temp_region    = new G4Box("R1trap_solid_BOX", 4.0*m, 4.0*m, 1.0*m); 
-   temp_region    = new G4GenericTrap("R1trap_solid",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
-   fRegion1_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(1)) );
+   // ---------------------------------------------
+   // Region 1
+   temp_region                = new G4GenericTrap("R1Containertrap_solid",  clas12::geo::ContainerTrapWidth(1), clas12::geo::ContainerTrapPoints(1));
+   fRegionContainers_solid[0] = new G4IntersectionSolid("R1Container_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::ContainerTrapWidth(1)) );
+
+   temp_region       = new G4GenericTrap("R1trap_solid",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
+   fRegions_solid[0]       = new G4IntersectionSolid("R1_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(1)) );
 
    //temp_box    = new G4Box("clipping_DC_placement_box_solid",1*m,1*m,1*m);
-   temp_region    = new G4GenericTrap("clippingR1trap_solid",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
-   fClippingRegion1_solid = new G4IntersectionSolid("ClippingRI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(1)) );
+   //temp_region    = new G4GenericTrap("clippingR1trap_solid",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
+   //fClippingRegion1_solid = new G4IntersectionSolid("ClippingRI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(1)) );
 
-   // RII
+   // ---------------------------------------------
+   // Region 2
+   temp_region                = new G4GenericTrap("R2Containertrap_solid",  clas12::geo::ContainerTrapWidth(2), clas12::geo::ContainerTrapPoints(2));
+   fRegionContainers_solid[1] = new G4IntersectionSolid("R2Container_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::ContainerTrapWidth(2)) );
+
    temp_region    = new G4GenericTrap("R2trap_solid",  clas12::geo::RegionTrapWidth(2), clas12::geo::RegionTrapPoints(2));
-   fRegion2_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(2)) );
+   fRegions_solid[1] = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(2)) );
 
+   // ---------------------------------------------
+   // Region 3
+   temp_region                = new G4GenericTrap("R3Containertrap_solid",  clas12::geo::ContainerTrapWidth(3), clas12::geo::ContainerTrapPoints(3));
+   fRegionContainers_solid[2] = new G4IntersectionSolid("R3Container_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::ContainerTrapWidth(3)) );
 
    temp_region    = new G4GenericTrap("R3trap_solid",  clas12::geo::RegionTrapWidth(3), clas12::geo::RegionTrapPoints(3));
-   fRegion3_solid = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(3)) );
+   fRegions_solid[2] = new G4IntersectionSolid("RI_solid", temp_box, temp_region, 0,  G4ThreeVector(0.0,0.0,clas12::geo::RegionTrapOffset(3)) );
 
-   fRegions_solid[0] = fRegion1_solid;
-   fRegions_solid[1] = fRegion2_solid;
-   fRegions_solid[2] = fRegion3_solid;
+   // ---------------------------------------------
+   // Endplates
 
-   fClippingRegions_solid[0] = fClippingRegion1_solid;
-   fClippingRegions_solid[1] = fClippingRegion1_solid;
-   fClippingRegions_solid[2] = fClippingRegion1_solid;
-   //fRegion1_solid = new G4GenericTrap("RItrap",  clas12::geo::RegionTrapWidth(1), clas12::geo::RegionTrapPoints(1));
-   //fRegion2_solid = new G4GenericTrap("RIItrap", clas12::geo::RegionTrapWidth(2), clas12::geo::RegionTrapPoints(2));
-   //fRegion3_solid = new G4GenericTrap("RIIItrap",clas12::geo::RegionTrapWidth(3), clas12::geo::RegionTrapPoints(3));
+   G4VSolid * endplate_test  = 0;//new G4Box("endplatetest", 1.0*cm/2.0, 30.0*cm/2.0, 5.0*cm/2.0);
+   fEndPlates_solid[0] = new G4GenericTrap("R1Endplate_solid",  clas12::geo::DC::EndPlateThickness.at(0)/2.0, clas12::geo::EndplateTrapPoints(1));
+   fEndPlates_solid[1] = new G4GenericTrap("R2Endplate_solid",  clas12::geo::DC::EndPlateThickness.at(1)/2.0, clas12::geo::EndplateTrapPoints(2));
+   fEndPlates_solid[2] = new G4GenericTrap("R3Endplate_solid",  clas12::geo::DC::EndPlateThickness.at(2)/2.0, clas12::geo::EndplateTrapPoints(3));
 
-   fRegion1_log = 0;
-   fRegion2_log = 0;
-   fRegion3_log = 0;
-
-   fEmptyRegion1_log = 0;
-   fEmptyRegion2_log = 0;
-   fEmptyRegion3_log = 0;
-
+   // ---------------------------------------------
+   // Materials
    G4NistManager * matman = G4NistManager::Instance();
    G4Element     * Ar     = new G4Element("Argon", "Ar", /*z    = */18, /*a            = */ 39.95*g/mole);
    fGasMaterial           = new G4Material("DC_gas", /* density = */ 1.8*mg/cm3, /*nel = */ 3);
    fGasMaterial->AddElement(Ar, 90*perCent);
    fGasMaterial->AddMaterial(matman->FindOrBuildMaterial("G4_O"),  6.6*perCent);
    fGasMaterial->AddMaterial(matman->FindOrBuildMaterial("G4_C"),  3.4*perCent);
-
 }
 //______________________________________________________________________________
 
@@ -92,6 +93,8 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    using namespace CLHEP;
    using namespace clas12::geo;
    using namespace clas12::geo::DC;
+
+   G4NistManager * matman = G4NistManager::Instance();
    G4VisAttributes * vs = new G4VisAttributes(G4Colour(0.5,0.0,0.5));
    //vs->SetDaughtersInvisible(true);
    vs->SetForceWireframe(true);
@@ -113,37 +116,111 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    vs_even->SetForceWireframe(true);
    //vs_even->SetForceSolid(true);
 
-   fRegion1_log = new G4LogicalVolume(fRegion1_solid, fGasMaterial, "DC_Region1_log");
-   fRegion2_log = new G4LogicalVolume(fRegion2_solid, fGasMaterial, "DC_Region2_log");
-   fRegion3_log = new G4LogicalVolume(fRegion3_solid, fGasMaterial, "DC_Region3_log");
+   // ------------------------------
+   // Region Containers
+   fRegionContainers_log[0] = new G4LogicalVolume(fRegionContainers_solid[0], fGasMaterial, "DC_Region1_Container_log_0");
+   fRegionContainers_log[1] = new G4LogicalVolume(fRegionContainers_solid[1], fGasMaterial, "DC_Region2_Container_log_1");
+   fRegionContainers_log[2] = new G4LogicalVolume(fRegionContainers_solid[2], fGasMaterial, "DC_Region3_Container_log_2");
 
-   fRegion1_log->SetSensitiveDetector(fSensitiveDetector2);
-   fRegion2_log->SetSensitiveDetector(fSensitiveDetector2);
-   fRegion3_log->SetSensitiveDetector(fSensitiveDetector2);
+   fRegionContainers_log[0]->SetVisAttributes(vs_odd);
+   fRegionContainers_log[1]->SetVisAttributes(vs_odd);
+   fRegionContainers_log[2]->SetVisAttributes(vs_odd);
 
-   fRegion1_log->SetVisAttributes(vs);
-   fRegion2_log->SetVisAttributes(vs);
-   fRegion3_log->SetVisAttributes(vs);
+   // ------------------------------
+   // Regions
+   fRegions_log[0] = new G4LogicalVolume(fRegions_solid[0], fGasMaterial, "DC_Region1_log_0");
+   fRegions_log[1] = new G4LogicalVolume(fRegions_solid[1], fGasMaterial, "DC_Region2_log_1");
+   fRegions_log[2] = new G4LogicalVolume(fRegions_solid[2], fGasMaterial, "DC_Region3_log_2");
 
-   fRegions_log[0] = fRegion1_log;
-   fRegions_log[1] = fRegion2_log;
-   fRegions_log[2] = fRegion3_log;
+   fRegions_log[0]->SetSensitiveDetector(fSensitiveDetector2);
+   fRegions_log[1]->SetSensitiveDetector(fSensitiveDetector2);
+   fRegions_log[2]->SetSensitiveDetector(fSensitiveDetector2);
 
-   fEmptyRegion1_log = new G4LogicalVolume(fRegion1_solid, fGasMaterial, "DC_EmptyRegion1_log");
-   fEmptyRegion2_log = new G4LogicalVolume(fRegion2_solid, fGasMaterial, "DC_EmptyRegion2_log");
-   fEmptyRegion3_log = new G4LogicalVolume(fRegion3_solid, fGasMaterial, "DC_EmptyRegion3_log");
+   fRegions_log[0]->SetVisAttributes(vs);
+   fRegions_log[1]->SetVisAttributes(vs);
+   fRegions_log[2]->SetVisAttributes(vs);
 
-   //fEmptyRegion1_log->SetSensitiveDetector(fSensitiveDetector2);
-   //fEmptyRegion2_log->SetSensitiveDetector(fSensitiveDetector2);
-   //fEmptyRegion3_log->SetSensitiveDetector(fSensitiveDetector2);
+   // ------------------------------
+   // End plates
+   G4Material * al_mat = matman->FindOrBuildMaterial("G4_Al");
+   fEndPlates_log[0] = new G4LogicalVolume(fEndPlates_solid[0], al_mat, "EndPlates_log_0");
+   fEndPlates_log[1] = new G4LogicalVolume(fEndPlates_solid[1], al_mat, "EndPlates_log_1");
+   fEndPlates_log[2] = new G4LogicalVolume(fEndPlates_solid[2], al_mat, "EndPlates_log_2");
 
-   fEmptyRegion1_log->SetVisAttributes(vs_odd);
-   fEmptyRegion2_log->SetVisAttributes(vs_even);
-   fEmptyRegion3_log->SetVisAttributes(vs3);
+   G4VisAttributes * vs_endplates = new G4VisAttributes(G4Colour(0.0,0.3,0.5,0.5));
+   //vs_endplates->SetDaughtersInvisible(true);
+   vs_endplates->SetForceWireframe(true);
+   //vs->SetForceSolid(true);
 
-   fEmptyRegions_log[0] = fEmptyRegion1_log;
-   fEmptyRegions_log[1] = fEmptyRegion2_log;
-   fEmptyRegions_log[2] = fEmptyRegion3_log;
+   fEndPlates_log[0]->SetVisAttributes(vs_endplates);
+   fEndPlates_log[1]->SetVisAttributes(vs_endplates);
+   fEndPlates_log[2]->SetVisAttributes(vs_endplates);
+
+   //fEmptyRegions_log[0] = new G4LogicalVolume(fRegion1_solid, fGasMaterial, "DC_EmptyRegion1_log");
+   //fEmptyRegions_log[1] = new G4LogicalVolume(fRegion2_solid, fGasMaterial, "DC_EmptyRegion2_log");
+   //fEmptyRegions_log[2] = new G4LogicalVolume(fRegion3_solid, fGasMaterial, "DC_EmptyRegion3_log");
+
+   //fEmptyRegions_log[0]->SetSensitiveDetector(fSensitiveDetector2);
+   //fEmptyRegions_log[1]->SetSensitiveDetector(fSensitiveDetector2);
+   //fEmptyRegions_log[2]->SetSensitiveDetector(fSensitiveDetector2);
+
+   //fEmptyRegions_log[0]->SetVisAttributes(vs_odd);
+   //fEmptyRegions_log[1]->SetVisAttributes(vs_even);
+   //fEmptyRegions_log[2]->SetVisAttributes(vs3);
+
+   //fEmptyRegions_log[0] = fEmptyRegion1_log;
+   //fEmptyRegions_log[1] = fEmptyRegion2_log;
+   //fEmptyRegions_log[2] = fEmptyRegion3_log;
+
+   // ----------------------------------------------------
+   // Region placements
+   for(int i = 0;i<3;i++){
+
+      G4ThreeVector width_diff = {
+         0.0,
+         1.0*clas12::geo::ContainerExtraShift(i+1),
+         (clas12::geo::ContainerTrapWidth(i+1)-clas12::geo::RegionTrapWidth(i+1))
+      };
+      new G4PVPlacement(
+            0,
+            width_diff,
+            fRegions_log[i],          // its logical volume
+            Form("container_placed_region%d_phys",i+1), // its name
+            fRegionContainers_log[i],                       // its mother (logical) volume
+            false,                        // no boolean operations
+            i,                     // its copy number
+            false);                        // check for overlaps
+
+
+      fLeftEndPlates_rot[i] = GetLeftEndplateRotation(i+1);
+      new G4PVPlacement(
+            G4Transform3D(
+               GetLeftEndplateRotation(i+1),
+               GetLeftEndplatePosition(1,i+1)
+               ),
+            fEndPlates_log[i],          // its logical volume
+            Form("left_endplate_region%d_phys",i+1), // its name
+            fRegionContainers_log[i],                       // its mother (logical) volume
+            false,                        // no boolean operations
+            i,                          // its copy number
+            false);                       // check for overlaps
+
+      fRightEndPlates_rot[i] = GetRightEndplateRotation(i+1);
+      new G4PVPlacement(
+            G4Transform3D(
+               GetRightEndplateRotation(i+1),
+               GetRightEndplatePosition(1,i+1)
+               ),
+            fEndPlates_log[i],          // its logical volume
+            Form("right_endplate_region%d_phys",i+1), // its name
+            fRegionContainers_log[i],                       // its mother (logical) volume
+            false,                        // no boolean operations
+            i,                          // its copy number
+            false);                       // check for overlaps
+      std::cout << "dumb\n";
+   }
+
+   // ------------------------------
 
    G4RotationMatrix* yRot = new G4RotationMatrix;  // Rotates X and Z axes only
    yRot->rotateX(M_PI/3.*rad);                     // Rotates 60 degrees
@@ -253,17 +330,17 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
             // Only visualize one sector (otherwise painfully slow)
             //if(sector == 1 ) {
 
-            //if(TMath::Abs(channel%112-10) <= 5 ) {
-            //   if(super_layer%2 == 0 ) {
-            //      wire_log->SetVisAttributes(vs_even);
-            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            //   } else {
-            //      wire_log->SetVisAttributes(vs_odd);
-            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            //   }
-            //}else {
-               wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            //}
+            if(TMath::Abs(channel%112-5) <= 5 ) {
+               if(super_layer%2 == 0 ) {
+                  wire_log->SetVisAttributes(vs_even);
+                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+               } else {
+                  wire_log->SetVisAttributes(vs_odd);
+                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+               }
+            }else {
+             wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+            }
 
                //wire_log->SetVisAttributes(vs_odd);
             //} else {
@@ -275,8 +352,6 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    }
 
 
-
-
 }
 //______________________________________________________________________________
 
@@ -286,17 +361,21 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlacePhysicalVolume(G4LogicalV
    int index    = region-1;
    int grouping = (sec-1)*3 + (region-1);
 
-   G4VPhysicalVolume * phys = new G4PVPlacement(
-         G4Transform3D(
-            RegionRotation(sec,region),
-            G4ThreeVector(0,0,20.0*CLHEP::cm)+ RegionTranslation(sec, region)
-            ),
-         fEmptyRegions_log[index],          // its logical volume
-         Form("region%d_phys",region), // its name
-         mother,                       // its mother (logical) volume
-         false,                        // no boolean operations
-         sec,                          // its copy number
-         false);                       // check for overlaps
+   //fEndPlates_log[0] = new G4LogicalVolume(fEndPlates_solid[0], fGasMaterial, "EndPlates_log");
+
+   G4VPhysicalVolume * phys = nullptr;
+
+   //G4VPhysicalVolume * phys = new G4PVPlacement(
+   //      G4Transform3D(
+   //         RegionRotation(sec,region),
+   //         G4ThreeVector(0,0,20.0*CLHEP::cm)+ RegionTranslation(sec, region)
+   //         ),
+   //      fEmptyRegions_log[index],          // its logical volume
+   //      Form("region%d_phys",region), // its name
+   //      mother,                       // its mother (logical) volume
+   //      false,                        // no boolean operations
+   //      sec,                          // its copy number
+   //      false);                       // check for overlaps
 
    return phys;
 }
@@ -316,9 +395,9 @@ G4VPhysicalVolume * DriftChamberDetectorGeometry::PlaceParallelPhysicalVolume(G4
    G4VPhysicalVolume * phys = new G4PVPlacement(
          G4Transform3D(
             RegionRotation(sec,region),
-            G4ThreeVector(0,0,20.0*CLHEP::cm) + RegionTranslation(sec, region)
+            RegionTranslation(sec, region)
          ),
-         fRegions_log[index],          // its logical volume
+         fRegionContainers_log[index],          // its logical volume
          Form("region%d_phys",region), // its name
          mother,                       // its mother (logical) volume
          false,                        // no boolean operations

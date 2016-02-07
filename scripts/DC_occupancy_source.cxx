@@ -110,6 +110,7 @@ int DC_occupancy_source(
 
    gStyle->SetCanvasPreferGL(true);
 
+   std::vector<double> time_window_by_sl = {250.0,250.0, 400.0, 400.0, 500.0, 500.0};
    double norm_sim = n_gen/n_sim;
    std::cout << " norm_sim = " << norm_sim << std::endl;
 
@@ -240,44 +241,46 @@ int DC_occupancy_source(
             int lay     = ahit->fDCWire.fLayer;
             int bin     = ahit->fDCWire.fWire + (ahit->fDCWire.fLayer-1)*112;
 
+            double time_norm = 500.0/time_window_by_sl[sl-1];
+
             clas12::geo::DCSuperLayer sl_id(sec, region, sl);
 
             DCHist * h  =  fgDCHists[sl_id];
-            double val  =  h->GetBinContent(bin) + norm_sim/double(norm);
+            double val  =  h->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
             h->SetBinContent(bin,val);
 
             // ----------------------
             // 1D hists
             bin = ahit->fDCWire.fWire;
-            val = fOccupancies[sec-1][sl-1]->GetBinContent(bin) + norm_sim/double(norm*6);
+            val = fOccupancies[sec-1][sl-1]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
             fOccupancies[sec-1][sl-1]->SetBinContent(bin, val);
 
             bin = ahit->fDCWire.fWire;
-            val = fLayerOccupancies[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/double(norm);
+            val = fLayerOccupancies[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
             fLayerOccupancies[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
             //std::cout <<  eg_event->fXS_id << std::endl;
             if( eg_event->fXS_id == 200001001 ) {
 
-               val = fLayerOccupanciesMoller[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/double(norm);
+               val = fLayerOccupanciesMoller[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
                fLayerOccupanciesMoller[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
             } else {
 
-               val = fLayerOccupanciesOther[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/double(norm);
+               val = fLayerOccupanciesOther[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
                fLayerOccupanciesOther[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
             }
 
             int sec_chan = 6*(sl-1) + (lay-1);
-            val = fSLAveraged[sec_chan]->GetBinContent(bin) + norm_sim/double(norm*6);
+            val = fSLAveraged[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
             fSLAveraged[sec_chan]->SetBinContent(bin, val);
 
             if( eg_event->fXS_id == 200001001 ) {
-               val = fSLAveragedMoller[sec_chan]->GetBinContent(bin) + norm_sim/double(norm*6);
+               val = fSLAveragedMoller[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
                fSLAveragedMoller[sec_chan]->SetBinContent(bin, val);
             } else {
-               val = fSLAveragedOther[sec_chan]->GetBinContent(bin) + norm_sim/double(norm*6);
+               val = fSLAveragedOther[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
                fSLAveragedOther[sec_chan]->SetBinContent(bin, val);
             }
          }
