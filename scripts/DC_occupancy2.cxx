@@ -108,7 +108,10 @@ int DC_occupancy2(
       int n_gen      = 10e6,  int n_sim = 500000
       ) {
 
+   int aNumber = run_number;//+10000;
    gStyle->SetCanvasPreferGL(true);
+
+   std::vector<double> time_window_by_sl = {250.0,250.0, 400.0, 400.0, 500.0, 500.0};
 
    double norm_sim = n_gen/n_sim;
    std::cout << " norm_sim = " << norm_sim << std::endl;
@@ -180,11 +183,11 @@ int DC_occupancy2(
    int nEvents = t->GetEntries();
    std::cout << " nEvents = " << nEvents << std::endl;
 
-   for(int iEvent =  0 ; iEvent < nEvents; iEvent++) {
+   for(int iEvent =  0 ; iEvent < nEvents && iEvent < n_sim; iEvent++) {
 
       t->GetEntry(iEvent);
 
-      //std::cout << "event : " << iEvent << "\n";
+      if( iEvent%1000 == 0 ) std::cout << "event : " << iEvent << "\n";
 
       for(int i = 0; i < event->fDCEvent.fNParticleHits; i++) {
 
@@ -192,7 +195,8 @@ int DC_occupancy2(
          clas12::hits::DriftChamberParticleHit * ahit = event->fDCEvent.GetParticleHit(i);
 
          if( ( ahit->fGlobalPosition.T() < 500.0     ) && // 500 ns
-             ( ahit->fMomentum.E()       > 500.0e-9) ) {  // 500 eV threshold
+             //( ahit->fMomentum.E()       >  0.001) ) {  // 1 MeV threshold
+             ( ahit->fMomentum.E()       >  500.0e-9) ) {  // 500 eV threshold
 
             int sec     = ahit->fDCWire.fSector;
             int region  = ahit->fDCWire.fRegion;
@@ -200,24 +204,26 @@ int DC_occupancy2(
             int lay     = ahit->fDCWire.fLayer;
             int bin     = ahit->fDCWire.fWire + (ahit->fDCWire.fLayer-1)*112;
 
+            double time_norm = 500.0/time_window_by_sl[sl-1];
+
             clas12::geo::DCSuperLayer sl_id(sec, region, sl);
 
             DCHist * h  =  fgDCHists[sl_id];
-            double val  =  h->GetBinContent(bin) + norm_sim/(double(norm));
+            double val  =  h->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
             h->SetBinContent(bin,val);
 
             // ----------------------
             // 1D hists
             bin = ahit->fDCWire.fWire;
-            val = fOccupancies[sec-1][sl-1]->GetBinContent(bin) + norm_sim/(double(norm*6));
+            val = fOccupancies[sec-1][sl-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm*6));
             fOccupancies[sec-1][sl-1]->SetBinContent(bin, val);
 
             bin = ahit->fDCWire.fWire;
-            val = fLayerOccupancies[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(double(norm));
+            val = fLayerOccupancies[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
             fLayerOccupancies[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
             int sec_chan = 6*(sl-1) + (lay-1);
-            val = fSLAveraged[sec_chan]->GetBinContent(bin) + norm_sim/(double(norm*6));
+            val = fSLAveraged[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(norm*6));
             fSLAveraged[sec_chan]->SetBinContent(bin, val);
 
 
@@ -262,8 +268,8 @@ int DC_occupancy2(
    c0 = new TCanvas();
    c0->cd();
    hs2->Draw("nostack");
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_layeravg_%d.png",run_number));
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_layeravg_%d.pdf",run_number));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_layeravg_%d.png",aNumber));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_layeravg_%d.pdf",aNumber));
 
    //---------------------------------------------------------
    // Compute SL average occupancy
@@ -279,8 +285,8 @@ int DC_occupancy2(
          fSLAveraged[sec_chan]->SetLineWidth(2);
          hs3->Draw("nostack");
       }
-      c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_slavg_%d_%d.png",sl,run_number));
-      c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_slavg_%d_%d.pdf",sl,run_number));
+      c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_slavg_%d_%d.png",sl,aNumber));
+      c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_slavg_%d_%d.pdf",sl,aNumber));
    }
    //}
 
@@ -290,30 +296,30 @@ int DC_occupancy2(
       c0 = new TCanvas();
       c0->cd();
       fStacks[sec-1]->Draw("nostack");
-      c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_sec%d_%d.pdf",sec,run_number));
+      c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_sec%d_%d.pdf",sec,aNumber));
    }
 
    c0 = new TCanvas();
    c0->cd();
    hs0->Draw("nostack");
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_%d.png",run_number));
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_%d.pdf",run_number));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_%d.png",aNumber));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_%d.pdf",aNumber));
 
    c0 = new TCanvas();
    c0->cd();
    hs0->Draw("nostack");
    hs0->SetMaximum(0.22);
    c0->Update();
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed_%d.png",run_number));
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed_%d.pdf",run_number));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed_%d.png",aNumber));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed_%d.pdf",aNumber));
 
    c0 = new TCanvas();
    c0->cd();
    hs0->Draw("nostack");
    hs0->SetMaximum(0.1);
    c0->Update();
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed1_%d.png",run_number));
-   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed1_%d.pdf",run_number));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed1_%d.png",aNumber));
+   c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_allsec_yfixed1_%d.pdf",aNumber));
 
    //---------------------------------------------------------
 
@@ -359,8 +365,8 @@ int DC_occupancy2(
       }
    }
 
-   c->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_%d.png",run_number));
-   c->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_%d.pdf",run_number));
+   c->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_%d.png",aNumber));
+   c->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_%d.pdf",aNumber));
 
    std::cout << " N events : " << nEvents << std::endl;
 

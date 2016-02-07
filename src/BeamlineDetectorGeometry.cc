@@ -115,32 +115,32 @@ void BeamlineDetectorGeometry::BuildLogicalVolumes()
 {
 
    fMollerShieldTube_log = new G4LogicalVolume(fMollerShieldTube_solid, fMollerShieldTube_mat, "fMollerShieldTube_log");
-   fMollerShieldTube_vis = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
-   fMollerShieldTube_vis->SetForceWireframe(true);
+   fMollerShieldTube_vis = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.5));
+   //fMollerShieldTube_vis->SetForceWireframe(true);
    fMollerShieldTube_log->SetVisAttributes(fMollerShieldTube_vis);
 
    fMollerShieldTubeW_log = new G4LogicalVolume(fMollerShieldTubeW_solid, fMollerShieldTubeW_mat, "fMollerShieldTubeW_log");
-   fMollerShieldTubeW_vis = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.5));
+   fMollerShieldTubeW_vis = new G4VisAttributes(G4Colour(0.0, 0.9, 0.1, 0.3));
    fMollerShieldTubeW_log->SetVisAttributes(fMollerShieldTubeW_vis);
 
    fMollerShieldTubeA_log = new G4LogicalVolume(fMollerShieldTubeA_solid, fMollerShieldTubeA_mat, "fMollerShieldTubeA_log");
-   fMollerShieldTubeA_vis = new G4VisAttributes(G4Colour(0.5, 0.0, 0.2, 0.5));
+   fMollerShieldTubeA_vis = new G4VisAttributes(G4Colour(0.9, 0.0, 0.1, 0.3));
    fMollerShieldTubeA_log->SetVisAttributes(fMollerShieldTubeA_vis);
 
    fMollerShieldTubeV_log = new G4LogicalVolume(fMollerShieldTubeV_solid, fMollerShieldTubeV_mat, "fMollerShieldTubeV_log");
-   fMollerShieldTubeV_vis = new G4VisAttributes(G4Colour(0.2, 0.5, 0.0, 0.5));
+   fMollerShieldTubeV_vis = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 1.0));
    fMollerShieldTubeV_log->SetVisAttributes(fMollerShieldTubeV_vis);
 
    fMollerShieldCone_log  = new G4LogicalVolume(fMollerShieldCone_solid,  fMollerShieldCone_mat,  "fMollerShieldCone_log");
-   fMollerShieldCone_vis = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.5));
+   fMollerShieldCone_vis = new G4VisAttributes(G4Colour(0.0, 0.9, 0.1, 0.3));
    fMollerShieldCone_log->SetVisAttributes(fMollerShieldCone_vis);
 
    fMollerShieldConeA_log = new G4LogicalVolume(fMollerShieldConeA_solid, fMollerShieldConeA_mat, "fMollerShieldConeA_log");
-   fMollerShieldConeA_vis = new G4VisAttributes(G4Colour(0.5, 0.0, 0.2, 0.5));
+   fMollerShieldConeA_vis = new G4VisAttributes(G4Colour(0.9, 0.0, 0.1, 0.3));
    fMollerShieldConeA_log->SetVisAttributes(fMollerShieldConeA_vis);
 
    fMollerShieldConeV_log = new G4LogicalVolume(fMollerShieldConeV_solid, fMollerShieldConeV_mat, "fMollerShieldConeV_log");
-   fMollerShieldConeV_vis = new G4VisAttributes(G4Colour(0.2, 0.5, 0.0, 0.5));
+   fMollerShieldConeV_vis = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 1.0));
    fMollerShieldConeV_log->SetVisAttributes(fMollerShieldConeV_vis);
 
 }
