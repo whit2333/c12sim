@@ -147,9 +147,9 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    fEndPlates_log[1] = new G4LogicalVolume(fEndPlates_solid[1], al_mat, "EndPlates_log_1");
    fEndPlates_log[2] = new G4LogicalVolume(fEndPlates_solid[2], al_mat, "EndPlates_log_2");
 
-   G4VisAttributes * vs_endplates = new G4VisAttributes(G4Colour(0.0,0.3,0.5,0.5));
+   G4VisAttributes * vs_endplates = new G4VisAttributes(G4Colour(0.0,0.6,0.6,0.9));
    //vs_endplates->SetDaughtersInvisible(true);
-   vs_endplates->SetForceWireframe(true);
+   //vs_endplates->SetForceWireframe(true);
    //vs->SetForceSolid(true);
 
    fEndPlates_log[0]->SetVisAttributes(vs_endplates);

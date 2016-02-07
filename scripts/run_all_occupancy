@@ -1,22 +1,22 @@
 #!/bin/bash
 
 
-run=623
+run=624
 N0=16941
 Nevents=10000000
-Nsim=500000
-#root -l "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
+Nsim=100000
+root -l "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
-root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
-root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
 
 run=823
 N0=22197
 Nevents=10000000
 Nsim=500000
-#root -l -b -q "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
-root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
-root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
+##root -l -b -q "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
 
 run=1123
 N0=16428
@@ -24,8 +24,8 @@ Nevents=10000000
 Nsim=500000
 #root -l "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
-root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
-root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
 
 #root "scripts/DC_occupancy2.cxx(815,22100,1000000)"
 #root "scripts/DC_occupancy_sectors.cxx(815,22100,1000000)"

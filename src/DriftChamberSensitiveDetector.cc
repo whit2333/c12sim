@@ -70,7 +70,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
       const int NWiresPerSector = 6*6*112;
       // layer/superlayer/wire comes from channel
       int sec_chan    = touchable->GetReplicaNumber(0); 
-      int sector      = touchable->GetReplicaNumber(1);
+      int sector      = touchable->GetReplicaNumber(2);
       int channel     = sec_chan + (sector-1)*NWiresPerSector;
       int super_layer = clas12::geo::DCWire::GetSuperLayer(channel);
       int layer       = clas12::geo::DCWire::GetLayer(channel);
