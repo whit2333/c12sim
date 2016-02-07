@@ -40,7 +40,7 @@ HTCCDetectorGeometry::HTCCDetectorGeometry()
    //htccBigGasVolume  | root  |volume containing cherenkov gas  | 0 0 0  | 0 0 0  |ee99ff5   | Polycone  |0*deg 360*deg 4*counts 0*mm 15.8*mm 91.5*mm 150*mm 1742*mm 2300*mm 2300*mm 1589*mm -275*mm 181*mm 1046*mm 1740*mm  |           Component  |                  no  |     1   |     1   |     1   |   1   |   0   |                  no  | no  | no 
    int zplanes = 4; // number of planes in z directions
    double rInner[] = { 0*mm, 15.8*mm, 91.5*mm, 150*mm };
-   double rOuter[] = { 1742*mm, 2300*mm, 2300*mm, 1589*mm };
+   double rOuter[] = { 1742*mm, 2300*mm, 2300*mm, 1289*mm };
    double zPlane[] = { -275*mm, 181*mm, 1046*mm, 1740*mm };
 
    htccBigGasVolume_solid = new G4Polycone("htccBigGasVolume_solid",            ///< name
