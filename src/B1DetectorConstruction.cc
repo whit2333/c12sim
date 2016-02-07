@@ -363,15 +363,15 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // HTCC  
    // ------------------------------------------------------------------------
    std::cout << " HTCC construction \n";
-   fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
-   fHTCC->BuildLogicalVolumes();
-   fHTCC->SetGasIndexOfRefraction(false);
-   fHTCC->PlacePhysicalVolume( world_log, 1, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 2, 2);
-   fHTCC->PlacePhysicalVolume( world_log, 3, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 4, 2);
-   fHTCC->PlacePhysicalVolume( world_log, 5, 1);
-   fHTCC->PlacePhysicalVolume( world_log, 6, 2);
+   //fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
+   //fHTCC->BuildLogicalVolumes();
+   //fHTCC->SetGasIndexOfRefraction(false);
+   //fHTCC->PlacePhysicalVolume( world_log, 1, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 2, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 3, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 4, 2);
+   //fHTCC->PlacePhysicalVolume( world_log, 5, 1);
+   //fHTCC->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
    // Recoil Chamber
