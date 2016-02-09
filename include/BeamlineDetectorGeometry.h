@@ -7,11 +7,13 @@
 #include "G4Material.hh"
 #include "G4ThreeVector.hh"
 #include "G4VisAttributes.hh"
+#include "G4GDMLParser.hh"
 
 class BeamlineDetectorGeometry {
 
    protected:
 
+      G4GDMLParser parser;
       G4VSolid          * fMollerShieldTube_solid;
       G4Material        * fMollerShieldTube_mat;
       G4LogicalVolume   * fMollerShieldTube_log;

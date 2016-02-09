@@ -4,6 +4,7 @@
 #include "G4Tubs.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
+#include "G4GDMLParser.hh"
 
 BeamlineDetectorGeometry::BeamlineDetectorGeometry()
 {
@@ -148,6 +149,19 @@ void BeamlineDetectorGeometry::BuildLogicalVolumes()
 
 G4VPhysicalVolume * BeamlineDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother)
 {
+   parser.Read("beamline.gdml");
+   fMollerShieldTube_log = parser.GetWorldVolume()->GetLogicalVolume();
+
+   fMollerShieldTube_phys = new G4PVPlacement(
+         0, G4ThreeVector(0,0,0),
+         fMollerShieldTube_log,
+         "fMollerShieldTube_phys",
+         mother,
+         false,
+         0,
+         false);
+
+   return fMollerShieldTube_phys;
 
    //--------------------------------------
    fMollerShieldConeV_phys = new G4PVPlacement(
