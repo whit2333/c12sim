@@ -147,7 +147,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    fEndPlates_log[1] = new G4LogicalVolume(fEndPlates_solid[1], al_mat, "EndPlates_log_1");
    fEndPlates_log[2] = new G4LogicalVolume(fEndPlates_solid[2], al_mat, "EndPlates_log_2");
 
-   G4VisAttributes * vs_endplates = new G4VisAttributes(G4Colour(0.0,0.6,0.6,0.9));
+   G4VisAttributes * vs_endplates = new G4VisAttributes(G4Colour(0.0,0.6,0.6));
    //vs_endplates->SetDaughtersInvisible(true);
    //vs_endplates->SetForceWireframe(true);
    //vs->SetForceSolid(true);
@@ -217,7 +217,6 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
             false,                        // no boolean operations
             i,                          // its copy number
             false);                       // check for overlaps
-      std::cout << "dumb\n";
    }
 
    // ------------------------------
@@ -320,32 +319,26 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
             G4VPhysicalVolume * phys = new G4PVPlacement(
                   aRot, wire_trans,
-                  wire_log,          // its logical volume
+                  wire_log,         // its logical volume
                   Form("sl%d_%d_%d_phys",super_layer,layer,i),
                   fRegions_log[SuperLayerRegionIndex[super_layer-1]],  
-                  false,                        // no boolean operations
-                  channel,                           // its copy number
+                  false,            // no boolean operations
+                  channel,          // its copy number
                   check_overlaps ); // surface check
 
-            // Only visualize one sector (otherwise painfully slow)
-            //if(sector == 1 ) {
-
-            if(TMath::Abs(channel%112-5) <= 5 ) {
-               if(super_layer%2 == 0 ) {
-                  wire_log->SetVisAttributes(vs_even);
-                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-               } else {
-                  wire_log->SetVisAttributes(vs_odd);
-                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-               }
-            }else {
-             wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            }
-
-               //wire_log->SetVisAttributes(vs_odd);
-            //} else {
-            //   wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+            // Only visualize some wires (otherwise painfully slow)
+            //if(TMath::Abs(channel%112-5) <= 5 ) {
+            //   if(super_layer%2 == 0 ) {
+            //      wire_log->SetVisAttributes(vs_even);
+            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+            //   } else {
+            //      wire_log->SetVisAttributes(vs_odd);
+            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+            //   }
+            //}else {
+            wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
             //}
+
 
          }
       }

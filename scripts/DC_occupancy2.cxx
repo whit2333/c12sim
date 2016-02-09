@@ -214,6 +214,8 @@ int DC_occupancy2(
 
             // ----------------------
             // 1D hists
+
+            // Here are summing over all six layers
             bin = ahit->fDCWire.fWire;
             val = fOccupancies[sec-1][sl-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm*6));
             fOccupancies[sec-1][sl-1]->SetBinContent(bin, val);
@@ -222,6 +224,7 @@ int DC_occupancy2(
             val = fLayerOccupancies[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
             fLayerOccupancies[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
+            // here we are summing over  all sectors
             int sec_chan = 6*(sl-1) + (lay-1);
             val = fSLAveraged[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(norm*6));
             fSLAveraged[sec_chan]->SetBinContent(bin, val);
@@ -272,7 +275,7 @@ int DC_occupancy2(
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_layeravg_%d.pdf",aNumber));
 
    //---------------------------------------------------------
-   // Compute SL average occupancy
+   // Compute sector average occupancy
    //for(int sec = 1; sec<=6; sec++) {
    for(int sl = 1; sl<=6; sl++) {
       c0 = new TCanvas();
