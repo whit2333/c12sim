@@ -26,7 +26,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAc
    G4ParticleDefinition* particle = particleTable->FindParticle(particleName="e-");
    fParticleGun->SetParticleDefinition(particle);
    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-   fParticleGun->SetParticleEnergy(4.0*GeV); // kinetic energy (not total)
+   fParticleGun->SetParticleEnergy(6.0*GeV); // kinetic energy (not total)
 
    //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
    fInputLundFile.open(SimulationManager::GetInstance()->InputFileName().c_str());
@@ -44,7 +44,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
    //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
    //if( !fInputLundFile.is_open() ) std::cout << " IS NOT OPEN\n";
 
-   if( fInputLundFile.is_open() ){
+   if( false ) {//fInputLundFile.is_open() ){
       fThrownEvent.ReadLundEvent(fInputLundFile);
       int npart = fThrownEvent.GetNParticles();
       for(int i = 0; i<npart; i++){
@@ -74,30 +74,30 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4double envSizeXY = 2.0*mm;
       G4double envSizeZ  = 0.0*cm;
 
-      double phi    = 2.*CLHEP::pi* G4UniformRand();
-      double theta  = 1.0*deg+60.0*deg*G4UniformRand();
-      //double cosTheta = -1. + 2. * G4UniformRand();
-      double cosTheta = TMath::Cos(theta);//1. * G4UniformRand();
-      double sinTheta = TMath::Sin(theta);//sqrt(1. - cosTheta * cosTheta);
-      double ux= sinTheta * cos(phi);
-      double uy= sinTheta * sin(phi);
-      double uz =cosTheta;
+      //double phi    = 2.*CLHEP::pi* G4UniformRand();
+      //double theta  = 1.0*deg+60.0*deg*G4UniformRand();
+      ////double cosTheta = -1. + 2. * G4UniformRand();
+      //double cosTheta = TMath::Cos(theta);//1. * G4UniformRand();
+      //double sinTheta = TMath::Sin(theta);//sqrt(1. - cosTheta * cosTheta);
+      //double ux= sinTheta * cos(phi);
+      //double uy= sinTheta * sin(phi);
+      //double uz =cosTheta;
 
       //if( G4UniformRand() < 1.0 ) {
       //   G4ParticleDefinition* particle = particleTable->FindParticle("proton");
       //   fParticleGun->SetParticleDefinition(particle);
       //} else {
-         G4ParticleDefinition* particle = particleTable->FindParticle("e-");
-         fParticleGun->SetParticleDefinition(particle);
+      //   G4ParticleDefinition* particle = particleTable->FindParticle("e-");
+      //   fParticleGun->SetParticleDefinition(particle);
       //}
 
-      fParticleGun->SetParticleEnergy((3.5 + 0.1*G4UniformRand())*GeV); // kinetic energy (not total)
-      fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
+      //fParticleGun->SetParticleEnergy((3.5 + 0.1*G4UniformRand())*GeV); // kinetic energy (not total)
+      //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
 
       G4double size = 1.0; 
       G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
       G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-      G4double z0 = envSizeZ * (G4UniformRand()-0.5);
+      G4double z0 = -10.0*cm;
 
       fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
       fParticleGun->GeneratePrimaryVertex(anEvent);

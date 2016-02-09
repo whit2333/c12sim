@@ -137,6 +137,17 @@ int DC_occupancy_source(
    std::vector<int> colors = { 1,2,4,6,8,9,40,41,42,43};
    init_dc_hists();
 
+   std::array<std::array<std::array<std::array<int,112>,6>,6>,6> nWireHits;
+   for(int sec = 0; sec<6; sec++) {
+      for(int superl = 0; superl<6; superl++){
+         for(int layer = 0; layer<6; layer++){
+            for(int wire = 0; wire<112; wire++) {
+               nWireHits[sec][superl][layer][wire] = 0;
+            }
+         }
+      }
+   }
+
    THStack * hs0 = new THStack("hsOccupancies","Occupancies");
    THStack * hs  = 0;
    std::vector< std::vector<TH1F*> > fOccupancies;
@@ -221,7 +232,7 @@ int DC_occupancy_source(
    int nEvents = t->GetEntries();
    std::cout << " nEvents = " << nEvents << std::endl;
 
-   for(int iEvent =  0 ; iEvent < nEvents; iEvent++) {
+   for(int iEvent =  0 ; iEvent < nEvents && iEvent < n_sim; iEvent++) {
 
       t->GetEntry(iEvent);
       t1->GetEntry(iEvent);
@@ -233,65 +244,87 @@ int DC_occupancy_source(
          //std::cout << "hit : " << i << "\n";
          clas12::hits::DriftChamberParticleHit * ahit = event->fDCEvent.GetParticleHit(i);
 
-         if( ahit->fMomentum.E() > 0.01 ) {
+         if( ( ahit->fGlobalPosition.T() < 500.0     ) && // 500 ns
+            ( ahit->fMomentum.E()       >  500.0e-9) ) {  // 500 eV threshold
 
             int sec     = ahit->fDCWire.fSector;
             int region  = ahit->fDCWire.fRegion;
             int sl      = ahit->fDCWire.fSuperLayer;
             int lay     = ahit->fDCWire.fLayer;
-            int bin     = ahit->fDCWire.fWire + (ahit->fDCWire.fLayer-1)*112;
+            int wire    = ahit->fDCWire.fWire;
+            int bin     = wire + (ahit->fDCWire.fLayer-1)*112;
+            nWireHits[sec-1][sl-1][lay-1][wire-1]++;
 
-            double time_norm = 500.0/time_window_by_sl[sl-1];
+            if( nWireHits[sec-1][sl-1][lay-1][wire-1] == 1 ){
+               double time_norm = 500.0/time_window_by_sl[sl-1];
 
-            clas12::geo::DCSuperLayer sl_id(sec, region, sl);
+               clas12::geo::DCSuperLayer sl_id(sec, region, sl);
 
-            DCHist * h  =  fgDCHists[sl_id];
-            double val  =  h->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
-            h->SetBinContent(bin,val);
+               DCHist * h  =  fgDCHists[sl_id];
+               double val  =  h->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
+               h->SetBinContent(bin,val);
 
-            // ----------------------
-            // 1D hists
-            bin = ahit->fDCWire.fWire;
-            val = fOccupancies[sec-1][sl-1]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
-            fOccupancies[sec-1][sl-1]->SetBinContent(bin, val);
+               // ----------------------
+               // 1D hists
+               bin = ahit->fDCWire.fWire;
+               val = fOccupancies[sec-1][sl-1]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
+               fOccupancies[sec-1][sl-1]->SetBinContent(bin, val);
 
-            bin = ahit->fDCWire.fWire;
-            val = fLayerOccupancies[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
-            fLayerOccupancies[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
+               bin = ahit->fDCWire.fWire;
+               val = fLayerOccupancies[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
+               fLayerOccupancies[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
-            //std::cout <<  eg_event->fXS_id << std::endl;
-            if( eg_event->fXS_id == 200001001 ) {
+               //std::cout <<  eg_event->fXS_id << std::endl;
+               if( eg_event->fXS_id == 200001001 ) {
 
-               val = fLayerOccupanciesMoller[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
-               fLayerOccupanciesMoller[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
+                  val = fLayerOccupanciesMoller[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
+                  fLayerOccupanciesMoller[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
-            } else {
+               } else {
 
-               val = fLayerOccupanciesOther[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
-               fLayerOccupanciesOther[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
+                  val = fLayerOccupanciesOther[sec-1][sl-1][lay-1]->GetBinContent(bin) + norm_sim/(time_norm*double(norm));
+                  fLayerOccupanciesOther[sec-1][sl-1][lay-1]->SetBinContent(bin, val);
 
-            }
+               }
 
-            int sec_chan = 6*(sl-1) + (lay-1);
-            val = fSLAveraged[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
-            fSLAveraged[sec_chan]->SetBinContent(bin, val);
+               int sec_chan = 6*(sl-1) + (lay-1);
+               val = fSLAveraged[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
+               fSLAveraged[sec_chan]->SetBinContent(bin, val);
 
-            if( eg_event->fXS_id == 200001001 ) {
-               val = fSLAveragedMoller[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
-               fSLAveragedMoller[sec_chan]->SetBinContent(bin, val);
-            } else {
-               val = fSLAveragedOther[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
-               fSLAveragedOther[sec_chan]->SetBinContent(bin, val);
+               if( eg_event->fXS_id == 200001001 ) {
+                  val = fSLAveragedMoller[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
+                  fSLAveragedMoller[sec_chan]->SetBinContent(bin, val);
+               } else {
+                  val = fSLAveragedOther[sec_chan]->GetBinContent(bin) + norm_sim/(time_norm*double(6*norm));
+                  fSLAveragedOther[sec_chan]->SetBinContent(bin, val);
+               }
             }
          }
       }
 
+      // reset the wire counts
+      for(int sec_ = 0; sec_<6; sec_++) {
+         for(int superl_ = 0; superl_<6; superl_++){
+            for(int layer_ = 0; layer_<6; layer_++){
+               for(int wire_ = 0; wire_<112; wire_++) {
+                  nWireHits[sec_][superl_][layer_][wire_] = 0;
+               }
+            }
+         }
+      }
    } 
 
    //---------------------------------------------------------
 
    std::cout << " N events : " << nEvents << std::endl;
    gSystem->mkdir("data/results/DC_occupancy");
+
+   //---------------------------------------------------------
+
+   TMathText mathtex; 
+   mathtex.SetTextFont(43);
+   mathtex.SetTextSize(20);
+   mathtex.SetNDC(true);
 
    //---------------------------------------------------------
    // Compute average occupancy vs layer
@@ -354,14 +387,16 @@ int DC_occupancy_source(
    c0 = new TCanvas();
    c0->cd();
    hs_moller->Draw("nostack");
-   hs_moller->SetMaximum(0.1);
+   hs_moller->SetMaximum(2.0);
+   mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-1}s^{-1}]");
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_moller_%d.png",run_number));
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_moller_%d.pdf",run_number));
 
    c0 = new TCanvas();
    c0->cd();
    hs_other->Draw("nostack");
-   hs_other->SetMaximum(0.1);
+   hs_other->SetMaximum(2.0);
+   mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-1}s^{-1}]");
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_other_%d.png",run_number));
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_other_%d.pdf",run_number));
 
@@ -378,9 +413,10 @@ int DC_occupancy_source(
          hs3->Add(fSLAveraged[sec_chan]);
          fSLAveraged[sec_chan]->SetLineColor(colors[layer-1]);
          fSLAveraged[sec_chan]->SetLineWidth(2);
-         hs3->Draw("nostack");
-         hs3->SetMaximum(0.1);
       }
+      hs3->Draw("nostack");
+      hs3->SetMaximum(2.0);
+      mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-1}s^{-1}]");
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_slavg_%d_%d.png",sl,run_number));
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_slavg_%d_%d.pdf",sl,run_number));
    }
@@ -394,9 +430,10 @@ int DC_occupancy_source(
          hs3->Add(fSLAveragedMoller[sec_chan]);
          fSLAveragedMoller[sec_chan]->SetLineColor(colors[layer-1]);
          fSLAveragedMoller[sec_chan]->SetLineWidth(2);
-         hs3->Draw("nostack");
-         hs3->SetMaximum(0.1);
       }
+      hs3->Draw("nostack");
+      hs3->SetMaximum(2.0);
+      mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-1}s^{-1}]");
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_slavg_moller_%d_%d.png",sl,run_number));
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_slavg_moller_%d_%d.pdf",sl,run_number));
    }
@@ -410,67 +447,13 @@ int DC_occupancy_source(
          hs3->Add(fSLAveragedOther[sec_chan]);
          fSLAveragedOther[sec_chan]->SetLineColor(colors[layer-1]);
          fSLAveragedOther[sec_chan]->SetLineWidth(2);
-         hs3->Draw("nostack");
-         hs3->SetMaximum(0.1);
       }
+      hs3->Draw("nostack");
+      hs3->SetMaximum(2.0);
+      mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-1}s^{-1}]");
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_slavg_other_%d_%d.png",sl,run_number));
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_source_slavg_other_%d_%d.pdf",sl,run_number));
    }
-
-   return 0;
-   //---------------------------------------------------------
-
-
-   //---------------------------------------------------------
-
-   TCanvas * c = new TCanvas("superlayer","superlayer",1200,900);
-   c->Divide(6,3);
-
-   TLatex Tl; 
-   Tl.SetTextFont(43);
-   Tl.SetTextSize(20);
-   Tl.SetNDC(true);
-
-   for(int sector = 1; sector<=6; sector++) {
-      for(int region = 1; region<=3; region++) {
-
-         c->cd( (region-1)*6 + sector );
-         //TH2F * temp_hist = new TH2F("temphist","temp",100,-1,12,100,-1,110);
-         //temp_hist->Draw("");
-         THStack * stack = new THStack();
-
-         double min = 0;
-         double max = 0;
-         bool first = true;
-         for(int superlayer = (region-1)*2+1; superlayer<=(region-1)*2+2; superlayer++) {
-            clas12::geo::DCSuperLayer sl_id(sector, region, superlayer);
-            if( fgDCHists.find(sl_id) != fgDCHists.end() ){
-               //fgDCHists[sl_id]->Draw("colz,same");
-               stack->Add(fgDCHists[sl_id]);
-               //double temp =  fgDCHists[sl_id]->GetMaximum();
-               //if(temp > max) max = temp;
-               if(first){
-                  min =  fgDCHists[sl_id]->GetMinimum();
-                  max =  fgDCHists[sl_id]->GetMaximum();
-                  first = false;
-               } else {
-                  fgDCHists[sl_id]->SetMinimum(min);
-                  fgDCHists[sl_id]->SetMaximum(max);
-               }
-
-            }
-         }
-         stack->Draw("nostack,colz");
-
-      }
-   }
-
-   c->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_%d.png",run_number));
-   c->SaveAs(Form("data/results/DC_occupancy/DC_occupancy2_%d.pdf",run_number));
-
-   std::cout << " N events : " << nEvents << std::endl;
-
-   //Tl.DrawLatex(.01, .5, Form("#splitline{Sector %d}{Region %d}",i+1,region));
 
    return 0;
 }
