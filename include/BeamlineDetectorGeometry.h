@@ -14,6 +14,7 @@ class BeamlineDetectorGeometry {
    protected:
 
       G4GDMLParser parser;
+
       G4VSolid          * fMollerShieldTube_solid;
       G4Material        * fMollerShieldTube_mat;
       G4LogicalVolume   * fMollerShieldTube_log;

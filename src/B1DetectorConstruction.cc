@@ -34,9 +34,9 @@
 
 B1DetectorConstruction::B1DetectorConstruction() : 
    G4VUserDetectorConstruction(), 
-   world_x( 10.0*m ),
-   world_y( 10.0*m ),
-   world_z( 16.0*m ),
+   world_x( 15.0*m ),
+   world_y( 15.0*m ),
+   world_z( 20.0*m ),
    fHasBeenBuilt(false)
 {
    fMessenger = new B1DetectorMessenger(this);
@@ -438,13 +438,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // Target
    // ------------------------------------------------------------------------
    G4ThreeVector target_pos {target_posX, target_posY, target_posZ};
-   G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength, 0.0, 360.0*CLHEP::degree);
+   G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength/2.0, 0.0, 360.0*CLHEP::degree);
    G4Material * target_mat = LH2;//Deuterium;
    G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
    new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
          false,           //no boolean operation
          0,               //copy number
-         checkOverlaps);  //overlaps checking
+         true);  //overlaps checking
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
    G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.,0.3));
