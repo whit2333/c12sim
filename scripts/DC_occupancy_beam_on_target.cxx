@@ -104,7 +104,7 @@ void init_dc_hists(){
 //______________________________________________________________________________
 
 int DC_occupancy_beam_on_target(
-      int run_number = 105,    int norm  = 3000, 
+      int run_number = 111,    int norm  = 3000, 
       int n_gen      = 310000,  int n_sim = 310000
       ) {
 
@@ -116,9 +116,16 @@ int DC_occupancy_beam_on_target(
 
    std::vector<double> time_window_by_sl = {250.0,250.0, 400.0, 400.0, 500.0, 500.0};
 
+   TChain * t =  new TChain("clasdigi_hits");
 
-   TFile * f = new TFile(Form("data/rootfiles/clas12sim%d.root",run_number),"UPDATE");
-   TTree * t = (TTree*)gROOT->FindObject("clasdigi_hits");
+   for(int i = 110; i<140;i++) {
+      t->Add(Form("data/rootfiles_beam_on_target_6GeV/clas12sim%d.root",i));
+   } 
+   int N_events_total = t->GetEntries();
+   norm = N_events_total/n_gen;
+
+   //TFile * f = new TFile(Form("data/rootfiles_beam_on_target/clas12sim%d.root",run_number),"UPDATE");
+   //TTree * t = (TTree*)gROOT->FindObject("clasdigi_hits");
    if( !t ) {
       std::cout << " TREE NOT FOUND" << std::endl;
       return -111;
@@ -195,11 +202,11 @@ int DC_occupancy_beam_on_target(
 
    int nEvents = t->GetEntries();
 
-   for(int iEvent =  0 ; iEvent < nEvents && iEvent < n_sim; iEvent++) {
+   for(int iEvent =  0 ; iEvent < nEvents ; iEvent++) {
 
       t->GetEntry(iEvent);
 
-      if( iEvent%1000 == 0 ) std::cout << "event : " << iEvent << "\n";
+      if( iEvent%100000 == 0 ) std::cout << "event : " << iEvent << " / " << nEvents << "\n";
 
       for(int i = 0; i < event->fDCEvent.fNParticleHits; i++) {
 
