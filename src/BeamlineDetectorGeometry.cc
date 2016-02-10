@@ -149,19 +149,29 @@ void BeamlineDetectorGeometry::BuildLogicalVolumes()
 
 G4VPhysicalVolume * BeamlineDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother)
 {
+   parser.SetOverlapCheck(true);
    parser.Read("beamline.gdml");
-   fMollerShieldTube_log = parser.GetWorldVolume()->GetLogicalVolume();
 
-   fMollerShieldTube_phys = new G4PVPlacement(
-         0, G4ThreeVector(0,0,0),
-         fMollerShieldTube_log,
-         "fMollerShieldTube_phys",
-         mother,
-         false,
-         0,
-         false);
+   G4VPhysicalVolume * gdml_world_phys = parser.GetWorldVolume();
+   G4LogicalVolume   * gdml_world_log = parser.GetWorldVolume()->GetLogicalVolume();
+   for( int i = 0; i < gdml_world_log->GetNoDaughters(); i++ ) {
+      mother->AddDaughter(gdml_world_log->GetDaughter(i));
+   }
+   //fMollerShieldTube_log = parser.GetWorldVolume()->GetLogicalVolume();
 
-   return fMollerShieldTube_phys;
+   delete gdml_world_phys;
+   //delete gdml_world_log;
+
+   //fMollerShieldTube_phys = new G4PVPlacement(
+   //      0, G4ThreeVector(0,0,0),
+   //      fMollerShieldTube_log,
+   //      "fMollerShieldTube_phys",
+   //      mother,
+   //      false,
+   //      0,
+   //      false);
+
+   return nullptr;
 
    //--------------------------------------
    fMollerShieldConeV_phys = new G4PVPlacement(
