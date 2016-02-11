@@ -87,6 +87,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
       //int super_layer = (channel/112)/6 + (grouping%3)*2 + 1;
 
       int pdg         = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
+      int trk_id      = aStep->GetTrack()->GetTrackID();
 
       TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,time);
 
@@ -116,6 +117,7 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
          double         Etot = aStep->GetTrack()->GetTotalEnergy();
          //if(Etot/MeV > 10.0) { 
             DriftChamberParticleHit * part_hit = fDCHitsEvent->AddParticleHit();
+            part_hit->fTrackID            = trk_id;
             part_hit->fPDGCode            = pdg;
             part_hit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
             part_hit->fGlobalPosition     = global_4vec;

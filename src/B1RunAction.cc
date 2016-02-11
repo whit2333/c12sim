@@ -19,6 +19,7 @@
 #include "Module.h"
 #include "B1EventAction.hh"
 #include "TSystem.h"
+#include "G4TrackingManager.hh"
 
 
 using ss = std::stringstream;
@@ -61,6 +62,9 @@ G4Run* B1RunAction::GenerateRun()
          "HitsEvent",
          "clas12::hits::CLAS12HitsEvent",
          &(simManager->fEvent)   );
+   simManager->fOutputTree->Branch(
+         "TrajectoryVerticies",
+         &(simManager->fTrajectoryVerticies) );
 
    if( fRunConf ) delete fRunConf;
    fRunConf = new clas12::sim::RunConfiguration(fRunNumber);
@@ -100,6 +104,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
    simManager->PrintConfig();
    fRunConf->Print();
    fRunConf->fInputFileName = simManager->OutputFileName();
+
 }
 //______________________________________________________________________________
 

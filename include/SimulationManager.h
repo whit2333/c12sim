@@ -12,6 +12,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TClonesArray.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -72,6 +73,7 @@ class SimulationManager {
 
       clas12::hits::CLAS12HitsEvent * fEvent;
       clas12::hits::TriggerEvent    * fTriggerEvent;
+      TClonesArray                  * fTrajectoryVerticies;
 
       double                          fToroidFieldScale = 0.0;
       double                          fSolenoidFieldScale = 0.0;

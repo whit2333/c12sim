@@ -48,6 +48,7 @@ SimulationManager::SimulationManager () {
    fSimulationMessenger = new SimulationMessenger ( this );
    fEvent               = new clas12::hits::CLAS12HitsEvent();
    fTriggerEvent        = new clas12::hits::TriggerEvent();
+   fTrajectoryVerticies = new TClonesArray("TParticle",20); 
    fOutputFile          = 0;
    fOutputTree          = 0;
    fOutputDirectoryName = "data/rootfiles";
@@ -63,6 +64,7 @@ SimulationManager::~SimulationManager()
    delete fSimulationMessenger;
    delete fEvent;
    delete fTriggerEvent;
+   delete fTrajectoryVerticies;
 }
 //______________________________________________________________________________
 

@@ -21,6 +21,7 @@ class B1EventAction : public G4UserEventAction
 
       TTree                         * fTree;
       clas12::hits::CLAS12HitsEvent * fCLAS12HitsEvent;
+      TClonesArray                  * fTrajectoryVerticies;
 
       virtual void BeginOfEventAction(const G4Event* event);
       virtual void EndOfEventAction(const G4Event* event);
