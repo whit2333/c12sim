@@ -330,7 +330,7 @@ int DC_occupancy_beam_on_target(
          fSLAveraged[sec_chan]->SetLineWidth(2);
       }
       hs3->Draw("nostack");
-      //hs3->SetMaximum(2.0);
+      hs3->SetMaximum(2.0);
       mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-2}s^{-1}]");
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_beam_on_target_slavg_%d_%d.png",sl,aNumber));
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_beam_on_target_slavg_%d_%d.pdf",sl,aNumber));
@@ -343,7 +343,7 @@ int DC_occupancy_beam_on_target(
       c0 = new TCanvas();
       c0->cd();
       fStacks[sec-1]->Draw("nostack");
-      //fStacks[sec-1]->SetMaximum(3.0);
+      fStacks[sec-1]->SetMaximum(3.0);
       mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-2}s^{-1}]");
       c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_beam_on_target_sec%d_%d.pdf",sec,aNumber));
    }
@@ -351,7 +351,7 @@ int DC_occupancy_beam_on_target(
    c0 = new TCanvas();
    c0->cd();
    hs0->Draw("nostack");
-   //hs0->SetMaximum(4.0);
+   hs0->SetMaximum(4.0);
    mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-2}s^{-1}]");
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_beam_on_target_allsec_%d.png",aNumber));
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_beam_on_target_allsec_%d.pdf",aNumber));
@@ -359,7 +359,7 @@ int DC_occupancy_beam_on_target(
    c0 = new TCanvas();
    c0->cd();
    hs0->Draw("nostack");
-   //hs0->SetMaximum(2.5);
+   hs0->SetMaximum(2.5);
    mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-2}s^{-1}]");
    c0->Update();
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_beam_on_target_allsec_yfixed_%d.png",aNumber));
@@ -368,7 +368,7 @@ int DC_occupancy_beam_on_target(
    c0 = new TCanvas();
    c0->cd();
    hs0->Draw("nostack");
-   //hs0->SetMaximum(1.2);
+   hs0->SetMaximum(1.2);
    mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-2}s^{-1}]");
    c0->Update();
    c0->SaveAs(Form("data/results/DC_occupancy/DC_occupancy_beam_on_target_allsec_yfixed1_%d.png",aNumber));
@@ -404,7 +404,7 @@ int DC_occupancy_beam_on_target(
                //   first = false;
                //} else {
                   fgDCHists[sl_id]->SetMinimum(min);
-                  //fgDCHists[sl_id]->SetMaximum(max);
+                  fgDCHists[sl_id]->SetMaximum(max);
                //}
 
             }
