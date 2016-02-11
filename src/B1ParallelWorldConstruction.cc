@@ -89,6 +89,21 @@ void B1ParallelWorldConstruction::Construct()
    //   blue      = 177.0/256.0;
    //   alpha     = 0.4;
 
+   if(!scoring_det) scoring_det = new FakeSD("/FakeSD0");
+   G4SDManager::GetSDMpointer()->AddNewDetector(scoring_det);
+
+   for (int i = 0; i<fNplanes; i++) {
+      double radius = 5.0*cm + double(i)*10.0*cm;
+
+      G4String solid_name = G4String("scoring_tube_solid_") + std::to_string(i);
+      fDet_solid[i] = new G4Tubs(solid_name, radius, radius + 1.0*mm, 5.0*m, 0,  360.0*CLHEP::degree);
+      solid_name = G4String("scoring_tube_log_") + std::to_string(i);
+      fDet_log[i]   = new G4LogicalVolume(fDet_solid[i], 0, solid_name,0, 0,0);
+      solid_name = G4String("scoring_tube_phys_") + std::to_string(i);
+      fDet_phys[i]  = new G4PVPlacement(0,G4ThreeVector(0.0,0,4.0*m), fDet_log[i], solid_name,worldLogical,false,i,false);
+      fDet_log[i]->SetSensitiveDetector(scoring_det);
+   }
+
    // ------------------------------------------------------------------------
    // Drift Chamber
    // ------------------------------------------------------------------------
