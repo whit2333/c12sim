@@ -45,8 +45,8 @@ int DC_hit_sources(
    //std::array<std::array<std::array<std::array<int,112>,6>,6>,6> nWireHitsTotal;
    //std::array<std::array<std::array<std::array<int,112>,6>,6>,6> nWireHitsSquaredTotal;
 
-   TH2F * fhRvsZ           = new TH2F("fhRvsZ", "r vs Z", 100,0,400,100,0,300);
-   TH2F * fhWireNumbervsZ  = new TH2F("fhWireNumbervsZ", "r vs Z", 100,0,400,112,1,113);
+   TH2F * fhRvsZ           = new TH2F("fhRvsZ", "r vs Z", 100,-10,600,100,0,400);
+   TH2F * fhWireNumbervsZ  = new TH2F("fhWireNumbervsZ", "wire vs Z", 100,-10,600,112,1,113);
    //fAvgNhitsVsWireAll      = new TH2F("fAvgNhitsVsWireAll", "Avg Nhits Vs Wire all",
    //      112,1,113,100,0,0.01);
 
