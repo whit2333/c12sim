@@ -52,6 +52,7 @@ int DC_hit_sources(
    //std::array<std::array<std::array<std::array<int,112>,6>,6>,6> nWireHitsTotal;
    //std::array<std::array<std::array<std::array<int,112>,6>,6>,6> nWireHitsSquaredTotal;
 
+   TH1F * fhZ              = new TH1F("fhZ", "Z", 100,-10,600);
    TH2F * fhRvsZ           = new TH2F("fhRvsZ", "r vs Z", 100,-10,600,100,0,400);
    TH2F * fhWireNumbervsZ  = new TH2F("fhWireNumbervsZ", "wire vs Z", 100,-10,600,112,1,113);
    //fAvgNhitsVsWireAll      = new TH2F("fAvgNhitsVsWireAll", "Avg Nhits Vs Wire all",
@@ -101,6 +102,7 @@ int DC_hit_sources(
             if(part) {
 
                fhRvsZ->Fill(part->Vz(),part->R());
+               fhZ->Fill(part->Vz());
 
                fhWireNumbervsZ->Fill(part->Vz(),wire);
             }
@@ -153,6 +155,15 @@ int DC_hit_sources(
    mathtex.SetTextFont(43);
    mathtex.SetTextSize(20);
    mathtex.SetNDC(true);
+
+   //---------------------------------------------------------
+   //
+   c0 = new TCanvas();
+   c0->cd();
+   fhZ->Draw("colz");
+   //mathtex.DrawMathText(0.4,0.83,"\\mathscr{L} = 1.3 \\times 10^{35} [cm^{-1}s^{-1}]");
+   c0->SaveAs(Form("data/results/DC_hit_sources/DC_hit_sources_Z_%d.png",aNumber));
+   c0->SaveAs(Form("data/results/DC_hit_sources/DC_hit_sources_Z_%d.pdf",aNumber));
 
    //---------------------------------------------------------
    //
