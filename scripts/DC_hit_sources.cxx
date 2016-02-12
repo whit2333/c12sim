@@ -15,12 +15,19 @@ int DC_hit_sources(
       )
 {
 
+   std::vector<int> runs = { 300, 307, 309 , 303, 304, 305, 308, 306 };
+
+   TChain * t =  new TChain("clasdigi_hits");
+   for(auto i : runs) {
+      t->Add(Form("data/rootfiles/clas12sim%d.root",i));
+   } 
+
    int aNumber = run_number;//+10000;
    gStyle->SetCanvasPreferGL(true);
 
 
-   TFile * f = new TFile(Form("data/rootfiles/clas12sim%d.root",run_number),"UPDATE");
-   TTree * t = (TTree*)gROOT->FindObject("clasdigi_hits");
+   //TFile * f = new TFile(Form("data/rootfiles/clas12sim%d.root",run_number),"UPDATE");
+   //TTree * t = (TTree*)gROOT->FindObject("clasdigi_hits");
    if( !t ) {
       std::cout << " TREE NOT FOUND" << std::endl;
       return -111;
