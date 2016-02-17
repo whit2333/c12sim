@@ -26,7 +26,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAc
    G4ParticleDefinition* particle = particleTable->FindParticle(particleName="e-");
    fParticleGun->SetParticleDefinition(particle);
    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-   fParticleGun->SetParticleEnergy(6.0*GeV); // kinetic energy (not total)
+   fParticleGun->SetParticleEnergy(11.0*GeV); // kinetic energy (not total)
 
    //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
    fInputLundFile.open(SimulationManager::GetInstance()->InputFileName().c_str());
