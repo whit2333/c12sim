@@ -268,7 +268,7 @@ void SiliconVertexTrackerDetectorGeometry::BuildLogicalVolumes()
       // Inner silicon
       new G4PVPlacement(
             0,
-            G4ThreeVector(-fSiLayerThickness/2.0 -fRohacell71Thickness/2.0,0,0.0),
+            G4ThreeVector(0,0,-fSiLayerThickness/2.0 -fRohacell71Thickness/2.0),
             fFSTSilicon_log[iLayer],          // its logical volume
             Form("FST_Silicon_inner_phys_%d",iLayer), // its name
             fFST_log[iLayer],                       // its mother (logical) volume
@@ -279,7 +279,7 @@ void SiliconVertexTrackerDetectorGeometry::BuildLogicalVolumes()
       // Outer silicon
       new G4PVPlacement(
             0,
-            G4ThreeVector(fSiLayerThickness/2.0 + fRohacell71Thickness/2.0,0,0.0),
+            G4ThreeVector(0,0,fSiLayerThickness/2.0 + fRohacell71Thickness/2.0),
             fFSTSilicon_log[iLayer],          // its logical volume
             Form("FST_Silicon_outer_phys_%d",iLayer), // its name
             fFST_log[iLayer],                       // its mother (logical) volume
