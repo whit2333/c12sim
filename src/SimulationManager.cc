@@ -35,8 +35,10 @@
 #include "TorusDetectorGeometry.h"
 #include "BeamlineDetectorGeometry.h"
 #include "MicromegasVertexTrackerDetectorGeometry.h"
+#include "SiliconVertexTrackerDetectorGeometry.h"
 
 using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
+using SVTDetectorGeometry = SiliconVertexTrackerDetectorGeometry;
 
 SimulationManager* SimulationManager::fgSimulationManager = 0;
 //______________________________________________________________________________
@@ -51,14 +53,6 @@ SimulationManager::SimulationManager () {
    fOutputDirectoryName = "data/rootfiles";
    fOutputFileName      = "clas12sim";
    fOutputTreeName      = "clasdigi_hits";
-
-   //fRecoilChamberGeo    = nullptr;
-   //fDriftChamberGeo     = nullptr;
-   //fHTCCGeo             = nullptr;
-   //fSolenoidGeo         = nullptr;
-   //fTorusGeo            = nullptr;
-   //fBeamlineGeo         = nullptr;
-   //fMVTGeo         = nullptr;
 
    fInputFileName       = C12SIM_DEFAULT_EG_DIR "/lundfiles/eg_LH2_ep_2000.lund";
 }
@@ -226,6 +220,14 @@ MVTDetectorGeometry * SimulationManager::GetMVTDetectorGeometry(){
       fMVTGeo = new MVTDetectorGeometry();
    }
    return fMVTGeo;
+}
+//______________________________________________________________________________
+
+SVTDetectorGeometry * SimulationManager::GetSVTDetectorGeometry(){
+   if(!fSVTGeo) {
+      fSVTGeo = new SVTDetectorGeometry();
+   }
+   return fSVTGeo;
 }
 //______________________________________________________________________________
 

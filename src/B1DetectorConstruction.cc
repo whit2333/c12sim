@@ -379,16 +379,16 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fRecoilChamber->HeiC4H10  = HeiC4H10;
    fRecoilChamber->Tungsten  = Tungsten; 
    fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
    // Recoil Hodoscope
    // ------------------------------------------------------------------------
    std::cout << " Recoil Hodo construction \n";
-   fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
-   fRecoilHodo->BuildLogicalVolumes();
-   fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
+   //fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
+   //fRecoilHodo->BuildLogicalVolumes();
+   //fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
 
 
    // ------------------------------------------------------------------------
@@ -445,6 +445,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fMVT = SimulationManager::GetInstance()->GetMVTDetectorGeometry();
    fMVT->BuildLogicalVolumes();
    //fMVT->PlacePhysicalVolume( world_log );
+
+   // ------------------------------------------------------------------------
+   // MVT
+   // ------------------------------------------------------------------------
+   fSVT = SimulationManager::GetInstance()->GetSVTDetectorGeometry();
+   fSVT->BuildLogicalVolumes();
+   fSVT->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // Magnetic field

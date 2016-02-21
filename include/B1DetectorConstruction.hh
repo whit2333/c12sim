@@ -12,7 +12,9 @@
 #include "TorusDetectorGeometry.h"
 #include "BeamlineDetectorGeometry.h"
 #include "MicromegasVertexTrackerDetectorGeometry.h"
+#include "SiliconVertexTrackerDetectorGeometry.h"
 using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
+using SVTDetectorGeometry = SiliconVertexTrackerDetectorGeometry;
 
 #include "G4SystemOfUnits.hh"
 
@@ -170,6 +172,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       TorusDetectorGeometry          * fTorus         = nullptr;
       BeamlineDetectorGeometry       * fBeamline      = nullptr;
       MVTDetectorGeometry            * fMVT           = nullptr;
+      SVTDetectorGeometry            * fSVT           = nullptr;
 
    protected:
       void DefineMaterials();
@@ -179,14 +182,6 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       virtual ~B1DetectorConstruction();
 
       virtual G4VPhysicalVolume* Construct();
-
-      //void SetRadiatorMaterial(G4String);
-      //void SetCollimatorMaterial(G4String);
-      //G4double GetRadiatorCollimatorGap() const {return radiator_collimator_gap;}
-      //G4double GetCollimatorLength() const {return collimator_length;}
-      //void     SetRadiatorCollimatorGap(G4double l) ;
-      //void     SetCollimatorLength(G4double l) ;
-      //void     SetInnerCollimatorOD(G4double l) ;
 
       void ToggleCherenkov(bool l);
 

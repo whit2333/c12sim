@@ -28,9 +28,10 @@ class TorusDetectorGeometry;
 class BeamlineDetectorGeometry;
 class SimulationMessenger;
 class MicromegasVertexTrackerDetectorGeometry;
+class SiliconVertexTrackerDetectorGeometry;
 
 using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
-
+using SVTDetectorGeometry = SiliconVertexTrackerDetectorGeometry;
 
 
 /** The simulation manager singleton class.
@@ -46,6 +47,7 @@ class SimulationManager {
       TorusDetectorGeometry         * fTorusGeo         = nullptr;
       BeamlineDetectorGeometry      * fBeamlineGeo      = nullptr;
       MVTDetectorGeometry           * fMVTGeo           = nullptr;
+      SVTDetectorGeometry           * fSVTGeo           = nullptr;
 
 
    public:
@@ -57,6 +59,7 @@ class SimulationManager {
       TorusDetectorGeometry         * GetTorusDetectorGeometry();
       BeamlineDetectorGeometry      * GetBeamlineDetectorGeometry();
       MVTDetectorGeometry           * GetMVTDetectorGeometry();
+      SVTDetectorGeometry           * GetSVTDetectorGeometry();
 
    public:
       SimulationMessenger           * fSimulationMessenger;
