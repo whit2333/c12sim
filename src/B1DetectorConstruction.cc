@@ -401,9 +401,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // MVT
    // ------------------------------------------------------------------------
-   //fMVT = SimulationManager::GetInstance()->GetMVTDetectorGeometry();
-   //fMVT->BuildLogicalVolumes();
-   //fMVT->PlacePhysicalVolume( world_log );
+   fMVT = SimulationManager::GetInstance()->GetMVTDetectorGeometry();
+   fMVT->BuildLogicalVolumes();
+   fMVT->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // MVT
