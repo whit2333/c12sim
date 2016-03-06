@@ -5,7 +5,7 @@
 #include "G4VSolid.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Material.hh"
-#include "G4Material.hh"
+#include "G4Region.hh"
 #include "DriftChamberSensitiveDetector.h"
 #include "SensitiveRegionDetector.h"
 
@@ -33,6 +33,8 @@ class DriftChamberDetectorGeometry {
 
       std::array< G4RotationMatrix,6>   fLeftEndPlates_rot;
       std::array< G4RotationMatrix,6>   fRightEndPlates_rot;
+
+      G4Region * fRegion_g4Region = nullptr;
 
    public:
 

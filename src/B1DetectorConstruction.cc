@@ -415,6 +415,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Magnetic field
    // ------------------------------------------------------------------------
+   //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
    bool use_torus    = true;
    bool use_solenoid = true;
    if( simMan->GetSolenoidFieldScale() == 0.0 ) use_solenoid = false;
@@ -482,6 +483,17 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    //G4UserLimits * scoring_limits = new G4UserLimits(0.004*um);
    //scoring_log->SetUserLimits(scoring_limits);
+   G4ThreeVector kapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
+   //if(!beampipe_mat)   beampipe_mat   = new G4Material("beampipe_mat", /*z=*/1.0, /*a=*/1.01*g/mole, density, kStateGas,temperature,pressure);
+   //if(!beampipe_solid) beampipe_solid  = new G4Tubs("beampipe_solid", 0.0, beampipe_diameter/2.0, beampipe_length/2.0, 0.0, 360.*deg );
+   //if(!beampipe_log  ) beampipe_log   = new G4LogicalVolume(beampipe_solid, beampipe_mat,"beampipe_log");
+   //if(!beampipe_phys ) beampipe_phys  = new G4PVPlacement(0,beampipe_pos, beampipe_log, "beampipe_phys",world_log,false,0,checkOverlaps);                                  
+   //G4Colour            beampipe_color {red, green, blue, alpha };   // Gray 
+   //G4VisAttributes   * beampipe_vis   = new G4VisAttributes(beampipe_color);
+   //beampipe_log->SetVisAttributes(beampipe_vis);
+
+   //G4UserLimits * scoring_limits = new G4UserLimits(0.004*um);
+   //scoring_log->SetUserLimits(scoring_limits);
 
    //G4NistManager* man = nist;//G4NistManager::Instance();
    // ------------------------------------------------------------------------
@@ -489,6 +501,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    //G4ThreeVector kapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
 
+   //G4NistManager* man = nist;//G4NistManager::Instance();
+   // ------------------------------------------------------------------------
+   // Kapton layer
+   // ------------------------------------------------------------------------
+   //G4ThreeVector kapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
    //G4Tubs* kapton_cyl = new G4Tubs("KaptonCylinder", innerRadiusOfTheKapton, outerRadiusOfTheKapton, hightOfTheKapton, startAngleOfTheKapton, spanningAngleOfTheKapton);
 
    //G4LogicalVolume* logicKapton =                         
