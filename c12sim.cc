@@ -281,6 +281,7 @@ int main(int argc,char** argv)
    G4VModularPhysicsList * physicsList =  factory.GetReferencePhysList("FTFP_BERT");
    //G4VModularPhysicsList* physicsList = new CLAS12_QGSP_BIC(paraWorldName,false);
    //G4VModularPhysicsList* physicsList = new QBBC;
+   physicsList->DumpCutValuesTable();
 
    // This connects the phyics to the parallel world (and sensitive detectors)
    //physicsList->RegisterPhysics(new G4ParallelWorldPhysics(paraWorldName,/*layered_mass=*/true));

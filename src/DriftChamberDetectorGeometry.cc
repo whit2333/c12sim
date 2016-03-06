@@ -126,11 +126,17 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    fRegionContainers_log[1]->SetVisAttributes(vs_odd);
    fRegionContainers_log[2]->SetVisAttributes(vs_odd);
 
+
    // ------------------------------
    // Regions
    fRegions_log[0] = new G4LogicalVolume(fRegions_solid[0], fGasMaterial, "DC_Region1_log_0");
    fRegions_log[1] = new G4LogicalVolume(fRegions_solid[1], fGasMaterial, "DC_Region2_log_1");
    fRegions_log[2] = new G4LogicalVolume(fRegions_solid[2], fGasMaterial, "DC_Region3_log_2");
+
+   fRegion_g4Region = new G4Region("DC_region");
+   fRegion_g4Region->AddRootLogicalVolume(fRegions_log[0]);
+   fRegion_g4Region->AddRootLogicalVolume(fRegions_log[1]);
+   fRegion_g4Region->AddRootLogicalVolume(fRegions_log[2]);
 
    fRegions_log[0]->SetSensitiveDetector(fSensitiveDetector2);
    fRegions_log[1]->SetSensitiveDetector(fSensitiveDetector2);

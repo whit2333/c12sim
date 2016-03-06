@@ -1,12 +1,30 @@
 #!/bin/bash
 
 
+<<<<<<< HEAD
 run=636
 N0=16941
+||||||| merged common ancestors
+run=615
+N0=39800
+=======
+run=634
+N0=16941
+>>>>>>> b2824dca80ee3392c8484b46382379f694ebff03
 Nevents=10000000
+<<<<<<< HEAD
 Nsim=100000
 root -l  "scripts/DC_occupancy4.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+||||||| merged common ancestors
+Nsim=500000
+#root -l -b -q "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
+root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+=======
+Nsim=100000
+#root -l  "scripts/DC_occupancy4.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+>>>>>>> b2824dca80ee3392c8484b46382379f694ebff03
 #root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy_curlers.cxx($run,$N0,$Nevents,$Nsim)"
 
@@ -19,13 +37,32 @@ Nsim=10000
 #root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy_curlers.cxx($run,$N0,$Nevents,$Nsim)"
 
+<<<<<<< HEAD
 run=1135
 N0=16428
+||||||| merged common ancestors
+run=1115
+N0=129700
+=======
+run=1134
+N0=16428
+>>>>>>> b2824dca80ee3392c8484b46382379f694ebff03
 Nevents=10000000
+<<<<<<< HEAD
 Nsim=10000
 #root -l  "scripts/DC_occupancy4.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy4.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+||||||| merged common ancestors
+Nsim=500000
+#root -l -b -q "scripts/DC_occupancy2.cxx($run,$N0,$Nevents,$Nsim)"
+root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+=======
+Nsim=100000
+root -l  "scripts/DC_occupancy4.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy4.cxx($run,$N0,$Nevents,$Nsim)"
+#root -l -b -q "scripts/DC_occupancy_sectors.cxx($run,$N0,$Nevents,$Nsim)"
+>>>>>>> b2824dca80ee3392c8484b46382379f694ebff03
 #root -l -b -q "scripts/DC_occupancy_source.cxx($run,$N0,$Nevents,$Nsim)"
 #root -l -b -q "scripts/DC_occupancy_curlers.cxx($run,$N0,$Nevents,$Nsim)"
 
