@@ -45,6 +45,7 @@
 #include "G4UserLimits.hh"
 #include "G4ExtrudedSolid.hh"
 #include "BeamTestSD.hh"
+#include "RecoilScintSensitiveDetector.hh"
 
 
 RecoilHodoDetectorGeometry::RecoilHodoDetectorGeometry()
@@ -287,6 +288,11 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    G4UserLimits * fScint1_limits = new G4UserLimits(0.5*mm);
    fScint1_log->SetUserLimits(fScint1_limits);
 
+   if(!fScint1_det) fScint1_det = new RecoilScintSensitiveDetector("/recoil_scint1");
+   G4SDManager* SDMan = G4SDManager::GetSDMpointer();
+   SDMan->AddNewDetector(fScint1_det);
+   fScint1_log->SetSensitiveDetector(fScint1_det);
+
    // ------------------------------------------------------------------------
    // Second layer scintillator bar  
    // ------------------------------------------------------------------------
@@ -339,7 +345,6 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    fPhotonDet1_log->SetVisAttributes(fPhotonDet1_vis);
 
    if(!fPhotonDet1_det) fPhotonDet1_det = new BeamTestSD("/PM1");
-   G4SDManager* SDMan = G4SDManager::GetSDMpointer();
    SDMan->AddNewDetector(fPhotonDet1_det);
    fPhotonDet1_log->SetSensitiveDetector(fPhotonDet1_det);
 

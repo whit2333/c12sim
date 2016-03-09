@@ -368,22 +368,22 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   //std::cout << " Recoil chamber construction \n";
-   //fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
-   //fRecoilChamber->He10CO2   = He10CO2;
-   //fRecoilChamber->HeiC4H10  = HeiC4H10;
-   //fRecoilChamber->Tungsten  = Tungsten; 
-   //fRecoilChamber->Mylar     = Mylar;
-   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   std::cout << " Recoil chamber construction \n";
+   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   fRecoilChamber->He10CO2   = He10CO2;
+   fRecoilChamber->HeiC4H10  = HeiC4H10;
+   fRecoilChamber->Tungsten  = Tungsten; 
+   fRecoilChamber->Mylar     = Mylar;
+   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
    // Recoil Hodoscope
    // ------------------------------------------------------------------------
-   //std::cout << " Recoil Hodo construction \n";
-   //fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
-   //fRecoilHodo->BuildLogicalVolumes();
-   //fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
+   std::cout << " Recoil Hodo construction \n";
+   fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
+   fRecoilHodo->BuildLogicalVolumes();
+   fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
 
 
 
@@ -412,16 +412,16 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // MVT
    // ------------------------------------------------------------------------
-   fMVT = SimulationManager::GetInstance()->GetMVTDetectorGeometry();
-   fMVT->BuildLogicalVolumes();
-   fMVT->PlacePhysicalVolume( world_log );
+   //fMVT = SimulationManager::GetInstance()->GetMVTDetectorGeometry();
+   //fMVT->BuildLogicalVolumes();
+   //fMVT->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // MVT
    // ------------------------------------------------------------------------
-   fSVT = SimulationManager::GetInstance()->GetSVTDetectorGeometry();
-   fSVT->BuildLogicalVolumes();
-   fSVT->PlacePhysicalVolume( world_log );
+   //fSVT = SimulationManager::GetInstance()->GetSVTDetectorGeometry();
+   //fSVT->BuildLogicalVolumes();
+   //fSVT->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // Magnetic field
@@ -507,162 +507,120 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //scoring_log->SetUserLimits(scoring_limits);
 
    //G4NistManager* man = nist;//G4NistManager::Instance();
+
    // ------------------------------------------------------------------------
-   // Kapton layer
+   // Kapton foil around the target
    // ------------------------------------------------------------------------
    //G4ThreeVector kapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
+   G4Tubs* kapton_cyl = new G4Tubs("KaptonCylinder", innerRadiusOfTheKapton, outerRadiusOfTheKapton, hightOfTheKapton, startAngleOfTheKapton, spanningAngleOfTheKapton);
 
-   //G4NistManager* man = nist;//G4NistManager::Instance();
-   // ------------------------------------------------------------------------
-   // Kapton layer
-   // ------------------------------------------------------------------------
-   //G4ThreeVector kapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
-   //G4Tubs* kapton_cyl = new G4Tubs("KaptonCylinder", innerRadiusOfTheKapton, outerRadiusOfTheKapton, hightOfTheKapton, startAngleOfTheKapton, spanningAngleOfTheKapton);
+   G4LogicalVolume* logicKapton =                         
+      new G4LogicalVolume(kapton_cyl,          //its solid
+            Kapton,              //its material
+            "KaptonCylinder");   //its name
 
-   //G4LogicalVolume* logicKapton =                         
-   //   new G4LogicalVolume(kapton_cyl,          //its solid
-   //         Kapton,              //its material
-   //         "KaptonCylinder");   //its name
-
-   //new G4PVPlacement(0,                     //no rotation
-   //      kapton_pos,              //at position
-   //      logicKapton,             //its logical volume
-   //      "KaptonCylinder",        //its name
-   //      world_log,    //its mother  volume
-   //      false,                   //no boolean operation
-   //      0,                       //copy number
-   //      checkOverlaps);          //overlaps checking
+   new G4PVPlacement(0,                     //no rotation
+         kapton_pos,              //at position
+         logicKapton,             //its logical volume
+         "KaptonCylinder",        //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
-   //G4VisAttributes * KaptonVisAtt = new G4VisAttributes(G4Colour(1.,1.,0.));
-   //// Set the forced wireframe style 
-   //KaptonVisAtt->SetForceWireframe(true);
-   //// Assignment of the visualization attributes to the logical volume
-   //logicKapton->SetVisAttributes(KaptonVisAtt);
+   G4VisAttributes * KaptonVisAtt = new G4VisAttributes(G4Colour(1.,1.,0.));
+   // Set the forced wireframe style 
+   KaptonVisAtt->SetForceWireframe(true);
+   // Assignment of the visualization attributes to the logical volume
+   logicKapton->SetVisAttributes(KaptonVisAtt);
 
 
    // ------------------------------------------------------------------------
-   // Clear Space
+   // Clear Space - Parameters of space around the target
    // ------------------------------------------------------------------------
-   //G4ThreeVector around_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
-   //G4Tubs* around = new G4Tubs("ClearSpace", innerRadiusOfAround, outerRadiusOfAround, hightOfAround, startAngleOfAround, spanningAngleOfAround);
-   //G4LogicalVolume* logicAround =                         
-   //   new G4LogicalVolume(around,              //its solid
-   //         He_ClearS,           //its material
-   //         "ClearSpace");       //its name
-   ////new G4PVPlacement(0,                     //no rotation
-   ////      around_pos,              //at position
-   ////      logicAround,             //its logical volume
-   ////      "ClearSpace",            //its name
-   ////      world_log,    //its mother  volume
-   ////      false,                   //no boolean operation
-   ////      0,                       //copy number
-   ////      checkOverlaps);          //overlaps checking
+   G4ThreeVector around_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
+   G4Tubs* around = new G4Tubs("ClearSpace", innerRadiusOfAround, outerRadiusOfAround, hightOfAround, startAngleOfAround, spanningAngleOfAround);
+   G4LogicalVolume* logicAround =                         
+      new G4LogicalVolume(around,              //its solid
+            He_ClearS,           //its material
+            "ClearSpace");       //its name
+   new G4PVPlacement(0,                     //no rotation
+         around_pos,              //at position
+         logicAround,             //its logical volume
+         "ClearSpace",            //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         checkOverlaps);          //overlaps checking
 
-   //// Definition of visualisation attributes
-   //// Instantiation of a set of visualization attributes with cyan colour
-   //G4VisAttributes * AroundVisAtt = new G4VisAttributes(G4Colour(1.,0.,1.));
-   //// Set the forced wireframe style 
-   //AroundVisAtt->SetForceWireframe(true);
-   //// Assignment of the visualization attributes to the logical volume
-   //logicAround->SetVisAttributes(AroundVisAtt);
+   // Definition of visualisation attributes
+   // Instantiation of a set of visualization attributes with cyan colour
+   G4VisAttributes * AroundVisAtt = new G4VisAttributes(G4Colour(1.,0.,1.));
+   // Set the forced wireframe style 
+   AroundVisAtt->SetForceWireframe(true);
+   // Assignment of the visualization attributes to the logical volume
+   logicAround->SetVisAttributes(AroundVisAtt);
 
 
    // ------------------------------------------------------------------------
    // Mylar layer around clear space
    // ------------------------------------------------------------------------
-   //G4ThreeVector Oclkapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
+   G4ThreeVector Oclkapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
 
-   //G4Tubs* Oclkapton_cyl = new G4Tubs("OclKaptonCylinder",
-   //      innerRadiusOfTheOclKapton, outerRadiusOfTheOclKapton,
-   //      hightOfTheOclKapton, startAngleOfTheOclKapton,
-   //      spanningAngleOfTheOclKapton);
+   G4Tubs* Oclkapton_cyl = new G4Tubs("OclKaptonCylinder",
+         innerRadiusOfTheOclKapton, outerRadiusOfTheOclKapton,
+         hightOfTheOclKapton, startAngleOfTheOclKapton,
+         spanningAngleOfTheOclKapton);
 
-   //G4LogicalVolume* logicOclKapton =                         
-   //   new G4LogicalVolume(Oclkapton_cyl,          //its solid
-   //         Mylar,                  //its material
-   //         "OclKaptonCylinder");   //its name
+   G4LogicalVolume* logicOclKapton =                         
+      new G4LogicalVolume(Oclkapton_cyl,          //its solid
+            Mylar,                  //its material
+            "OclKaptonCylinder");   //its name
 
-   ////new G4PVPlacement(0,                     //no rotation
-   ////      Oclkapton_pos,              //at position
-   ////      logicOclKapton,             //its logical volume
-   ////      "OclKaptonCylinder",        //its name
-   ////      world_log,    //its mother  volume
-   ////      false,                   //no boolean operation
-   ////      0,                       //copy number
-   ////      checkOverlaps);          //overlaps checking
+   new G4PVPlacement(0,                     //no rotation
+         Oclkapton_pos,              //at position
+         logicOclKapton,             //its logical volume
+         "OclKaptonCylinder",        //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         checkOverlaps);          //overlaps checking
 
-   //// Definition of visualisation attributes
-   //// Instantiation of a set of visualization attributes with cyan colour
-   //G4VisAttributes * OclKaptonVisAtt = new G4VisAttributes(G4Colour(1.,1.,0.));
-   //// Set the forced wireframe style 
-   //KaptonVisAtt->SetForceWireframe(true);
-   //// Assignment of the visualization attributes to the logical volume
-   //logicOclKapton->SetVisAttributes(OclKaptonVisAtt);
+   // Definition of visualisation attributes
+   // Instantiation of a set of visualization attributes with cyan colour
+   G4VisAttributes * OclKaptonVisAtt = new G4VisAttributes(G4Colour(1.,1.,0.));
+   // Set the forced wireframe style 
+   KaptonVisAtt->SetForceWireframe(true);
+   // Assignment of the visualization attributes to the logical volume
+   logicOclKapton->SetVisAttributes(OclKaptonVisAtt);
    
    // ------------------------------------------------------------------------
    // Outisde Mylar layer
    // ------------------------------------------------------------------------
-   //G4ThreeVector okapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
-   //G4Tubs* okapton_cyl = new G4Tubs("OKaptonCylinder", innerRadiusOfTheOKapton, outerRadiusOfTheOKapton, hightOfTheOKapton, startAngleOfTheOKapton, spanningAngleOfTheOKapton);
-   //G4LogicalVolume* logicOKapton =                         
-   //   new G4LogicalVolume(okapton_cyl,          //its solid
-   //         Mylar,                //its material
-   //         "OKaptonCylinder");   //its name
-   ////new G4PVPlacement(0,                     //no rotation
-   ////      okapton_pos,              //at position
-   ////      logicOKapton,             //its logical volume
-   ////      "OKaptonCylinder",        //its name
-   ////      world_log,    //its mother  volume
-   ////      false,                   //no boolean operation
-   ////      0,                       //copy number
-   ////      checkOverlaps);          //overlaps checking
+   G4ThreeVector okapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
+   G4Tubs* okapton_cyl = new G4Tubs("OKaptonCylinder", innerRadiusOfTheOKapton, outerRadiusOfTheOKapton, hightOfTheOKapton, startAngleOfTheOKapton, spanningAngleOfTheOKapton);
+   G4LogicalVolume* logicOKapton =                         
+      new G4LogicalVolume(okapton_cyl,          //its solid
+            Mylar,                //its material
+            "OKaptonCylinder");   //its name
+   new G4PVPlacement(0,                     //no rotation
+         okapton_pos,              //at position
+         logicOKapton,             //its logical volume
+         "OKaptonCylinder",        //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         checkOverlaps);          //overlaps checking
 
-   //// Definition of visualisation attributes
-   //// Instantiation of a set of visualization attributes with cyan colour
-   //G4VisAttributes * OKaptonVisAtt = new G4VisAttributes(G4Colour(1.,1.,0.));
-   //// Set the forced wireframe style 
-   //OKaptonVisAtt->SetForceWireframe(true);
-   //// Assignment of the visualization attributes to the logical volume
-   //logicOKapton->SetVisAttributes(OKaptonVisAtt);
-
-
-   // ------------------------------------------------------------------------
-   // Sci Detector 
-   // ------------------------------------------------------------------------
-
-   //--Creating the geometry
-   //G4ThreeVector SiDetector_pos = G4ThreeVector(SiDetector_posX, SiDetector_posY, SiDetector_posZ);
-
-   //G4Tubs* SiDetector = new G4Tubs("SiDetector", innerRadiusOfTheSiDetector,outerRadiusOfTheSiDetector, hightOfTheSiDetector, startAngleOfTheSiDetector, spanningAngleOfTheSiDetector);
-
-   //G4LogicalVolume* logicSiDetector =                         
-   //   new G4LogicalVolume(SiDetector,          //its solid
-   //         Scinti,              //its material
-   //         "SiDetector");       //its name
-
-   ////new G4PVPlacement(0,           //no rotation
-   ////      SiDetector_pos,          //at position
-   ////      logicSiDetector,         //its logical volume
-   ////      "SiDetector",            //its name
-   ////      world_log,               //its mother  volume
-   ////      false,                   //no boolean operation
-   ////      0,                       //copy number
-   ////      checkOverlaps);          //overlaps checking
-
-   //// Definition of visualisation attributes
-   //// Instantiation of a set of visualization attributes with cyan colour
-   //G4VisAttributes * SiDetectorVisAtt = new G4VisAttributes(G4Colour(0.5,0.1,0.2));
-   //// Set the forced wireframe style 
-   //SiDetectorVisAtt->SetForceWireframe(true);
-   //// Assignment of the visualization attributes to the logical volume
-   //logicSiDetector->SetVisAttributes(SiDetectorVisAtt);
-
-   //G4String SiDetectorSDname = "/mydet/SiDetector";
-   //SiDetectorSD * siDetectorSD = new SiDetectorSD(SiDetectorSDname);
-   //SDman->AddNewDetector(siDetectorSD);
-   //logicSiDetector->SetSensitiveDetector(siDetectorSD);
+   // Definition of visualisation attributes
+   // Instantiation of a set of visualization attributes with cyan colour
+   G4VisAttributes * OKaptonVisAtt = new G4VisAttributes(G4Colour(1.,1.,0.));
+   // Set the forced wireframe style 
+   OKaptonVisAtt->SetForceWireframe(true);
+   // Assignment of the visualization attributes to the logical volume
+   logicOKapton->SetVisAttributes(OKaptonVisAtt);
 
    fHasBeenBuilt = true;
 

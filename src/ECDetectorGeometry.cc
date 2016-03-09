@@ -148,6 +148,7 @@ void ECDetectorGeometry::BuildLogicalVolumes()
    // Region Containers
    fContainer_log = new G4LogicalVolume(fContainer_solid, fGasMaterial, "EC_Container_log_0");
    fContainer_log->SetSensitiveDetector(fSensitiveDetector2);
+   fContainer_log->SetVisAttributes(vs);
 
    //fRegionContainers_log[1] = new G4LogicalVolume(fRegionContainers_solid[1], fGasMaterial, "DC_Region2_Container_log_1");
    //fRegionContainers_log[2] = new G4LogicalVolume(fRegionContainers_solid[2], fGasMaterial, "DC_Region3_Container_log_2");

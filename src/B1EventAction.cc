@@ -11,7 +11,8 @@
 B1EventAction::B1EventAction() : G4UserEventAction(), fEdep(0.)
 { 
    event_number = 0;
-   fTree = 0;
+   fTree        = nullptr;
+   //fEGTree      = nullptr;
    SimulationManager * simManager = SimulationManager::GetInstance();
    fCLAS12HitsEvent =  simManager->fEvent;
    fTrajectoryVerticies = simManager->fTrajectoryVerticies;
@@ -32,7 +33,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 
    if(!fTree) {
       SimulationManager * simManager = SimulationManager::GetInstance();
-      fTree = simManager->fOutputTree;
+      fTree   = simManager->fOutputTree;
    }
 
    if(event_number%100 == 0 )

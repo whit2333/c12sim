@@ -2,12 +2,12 @@
 #define SimplePrimaryGeneratorAction_h 1
 
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
+#include "G4GeneralParticleSource.hh"
 #include "globals.hh"
 #include <fstream>
 #include "ThrownEvent.h"
 
-class G4ParticleGun;
+class G4GeneralParticleSource;
 class G4Event;
 class G4Box;
 class G4ParticleTable;
@@ -20,8 +20,7 @@ class G4ParticleTable;
 class SimplePrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   private:
-    G4ParticleGun *  fParticleGun; // pointer a to G4 gun class
-    G4Box         *  fEnvelopeBox;
+    G4GeneralParticleSource *  fParticleGun; // pointer a to G4 gun class
 
     double        fP_min     = 0.001*CLHEP::MeV;
     double        fP_max     = 1.000*CLHEP::GeV;
@@ -36,18 +35,20 @@ class SimplePrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
     double        fDelta_z   = 5.0*CLHEP::cm;
 
-    clas12::sim::ThrownEvent fThrownEvent;
     G4ParticleTable* particleTable;
 
   public:
-    SimplePrimaryGeneratorAction();    
+
+    mutable clas12::sim::ThrownEvent fThrownEvent;
+
+    SimplePrimaryGeneratorAction(int pdgcode = 11);    
     virtual ~SimplePrimaryGeneratorAction();
 
     // method from the base class
     virtual void GeneratePrimaries(G4Event*);         
   
     // method to access particle gun
-    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+    const G4GeneralParticleSource* GetParticleGun() const { return fParticleGun; }
 };
 
 #endif

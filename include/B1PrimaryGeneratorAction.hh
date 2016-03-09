@@ -23,10 +23,13 @@ class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4ParticleGun *  fParticleGun; // pointer a to G4 gun class
     G4Box         *  fEnvelopeBox;
 
-    std::ifstream    fInputLundFile;
-    clas12::sim::ThrownEvent fThrownEvent;
-    G4ParticleTable* particleTable;
+    std::ifstream             fInputLundFile;
+    G4ParticleTable*          particleTable;
+
   public:
+
+    mutable clas12::sim::ThrownEvent  fThrownEvent;
+
     B1PrimaryGeneratorAction();    
     virtual ~B1PrimaryGeneratorAction();
 

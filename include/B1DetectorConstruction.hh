@@ -82,9 +82,6 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       G4double      hightOfTheKapton = 200.*mm;
       G4double      startAngleOfTheKapton = 0.*deg;
       G4double      spanningAngleOfTheKapton = 360.*deg;
-      //--
-      //--
-
 
       //--Parameters of space around the target
       G4double  innerRadiusOfAround = 6.028*mm;

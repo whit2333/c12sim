@@ -50,6 +50,7 @@ SimulationManager::SimulationManager () {
    fEvent               = new clas12::hits::CLAS12HitsEvent();
    fTriggerEvent        = new clas12::hits::TriggerEvent();
    fTrajectoryVerticies = new TClonesArray("TParticle",20); 
+   fEGTree = 0;
    fOutputFile          = 0;
    fOutputTree          = 0;
    fOutputDirectoryName = "data/rootfiles";

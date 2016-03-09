@@ -19,6 +19,7 @@ class B1EventAction : public G4UserEventAction
       B1EventAction();
       virtual ~B1EventAction();
 
+      //TTree                         * fEGTree;
       TTree                         * fTree;
       clas12::hits::CLAS12HitsEvent * fCLAS12HitsEvent;
       TClonesArray                  * fTrajectoryVerticies;

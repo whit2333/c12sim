@@ -69,6 +69,7 @@ class SimulationManager {
       SimulationMessenger           * fSimulationMessenger;
       TFile                         * fOutputFile;
       TTree                         * fOutputTree;
+      TTree                         * fEGTree;
       std::string                     fOutputDirectoryName;
       std::string                     fOutputFileName;
       std::string                     fOutputTreeName;

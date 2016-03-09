@@ -9,6 +9,7 @@
 #include "G4LogicalBorderSurface.hh"
 
 class BeamTestSD;
+class RecoilScintSensitiveDetector;
 
 /** Recoil Chamber.
  * 
@@ -25,6 +26,8 @@ class RecoilHodoDetectorGeometry {
       std::array<double, 24>   fPhotonEnergies;
       std::array<double, 24>   fRefIndex;
 
+      RecoilScintSensitiveDetector * fScint1_det = nullptr;
+      RecoilScintSensitiveDetector * fScint2_det = nullptr;
       
       G4ThreeVector       fScint1_pos;
       G4Material        * fScint1_mat   = nullptr;

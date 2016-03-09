@@ -1,5 +1,6 @@
 #include "B1RunAction.hh"
 #include "B1PrimaryGeneratorAction.hh"
+#include "SimplePrimaryGeneratorAction.hh"
 #include "B1DetectorConstruction.hh"
 #include "B1Run.hh"
 #include "B1Analysis.hh"
@@ -65,6 +66,25 @@ G4Run* B1RunAction::GenerateRun()
    simManager->fOutputTree->Branch(
          "TrajectoryVerticies",
          &(simManager->fTrajectoryVerticies) );
+
+
+   // ---------------------------------------------------------
+   // Create the EG tree if it is a certain Primary generator
+
+   const G4VUserPrimaryGeneratorAction * gen_action = runManager->GetUserPrimaryGeneratorAction();
+   if( const B1PrimaryGeneratorAction * prigen = dynamic_cast<const B1PrimaryGeneratorAction*>(gen_action) ) {
+      simManager->fOutputTree->Branch(
+            "PrimaryEvent",
+            "clas12::sim::ThrownEvent",
+            &(prigen->fThrownEvent)   );
+   }
+   else if( const SimplePrimaryGeneratorAction * prigen = dynamic_cast<const SimplePrimaryGeneratorAction*>(gen_action) ) {
+      simManager->fOutputTree->Branch(
+            "PrimaryEvent",
+            "clas12::sim::ThrownEvent",
+            &(prigen->fThrownEvent)   );
+   }
+
 
    if( fRunConf ) delete fRunConf;
    fRunConf = new clas12::sim::RunConfiguration(fRunNumber);

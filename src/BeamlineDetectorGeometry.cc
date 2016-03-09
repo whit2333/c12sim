@@ -149,7 +149,7 @@ void BeamlineDetectorGeometry::BuildLogicalVolumes()
 
 G4VPhysicalVolume * BeamlineDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother)
 {
-   parser.SetOverlapCheck(true);
+   parser.SetOverlapCheck(false);
    parser.Read("beamline.gdml");
 
    G4VPhysicalVolume * gdml_world_phys = parser.GetWorldVolume();

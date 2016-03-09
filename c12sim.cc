@@ -52,6 +52,7 @@ int main(int argc,char** argv)
    double       solenoid_field_sign  = 1.0;
    double       torus_field_scale    = 1.0;
    double       solenoid_field_scale = 1.0;
+   int          simple_eg            = 0;
 
    //---------------------------------------------------------------------------
 
@@ -78,10 +79,12 @@ int main(int argc,char** argv)
       {"solenoid-field", required_argument,  0, 'S'},
       {"toroid-field", required_argument,  0, 'T'},
       {"torus-field", required_argument,  0, 'T'},
+      {"simple-eg", required_argument,  0, 's'},
+      {"simple", required_argument,  0, 's'},
       {0,0,0,0}
    };
    while(iarg != -1) {
-      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:S:T:bhINfF", longopts, &index);
+      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:S:T:s:bhINfF", longopts, &index);
 
       switch (iarg)
       {
@@ -193,6 +196,10 @@ int main(int argc,char** argv)
                }
             }
             break;
+
+         case 's':
+            simple_eg = atoi( optarg );
+            break;
       //{"solenoid-field", required_argument,  0, 'S'},
       //{"toroid-field", required_argument,  0, 'T'},
       //{"torus-field", required_argument,  0, 'T'},
@@ -299,10 +306,13 @@ int main(int argc,char** argv)
 
    // User action initialization
    runManager->SetUserInitialization(new B1ActionInitialization(run_number));
-   
+  
    // Primary generator
-   //runManager->SetUserAction(new SimplePrimaryGeneratorAction());
-   runManager->SetUserAction(new B1PrimaryGeneratorAction());
+   if( simple_eg == 0 ) {
+      runManager->SetUserAction( new B1PrimaryGeneratorAction() );
+   } else {
+      runManager->SetUserAction( new SimplePrimaryGeneratorAction(simple_eg) );
+   }
 
    // Initialize G4 kernel
    runManager->Initialize();
