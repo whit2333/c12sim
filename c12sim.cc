@@ -28,6 +28,8 @@
 #include "B1ActionInitialization.hh"
 #include "B1ParallelWorldConstruction.hh"
 #include "G4ParallelWorldPhysics.hh"
+#include "B1PrimaryGeneratorAction.hh"
+#include "SimplePrimaryGeneratorAction.hh"
 //______________________________________________________________________________
 
 int main(int argc,char** argv)
@@ -297,6 +299,10 @@ int main(int argc,char** argv)
 
    // User action initialization
    runManager->SetUserInitialization(new B1ActionInitialization(run_number));
+   
+   // Primary generator
+   //runManager->SetUserAction(new SimplePrimaryGeneratorAction());
+   runManager->SetUserAction(new B1PrimaryGeneratorAction());
 
    // Initialize G4 kernel
    runManager->Initialize();
@@ -383,7 +389,7 @@ bool fexists(const std::string& filename) {
 
 void print_field_dir()
 {
-   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
+   std::cout << "c12sim field map directory : " C12SIM_DATA_DIR << std::endl;
 
 }
 //______________________________________________________________________________
@@ -396,12 +402,12 @@ void check_field_maps()
 
    if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
       std::cerr << "Error: Solenoid field map missing!" << std::endl;
-      std::cerr << "file \""C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat\" not found. " << std::endl;
+      std::cerr << "file \"" C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat\" not found. " << std::endl;
       failed = true;
    }
    if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
       std::cerr << "Error: Torus field map missing!" << std::endl;
-      std::cerr << "file \""C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat\" not found. " << std::endl;
+      std::cerr << "file \"" C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat\" not found. " << std::endl;
       failed = true;
    }
    if(failed) {
@@ -415,14 +421,14 @@ void download_field_maps()
    //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
    //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
 
-   std::cout << "c12sim field map directory : "C12SIM_DATA_DIR << std::endl;
-   if( ! fexists(C12SIM_DATA_DIR"/clas12SolenoidFieldMap.dat") ) {
+   std::cout << "c12sim field map directory : " C12SIM_DATA_DIR << std::endl;
+   if( ! fexists(C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat") ) {
       std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat" << std::endl;
-      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
+      exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
    }
-   if( ! fexists(C12SIM_DATA_DIR"/clas12TorusOriginalMap.dat") ) {
+   if( ! fexists(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat") ) {
       std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat" << std::endl;
-      exec(" cd "C12SIM_DATA_DIR" ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
+      exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
    }
 }
 //______________________________________________________________________________

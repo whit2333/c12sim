@@ -117,6 +117,7 @@ set(MACROB1_SCRIPTS
   mac/run2.mac
   mac/vis.mac
   mac/vis_parallel.mac
+  mac/fastMC.mac
   )
 foreach(_script ${MACROB1_SCRIPTS})
   configure_file(

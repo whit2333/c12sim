@@ -5,6 +5,7 @@
 #include "globals.hh"
 #include "DriftChamberDetectorGeometry.h"
 #include "DriftChamberSensitiveDetector.h"
+#include "ECDetectorGeometry.h"
 #include "RecoilChamberDetectorGeometry.h"
 #include "RecoilHodoDetectorGeometry.h"
 #include "HTCCDetectorGeometry.h"
@@ -173,6 +174,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       BeamlineDetectorGeometry       * fBeamline      = nullptr;
       MVTDetectorGeometry            * fMVT           = nullptr;
       SVTDetectorGeometry            * fSVT           = nullptr;
+      ECDetectorGeometry             * fEC            = nullptr;
 
    protected:
       void DefineMaterials();

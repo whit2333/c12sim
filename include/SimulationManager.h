@@ -25,6 +25,7 @@ class RecoilHodoDetectorGeometry;
 class DriftChamberDetectorGeometry;
 class HTCCDetectorGeometry;
 class SolenoidDetectorGeometry;
+class ECDetectorGeometry;
 class TorusDetectorGeometry;
 class BeamlineDetectorGeometry;
 class SimulationMessenger;
@@ -49,6 +50,7 @@ class SimulationManager {
       BeamlineDetectorGeometry      * fBeamlineGeo      = nullptr;
       MVTDetectorGeometry           * fMVTGeo           = nullptr;
       SVTDetectorGeometry           * fSVTGeo           = nullptr;
+      ECDetectorGeometry            * fECGeo            = nullptr;
 
 
    public:
@@ -61,6 +63,7 @@ class SimulationManager {
       BeamlineDetectorGeometry      * GetBeamlineDetectorGeometry();
       MVTDetectorGeometry           * GetMVTDetectorGeometry();
       SVTDetectorGeometry           * GetSVTDetectorGeometry();
+      ECDetectorGeometry            * GetECDetectorGeometry();
 
    public:
       SimulationMessenger           * fSimulationMessenger;

@@ -30,6 +30,7 @@
 #include "RecoilChamberDetectorGeometry.h"
 #include "RecoilHodoDetectorGeometry.h"
 #include "DriftChamberDetectorGeometry.h"
+#include "ECDetectorGeometry.h"
 #include "HTCCDetectorGeometry.h"
 #include "SolenoidDetectorGeometry.h"
 #include "TorusDetectorGeometry.h"
@@ -230,6 +231,14 @@ SVTDetectorGeometry * SimulationManager::GetSVTDetectorGeometry(){
       fSVTGeo = new SVTDetectorGeometry();
    }
    return fSVTGeo;
+}
+//______________________________________________________________________________
+
+ECDetectorGeometry * SimulationManager::GetECDetectorGeometry(){
+   if(!fECGeo) {
+      fECGeo = new ECDetectorGeometry();
+   }
+   return fECGeo;
 }
 //______________________________________________________________________________
 

@@ -30,7 +30,6 @@ class SensitiveRegionDetector : public G4VSensitiveDetector {
       bool   fCountAllPhotons;
       bool   fSavePhotonPositions;
 
-
    public:
 
       clas12::hits::DCHitsEvent    * fDCHitsEvent;

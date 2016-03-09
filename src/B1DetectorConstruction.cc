@@ -355,6 +355,17 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //fHTCC->PlacePhysicalVolume( world_log, 6, 2);
 
    // ------------------------------------------------------------------------
+   // Electromagnetic Calorimeter (EC)
+   // ------------------------------------------------------------------------
+   std::cout << " EC construction \n";
+   fEC = SimulationManager::GetInstance()->GetECDetectorGeometry();
+   fEC->BuildLogicalVolumes();
+   // Sectors
+   for(int i = 1; i<=6; i++ ) {
+      fEC->PlaceParallelPhysicalVolume( world_log, i, 1);
+   }
+
+   // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
    //std::cout << " Recoil chamber construction \n";
