@@ -101,6 +101,7 @@ void SimplePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //double phi_rand = fPhi_min   + fdPhi*G4UniformRand();
 
       TLorentzVector P4vec = {pvec.x(),pvec.y(),pvec.z(),E_tot}; 
+      part->SetPdgCode(pdgcode);
       part->SetMomentum(P4vec);
       part->SetProductionVertex(TLorentzVector(pos.x()/cm,pos.y()/cm,pos.z()/cm, 0.0));
 

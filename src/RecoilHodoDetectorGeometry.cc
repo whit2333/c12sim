@@ -221,7 +221,9 @@ void RecoilHodoDetectorGeometry::BuildMaterials()
    Scnt_MPT->AddProperty("ALPHASCINTILLATIONYIELD"   , relativeLightOutput[0].data(), relativeLightOutput[6].data(), relativeLightOutput[0].size());
 
    // The relative strength of the fast component as a fraction of total scintillation yield is given by the YIELDRATIO. 
-   fScint1_mat->SetMaterialPropertiesTable(Scnt_MPT);
+   if(fUseOpticalPhotons) {
+      fScint1_mat->SetMaterialPropertiesTable(Scnt_MPT);
+   }
    fScint2_mat = fScint1_mat;
 }
 //______________________________________________________________________________

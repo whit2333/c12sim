@@ -21,6 +21,7 @@
 #include "FTFP_BERT.hh"
 #include "QBBC.hh"
 #include "Randomize.hh"
+#include "TRandom3.h"
 
 #include "SimulationManager.h"
 #include "B1OpticalPhysics.hh"
@@ -200,9 +201,6 @@ int main(int argc,char** argv)
          case 's':
             simple_eg = atoi( optarg );
             break;
-      //{"solenoid-field", required_argument,  0, 'S'},
-      //{"toroid-field", required_argument,  0, 'T'},
-      //{"torus-field", required_argument,  0, 'T'},
 
          case '?':
             print_help();
@@ -241,10 +239,12 @@ int main(int argc,char** argv)
    }
 
    // Choose the Random engine
+   TRandom3 rand(0);
    G4Random::setTheEngine(new CLHEP::RanecuEngine);
-   G4long seed = time(NULL);
+   G4long seed = rand.GetSeed();
    if( set_rand_seed != -1 ) {
       seed = long(set_rand_seed);
+      rand.SetSeed(seed);
    }
    CLHEP::HepRandom::setTheSeed(seed);
 

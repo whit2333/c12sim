@@ -29,6 +29,8 @@ class RecoilHodoDetectorGeometry {
       RecoilScintSensitiveDetector * fScint1_det = nullptr;
       RecoilScintSensitiveDetector * fScint2_det = nullptr;
       
+      bool    fUseOpticalPhotons = false;
+
       G4ThreeVector       fScint1_pos;
       G4Material        * fScint1_mat   = nullptr;
       G4VSolid          * fScint1_solid = nullptr;

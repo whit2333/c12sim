@@ -30,6 +30,7 @@
 #include "DriftChamberDetectorGeometry.h"
 #include "HTCCDetectorGeometry.h"
 #include "G4ExtrudedSolid.hh"
+#include "G4GDMLParser.hh"
 
 
 B1DetectorConstruction::B1DetectorConstruction() : 
@@ -404,10 +405,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Beamline
    // ------------------------------------------------------------------------
-   std::cout << " beamline construction \n";
-   fBeamline = SimulationManager::GetInstance()->GetBeamlineDetectorGeometry();
-   fBeamline->BuildLogicalVolumes();
-   fBeamline->PlacePhysicalVolume( world_log );
+   //std::cout << " beamline construction \n";
+   //fBeamline = SimulationManager::GetInstance()->GetBeamlineDetectorGeometry();
+   //fBeamline->BuildLogicalVolumes();
+   //fBeamline->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // MVT
@@ -458,7 +459,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    G4ThreeVector target_pos {target_posX, target_posY, target_posZ};
    G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength/2.0, 0.0, 360.0*CLHEP::degree);
-   G4Material * target_mat = LH2;//Deuterium;
+   G4Material * target_mat = He_Target; //LH2;//Deuterium;
    G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
    new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
          false,           //no boolean operation
@@ -623,6 +624,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    logicOKapton->SetVisAttributes(OKaptonVisAtt);
 
    fHasBeenBuilt = true;
+
+   int run_number = SimulationManager::GetInstance()->GetRunNumber();
+   G4GDMLParser parser;
+   G4String gdml_name = "data/log/c12geometry_" + std::to_string(run_number) + G4String(".gdml");
+   //parser.Write(gdml_name,world_phys);
 
    return world_phys;
 }
