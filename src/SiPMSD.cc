@@ -96,7 +96,7 @@ G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
          double        x           = pos.x()/cm;
          double        y           = pos.y()/cm;
 
-         std::cout << "channel(" << GetCopyNoParent() << ") = " << channel << std::endl ;
+         //std::cout << "channel(" << GetCopyNoParent() << ") = " << channel << std::endl ;
          //std::cout << "touchable->GetReplicaNumber(2)  = " << touchable->GetReplicaNumber(2) << std::endl ;
          //std::cout << "touchable->GetReplicaNumber(4)  = " << touchable->GetReplicaNumber(4) << std::endl ;
 
