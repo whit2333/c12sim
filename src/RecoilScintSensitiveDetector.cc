@@ -17,13 +17,8 @@
 RecoilScintSensitiveDetector::RecoilScintSensitiveDetector(G4String name) : G4VSensitiveDetector(name)
 {
    G4String HCname;
-   collectionName.insert( HCname = "partcleHits" );
+   collectionName.insert( HCname = "particleHits" );
    HCID = -1;
-
-   for(int i = 0; i<5; i++) {
-      collectionName.insert( HCname = "scint_layer_" + std::to_string(i) );
-      theHCIDs[i] = -1;
-   }
 
    fOpticalPhoton = G4ParticleTable::GetParticleTable()->FindParticle("opticalphoton");
 
@@ -54,13 +49,13 @@ void RecoilScintSensitiveDetector::Initialize(G4HCofThisEvent* HCE)
    }
    HCE->AddHitsCollection(HCID,hitsCollection);
 
-   for(int i = 0; i<5; i++) {
-      theHits[i]  = new RecoilScintHitsCollection( SensitiveDetectorName, collectionName[1+i] ); 
-      if( theHCIDs[i]<0 ) {
-         theHCIDs[i] = GetCollectionID(1+i);
-      }
-      HCE->AddHitsCollection(theHCIDs[i],theHits[i]);
-   }
+   //for(int i = 0; i<5; i++) {
+   //   theHits[i]  = new RecoilScintHitsCollection( SensitiveDetectorName, collectionName[1+i] ); 
+   //   if( theHCIDs[i]<0 ) {
+   //      theHCIDs[i] = GetCollectionID(1+i);
+   //   }
+   //   HCE->AddHitsCollection(theHCIDs[i],theHits[i]);
+   //}
 }
 //______________________________________________________________________________
 

@@ -17,13 +17,9 @@ class RecoilScintSensitiveDetector : public G4VSensitiveDetector
       G4int HCID;
       RecoilScintHitsCollection *hitsCollection;
 
-      std::array<RecoilScintHitsCollection*,5> theHits;
-      std::array<int,5>                     theHCIDs;
-
    public:
 
       clas12::hits::RecoilScintEvent * fRecoilScintEvent = nullptr;
-
 
       G4ParticleDefinition * fOpticalPhoton;
 

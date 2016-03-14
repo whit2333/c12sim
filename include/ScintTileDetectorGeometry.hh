@@ -11,6 +11,7 @@
 
 class BeamTestSD;
 class SiPMSD;
+class ScintTileSensitiveDetector;
 
 /** Recoil Chamber.
  * 
@@ -21,6 +22,9 @@ class SiPMSD;
 class ScintTileDetectorGeometry {
 
    private:
+
+      bool    fUseOpticalPhotons = true;
+      double  fRefScint          = 1000.0/CLHEP::MeV;
 
       std::array<double, 33>   fScintLightOutput;
       std::array<double, 33>   fScintLightOutput_slow;
@@ -49,6 +53,7 @@ class ScintTileDetectorGeometry {
       G4VSolid          * fScint_solid = nullptr;
       G4LogicalVolume   * fScint_log   = nullptr;
       G4VPhysicalVolume * fScint_phys  = nullptr;
+      ScintTileSensitiveDetector * fScint_det = nullptr;
 
       G4ThreeVector       fWLSFiber_pos ;
       G4RotationMatrix    fWLSFiber_rot ;

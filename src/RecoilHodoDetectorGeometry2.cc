@@ -154,7 +154,7 @@ void RecoilHodoDetectorGeometry2::BuildMaterials()
    // Relative light output for different particles
    // refscint is the reference scintillation yield for the relative measuremnts.
    // It appears to be the scintillation yield from a 160 MeV proton.
-   double refscint = 10000.0/MeV;
+   double refscint = fRefScint;//1000.0/MeV;
    vector< vector< double > > relativeLightOutput = { 
       { // Particle kinetic energy
          0*MeV, 10*MeV, 20*MeV, 30*MeV, 40*MeV, 50*MeV, 50*MeV, 70*MeV, 90*MeV, 110*MeV, 130*MeV, 150*MeV, 170*MeV, 190*MeV, 190*MeV, 

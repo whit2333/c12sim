@@ -34,7 +34,7 @@ void SiPMSD::Initialize(G4HCofThisEvent* HCE)
       SimulationManager * simManager = SimulationManager::GetInstance();
       fRecoilScintEvent    = new clas12::hits::RecoilScintEvent();
       simManager->fOutputTree->Branch(
-            Form("scint_%s_%s",SensitiveDetectorName.data(),collectionName[0].data()),
+            Form("%s_%s",SensitiveDetectorName.data(),collectionName[0].data()),
             "clas12::hits::RecoilScintEvent",
             &fRecoilScintEvent   );
    }

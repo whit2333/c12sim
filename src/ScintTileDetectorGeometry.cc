@@ -48,7 +48,7 @@
 
 #include "BeamTestSD.hh"
 #include "SiPMSD.hh"
-
+#include "ScintTileSensitiveDetector.hh"
 
 ScintTileDetectorGeometry::ScintTileDetectorGeometry()
 {
@@ -114,7 +114,7 @@ void ScintTileDetectorGeometry::BuildMaterials()
    // refscint is the reference scintillation yield for the relative measuremnts.
    // It appears to be the scintillation yield from a 160 MeV proton.
 
-   double refscint = 10000.0/MeV;
+   double refscint = fRefScint;//1000.0/MeV;
 
    vector< vector< double > > relativeLightOutput = { 
       { // Particle kinetic energy
@@ -200,7 +200,10 @@ void ScintTileDetectorGeometry::BuildMaterials()
    Scnt_MPT->AddProperty("ALPHASCINTILLATIONYIELD"   , relativeLightOutput[0].data(), relativeLightOutput[6].data(), relativeLightOutput[0].size());
 
    // The relative strength of the fast component as a fraction of total scintillation yield is given by the YIELDRATIO. 
-   fScint_mat->SetMaterialPropertiesTable(Scnt_MPT);
+
+   if(fUseOpticalPhotons) {
+      fScint_mat->SetMaterialPropertiesTable(Scnt_MPT);
+   }
 
    // -----------------------------------
    // Wavelength shifting fiber material
@@ -293,7 +296,9 @@ void ScintTileDetectorGeometry::BuildMaterials()
    MPTFiber->AddProperty("WLSCOMPONENT", PhotonEnergy.data(), EmissionFiber.data(), nEntries);
    MPTFiber->AddConstProperty("WLSTIMECONSTANT", 0.5*ns);
 
-   fWLSFiber_mat->SetMaterialPropertiesTable(MPTFiber);
+   if(fUseOpticalPhotons) {
+      fWLSFiber_mat->SetMaterialPropertiesTable(MPTFiber);
+   }
 
 }
 //______________________________________________________________________________
@@ -432,12 +437,18 @@ void ScintTileDetectorGeometry::BuildLogicalVolumes()
    fScint_log     = new G4LogicalVolume(fScint_solid, fScint_mat,"fScint_log");
    //fScint_phys  = new G4PVPlacement(0,fScint_pos, fScint_log, "fScint_phys",world_log,false,0,checkOverlaps);                                  
 
-   G4Colour            fScint_color {red, green, blue, alpha };   // Gray 
+   G4Colour            fScint_color {red, green, blue, alpha }; 
    G4VisAttributes   * fScint_vis   = new G4VisAttributes(fScint_color);
+   fScint_vis->SetForceWireframe(true);
    fScint_log->SetVisAttributes(fScint_vis);
 
    G4UserLimits * fScint_limits = new G4UserLimits(0.5*mm);
    fScint_log->SetUserLimits(fScint_limits);
+
+   if( !fScint_det ) fScint_det = new ScintTileSensitiveDetector("ScintTile");
+   G4SDManager* SDMan = G4SDManager::GetSDMpointer();
+   SDMan->AddNewDetector(fScint_det);
+   fScint_log->SetSensitiveDetector(fScint_det);
 
    // ------------------------------------------------------------------------
    // embedded WLS fiber 
@@ -486,10 +497,9 @@ void ScintTileDetectorGeometry::BuildLogicalVolumes()
    //G4UserLimits * fWLSFiber_limits = new G4UserLimits(0.5*mm);
    //fWLSFiber_log->SetUserLimits(fWLSFiber_limits);
 
-   if(!fSiPM_det) fSiPM_det = new SiPMSD("SiPM");
+   if(!fSiPM_det) fSiPM_det = new SiPMSD("RCScintTile");
    fSiPM_det->SetCopyNoParent(2);
    //SetSensitiveDetector("fPhotonDet1_log",fPhotonDet1_det);
-   G4SDManager* SDMan = G4SDManager::GetSDMpointer();
    SDMan->AddNewDetector(fSiPM_det);
    fSiPM_log->SetSensitiveDetector(fSiPM_det);
 
