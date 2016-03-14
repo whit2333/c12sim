@@ -138,7 +138,6 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
    //      double        y           = pos.y()/cm;
 
 
-   //      aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 
    //      // -------------------------------------------------
 
@@ -164,6 +163,7 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
 
    //      // -------------------------------------------------
 
+   //      aStep->GetTrack()->SetTrackStatus(fStopAndKill);
    //   }
    //}
    return true;

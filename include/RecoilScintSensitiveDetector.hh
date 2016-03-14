@@ -13,46 +13,21 @@ class G4ParticleDefinition;
 
 class RecoilScintSensitiveDetector : public G4VSensitiveDetector
 {
+   private:
+      G4int HCID;
+      RecoilScintHitsCollection *hitsCollection;
+
+      std::array<RecoilScintHitsCollection*,5> theHits;
+      std::array<int,5>                     theHCIDs;
+
    public:
-      G4AnalysisManager * fAnalysisManager;
 
       clas12::hits::RecoilScintEvent * fRecoilScintEvent = nullptr;
 
-     int    fNtuple_ID;
-     int    fEvNum_ntID;
-     int    fRunNum_ntID;
-     int    fChannel_ntID;
-     int    fLambda_ntID;
-     int    fTime_ntID;
-     int    fTotalEnergy_ntID;
-     int    fKineticEnergy_ntID;
-     int    fMomentum_ntID;
-     int    fTheta_ntID;
-     int    fPhi_ntID;
-     int    fThetaP_ntID;
-     int    fPhiP_ntID;
-     int    fPID_ntID;
-     int    fPx_ntID;
-     int    fPy_ntID;
-     int    fPz_ntID;
-     int    fx_ntID;
-     int    fy_ntID;
-     int    fz_ntID;
 
-     int    fTimeAvg_hID;
-     int    fLambdaAvg_hID;
-     int    fTimeVsLambdaAvg_hID;
+      G4ParticleDefinition * fOpticalPhoton;
 
-     //int    fNtuple2_ID;
-     //int    fEvNum2_ntID;
-     //int    fRunNum2_ntID;
-     //int    fChannel2_ntID;
-     //int    fLambda2_ntID;
-     //int    fTime2_ntID;
-
-     G4ParticleDefinition * fOpticalPhoton;
-
-  public:
+   public:
       RecoilScintSensitiveDetector(G4String name);
       ~RecoilScintSensitiveDetector();
 
@@ -63,18 +38,7 @@ class RecoilScintSensitiveDetector : public G4VSensitiveDetector
       void DrawAll();
       void PrintAll();
 
-  private:
-      G4int HCID;
-      RecoilScintHitsCollection *hitsCollection;
-
-      std::array<RecoilScintHitsCollection*,5> theHits;
-      std::array<int,5>                     theHCIDs;
-
-  public:
 };
-
-
-
 
 #endif
 

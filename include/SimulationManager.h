@@ -22,6 +22,7 @@
 
 class RecoilChamberDetectorGeometry;
 class RecoilHodoDetectorGeometry;
+class RecoilHodoDetectorGeometry2;
 class DriftChamberDetectorGeometry;
 class HTCCDetectorGeometry;
 class SolenoidDetectorGeometry;
@@ -43,6 +44,7 @@ class SimulationManager {
    private:
       RecoilChamberDetectorGeometry * fRecoilChamberGeo = nullptr;
       RecoilHodoDetectorGeometry    * fRecoilHodoGeo    = nullptr;
+      RecoilHodoDetectorGeometry2   * fRecoilHodoGeo2   = nullptr;
       DriftChamberDetectorGeometry  * fDriftChamberGeo  = nullptr;
       HTCCDetectorGeometry          * fHTCCGeo          = nullptr;
       SolenoidDetectorGeometry      * fSolenoidGeo      = nullptr;
@@ -56,6 +58,7 @@ class SimulationManager {
    public:
       DriftChamberDetectorGeometry  * GetDriftDetectorGeometry();
       RecoilHodoDetectorGeometry    * GetRecoilHodoDetectorGeometry();
+      RecoilHodoDetectorGeometry2   * GetRecoilHodoDetectorGeometry2();
       RecoilChamberDetectorGeometry * GetRecoilDetectorGeometry();
       HTCCDetectorGeometry          * GetHTCCDetectorGeometry();
       SolenoidDetectorGeometry      * GetSolenoidDetectorGeometry();

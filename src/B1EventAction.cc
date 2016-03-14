@@ -36,7 +36,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
       fTree   = simManager->fOutputTree;
    }
 
-   if(event_number%100 == 0 )
+   if(event_number%10 == 0 )
    {
       SimulationManager * simManager = SimulationManager::GetInstance();
       std::cout  << " Begin of event " << event_number 
@@ -53,28 +53,30 @@ void B1EventAction::EndOfEventAction(const G4Event * event)
    using namespace CLHEP;
    G4TrajectoryContainer * traj_container = event->GetTrajectoryContainer();
 
-   int n_traj = traj_container->entries();
-   //std::cout << "Event has " << n_traj << " trajectores\n";
+   if( traj_container ) {
+      int n_traj = traj_container->entries();
+      //std::cout << "Event has " << n_traj << " trajectores\n";
 
-   for(int i = 0; i<n_traj; i++ ) {
+      for(int i = 0; i<n_traj; i++ ) {
 
-      G4VTrajectory * traj = (*traj_container)[i];
-      TParticle     * part =  new( (*fTrajectoryVerticies)[i] ) TParticle();
-      //TParticle(Int_t pdg, Int_t status, Int_t mother1, Int_t mother2, Int_t daughter1, Int_t daughter2, 
-      //Double_t px, Double_t py, Double_t pz, Double_t etot, Double_t vx, Double_t vy, Double_t vz, Double_t time)
-      part->SetMomentum(
-            traj->GetInitialMomentum().x()/GeV,
-            traj->GetInitialMomentum().y()/GeV,
-            traj->GetInitialMomentum().z()/GeV,
-            0);
-      part->SetProductionVertex(
-            traj->GetPoint(0)->GetPosition().x()/cm,
-            traj->GetPoint(0)->GetPosition().y()/cm,
-            traj->GetPoint(0)->GetPosition().z()/cm,
-            0);
-      part->SetFirstMother( traj->GetTrackID()     );
-      part->SetLastMother(  traj->GetParentID()    );
-      part->SetPdgCode(     traj->GetPDGEncoding() );
+         G4VTrajectory * traj = (*traj_container)[i];
+         TParticle     * part =  new( (*fTrajectoryVerticies)[i] ) TParticle();
+         //TParticle(Int_t pdg, Int_t status, Int_t mother1, Int_t mother2, Int_t daughter1, Int_t daughter2, 
+         //Double_t px, Double_t py, Double_t pz, Double_t etot, Double_t vx, Double_t vy, Double_t vz, Double_t time)
+         part->SetMomentum(
+               traj->GetInitialMomentum().x()/GeV,
+               traj->GetInitialMomentum().y()/GeV,
+               traj->GetInitialMomentum().z()/GeV,
+               0);
+         part->SetProductionVertex(
+               traj->GetPoint(0)->GetPosition().x()/cm,
+               traj->GetPoint(0)->GetPosition().y()/cm,
+               traj->GetPoint(0)->GetPosition().z()/cm,
+               0);
+         part->SetFirstMother( traj->GetTrackID()     );
+         part->SetLastMother(  traj->GetParentID()    );
+         part->SetPdgCode(     traj->GetPDGEncoding() );
+      }
    }
 
    fTree->Fill();
@@ -84,8 +86,8 @@ void B1EventAction::EndOfEventAction(const G4Event * event)
    //evtN++;
    //return;
 
-   if(event_number%1000 == 0 )
-      std::cout <<  " End of Event " << event_number << " Routine..." << std::endl;
+   if(event_number%1 == 0 )
+      std::cout <<  " End of Event " << event_number << " " << std::endl;
 
    // Increase event number. Notice: this is different than evt->GetEventID()
    event_number++;

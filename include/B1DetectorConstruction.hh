@@ -8,6 +8,7 @@
 #include "ECDetectorGeometry.h"
 #include "RecoilChamberDetectorGeometry.h"
 #include "RecoilHodoDetectorGeometry.h"
+#include "RecoilHodoDetectorGeometry2.h"
 #include "HTCCDetectorGeometry.h"
 #include "SolenoidDetectorGeometry.h"
 #include "TorusDetectorGeometry.h"
@@ -165,6 +166,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       HTCCDetectorGeometry           * fHTCC          = nullptr;
       RecoilChamberDetectorGeometry  * fRecoilChamber = nullptr;
       RecoilHodoDetectorGeometry     * fRecoilHodo    = nullptr;
+      RecoilHodoDetectorGeometry2    * fRecoilHodo2   = nullptr;
       DriftChamberDetectorGeometry   * fDriftChamber  = nullptr;
       SolenoidDetectorGeometry       * fSolenoid      = nullptr;
       TorusDetectorGeometry          * fTorus         = nullptr;

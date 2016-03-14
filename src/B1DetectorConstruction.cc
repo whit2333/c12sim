@@ -382,10 +382,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // Recoil Hodoscope
    // ------------------------------------------------------------------------
    std::cout << " Recoil Hodo construction \n";
-   fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
-   fRecoilHodo->BuildLogicalVolumes();
-   fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
+   //fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
+   //fRecoilHodo->BuildLogicalVolumes();
+   //fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
 
+   fRecoilHodo2 = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry2();
+   fRecoilHodo2->BuildLogicalVolumes();
+   fRecoilHodo2->PlacePhysicalVolume( world_log, world_phys);
 
 
    // ------------------------------------------------------------------------
