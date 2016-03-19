@@ -17,6 +17,9 @@ class ScintTileSensitiveDetector : public G4VSensitiveDetector
       G4int HCID;
       RecoilScintHitsCollection *hitsCollection;
 
+      //G4int fHCIDByChannel = -1;
+      //ScintHitsCollection * fHitsByChannel;
+
    public:
 
       clas12::hits::RecoilScintEvent * fRecoilScintEvent = nullptr;
@@ -25,7 +28,7 @@ class ScintTileSensitiveDetector : public G4VSensitiveDetector
 
    public:
       ScintTileSensitiveDetector(G4String name);
-      ~ScintTileSensitiveDetector();
+      virtual ~ScintTileSensitiveDetector();
 
       void Initialize(G4HCofThisEvent*HCE);
       G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);

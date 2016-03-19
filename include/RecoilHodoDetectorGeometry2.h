@@ -32,7 +32,7 @@ class RecoilHodoDetectorGeometry2 {
       RecoilScintSensitiveDetector * fScint1_det = nullptr;
       RecoilScintSensitiveDetector * fScint2_det = nullptr;
       
-      bool    fUseOpticalPhotons = true;
+      bool    fUseOpticalPhotons = false;
       double  fRefScint          = 1000.0/CLHEP::MeV;
 
       G4ThreeVector       fScint1_pos;

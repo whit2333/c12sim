@@ -23,7 +23,7 @@ class ScintTileDetectorGeometry {
 
    private:
 
-      bool    fUseOpticalPhotons = true;
+      bool    fUseOpticalPhotons = false;
       double  fRefScint          = 1000.0/CLHEP::MeV;
 
       std::array<double, 33>   fScintLightOutput;
@@ -99,7 +99,7 @@ class ScintTileDetectorGeometry {
       double fScintGap           = 2.54*0.002*CLHEP::cm; 
       double fScintWidth         = 10.0*CLHEP::mm;
       double fScintLength        = 30.0*CLHEP::mm;
-      double fScintThickness     = 10.0*CLHEP::mm;
+      double fScintThickness     = 50.0*CLHEP::mm;
 
       double fPhotonDetThickness = 25.4*0.00002*CLHEP::mm;
 

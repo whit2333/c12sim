@@ -98,6 +98,15 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
 
    }
 
+   if(!is_OpticalPhoton  ) 
+   {
+      int     channel  = touchable->GetReplicaNumber();
+      double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
+      fRecoilScintEvent->fScintChannelHits[channel].fChannel = channel; // derp
+      fRecoilScintEvent->fScintChannelHits[channel].fSteps++;
+      fRecoilScintEvent->fScintChannelHits[channel].fEDep += e_dep;
+   }
+
    //if( (pdgcode == 0) && is_OpticalPhoton ) {
    //   if( preStep->GetStepStatus() == fGeomBoundary ) {
 

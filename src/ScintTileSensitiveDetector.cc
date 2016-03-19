@@ -18,6 +18,7 @@ ScintTileSensitiveDetector::ScintTileSensitiveDetector(G4String name) : G4VSensi
 {
    G4String HCname;
    collectionName.insert( HCname = "particleHits" );
+   //collectionName.insert( HCname = "channelHits" );
    HCID = -1;
 
    fOpticalPhoton = G4ParticleTable::GetParticleTable()->FindParticle("opticalphoton");
@@ -49,23 +50,20 @@ void ScintTileSensitiveDetector::Initialize(G4HCofThisEvent* HCE)
    }
    HCE->AddHitsCollection(HCID,hitsCollection);
 
-   //for(int i = 0; i<5; i++) {
-   //   theHits[i]  = new RecoilScintHitsCollection( SensitiveDetectorName, collectionName[1+i] ); 
-   //   if( theHCIDs[i]<0 ) {
-   //      theHCIDs[i] = GetCollectionID(1+i);
-   //   }
-   //   HCE->AddHitsCollection(theHCIDs[i],theHits[i]);
+   //fHitsByChannel = new ScintHitsCollection( SensitiveDetectorName, collectionName[1] ); 
+   //if(fHCIDByChannel<0) {
+   //   fHCIDByChannel = GetCollectionID(1);
    //}
+   //HCE->AddHitsCollection(fHCIDByChannel,fHitsByChannel);
+
 }
 //______________________________________________________________________________
 
 G4bool ScintTileSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-
    using namespace CLHEP;
    //G4StepPoint* preStep = aStep->GetPreStepPoint();
    //G4TouchableHistory* touchable = (G4TouchableHistory*)(preStep->GetTouchable());
-
 
    G4StepPoint        * preStep   = aStep->GetPreStepPoint();
    G4TouchableHistory * touchable = (G4TouchableHistory*)(preStep->GetTouchable());
@@ -74,19 +72,23 @@ G4bool ScintTileSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory
    // check if the particle type is Optical Photon
    bool is_OpticalPhoton = (aStep->GetTrack()->GetDefinition() == fOpticalPhoton);
 
-   if( preStep->GetStepStatus() == fGeomBoundary ) 
+   if(!is_OpticalPhoton  ) 
    {
 
-         int channel      = touchable->GetReplicaNumber();
+      int     channel  = touchable->GetReplicaNumber();
+      double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
+      fRecoilScintEvent->fScintChannelHits[channel].fChannel = channel; // derp
+      fRecoilScintEvent->fScintChannelHits[channel].fSteps++;
+      fRecoilScintEvent->fScintChannelHits[channel].fEDep += e_dep;
 
-         G4ThreeVector mom     = preStep->GetMomentum();
+      if( preStep->GetStepStatus() == fGeomBoundary ) {
+         G4ThreeVector mom        = preStep->GetMomentum();
          G4ThreeVector pos_global = preStep->GetPosition();
 
          G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
          G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
 
-
-         double        total_energy   = aStep->GetPreStepPoint()->GetTotalEnergy()/GeV;
+         double        total_energy = aStep->GetPreStepPoint()->GetTotalEnergy()/GeV;
          double        aTime        = aStep->GetTrack()->GetGlobalTime()/CLHEP::ns;
          TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,aTime);
 
@@ -95,6 +97,7 @@ G4bool ScintTileSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory
          pHit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, aTime );
          pHit->fGlobalPosition     = global_4vec;
          pHit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, total_energy);
+      }
 
    }
 
@@ -131,11 +134,7 @@ G4bool ScintTileSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory
    //      double        z           = pos.z()/cm;
    //      double        x           = pos.x()/cm;
    //      double        y           = pos.y()/cm;
-
-
-
    //      // -------------------------------------------------
-
    //      RecoilScintHit* newHit = new RecoilScintHit();
    //      newHit->SetStripNo(  touchable->GetReplicaNumber(0) );
    //      newHit->SetPosition( pos );
@@ -155,9 +154,6 @@ G4bool ScintTileSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory
    //      pHit->fEnergy   = total_energy;
    //      pHit->fPosition = {pos.x(),pos.y(),pos.z()};
    //      pHit->fMomentum = {px,py,pz};
-
-   //      // -------------------------------------------------
-
    //      aStep->GetTrack()->SetTrackStatus(fStopAndKill);
    //   }
    //}
