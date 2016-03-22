@@ -322,6 +322,10 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    G4UserLimits * fScint2_limits = new G4UserLimits(0.5*mm);
    fScint2_log->SetUserLimits(fScint2_limits);
 
+   //if(!fScint1_det) fScint1_det = new RecoilScintSensitiveDetector("/recoil_scint1");
+   //G4SDManager* SDMan = G4SDManager::GetSDMpointer();
+   //SDMan->AddNewDetector(fScint1_det);
+   fScint2_log->SetSensitiveDetector(fScint1_det);
 
    // ------------------------------------------------------------------------
    // First scintillator photon detection surface 
@@ -446,6 +450,7 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry::PlacePhysicalVolume(
 
    double delta_phi = 360.0*CLHEP::degree/double(fScint1_positions.size());
    G4String name       = "";
+   int n_bars = fScint1_positions.size();
 
    for(int i = 0; i<fScint1_positions.size(); i++) {
 
@@ -466,7 +471,7 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry::PlacePhysicalVolume(
       name                 = "fScint2_physicals_" + std::to_string(i);
       fScint2_physicals[i] = new G4PVPlacement(
             G4Transform3D(scint_rot,fScint2_positions[i]), 
-            fScint2_log, name, mother, false, i, checkOverlaps); 
+            fScint2_log, name, mother, false, i+n_bars, checkOverlaps); 
       name = "fScint2_borders_" + std::to_string(i);
       fScint2_borders[i]  = new G4LogicalBorderSurface(name, fScint2_physicals[i], mother_phys, OpSurface );
    }

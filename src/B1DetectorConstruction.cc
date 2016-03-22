@@ -381,11 +381,16 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Recoil Hodoscope
    // ------------------------------------------------------------------------
-   std::cout << " Recoil Hodo construction \n";
+   std::cout << " Recoil Hodo construction ...\n";
+   std::cout << " RecoilHodoscopeDetectorGeometry \n";
+   std::cout << " This version consists of two layers of scintillator boars (one thin, one thick)\n";
+   std::cout << " The photons are detected at both ends\n";
    fRecoilHodo = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry();
    fRecoilHodo->BuildLogicalVolumes();
    fRecoilHodo->PlacePhysicalVolume( world_log, world_phys);
 
+   //std::cout << " RecoilHodoscopeDetectorGeometry2 \n";
+   //std::cout << " This version consists of one thin scintillator layer and a tiled thick outer layer\n";
    //fRecoilHodo2 = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry2();
    //fRecoilHodo2->BuildLogicalVolumes();
    //fRecoilHodo2->PlacePhysicalVolume( world_log, world_phys);

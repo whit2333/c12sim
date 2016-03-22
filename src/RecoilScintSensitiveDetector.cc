@@ -66,7 +66,6 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
    //G4StepPoint* preStep = aStep->GetPreStepPoint();
    //G4TouchableHistory* touchable = (G4TouchableHistory*)(preStep->GetTouchable());
 
-
    G4StepPoint        * preStep   = aStep->GetPreStepPoint();
    G4TouchableHistory * touchable = (G4TouchableHistory*)(preStep->GetTouchable());
    int pdgcode = aStep->GetTrack()->GetDefinition()->GetPDGEncoding();
@@ -84,7 +83,6 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
 
          G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
          G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
-
 
          double        total_energy   = aStep->GetPreStepPoint()->GetTotalEnergy()/GeV;
          double        aTime        = aStep->GetTrack()->GetGlobalTime()/CLHEP::ns;
