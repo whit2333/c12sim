@@ -15,10 +15,11 @@ class SiPMSD : public G4VSensitiveDetector
 {
    private:
 
-      G4int                fCopyNoParent   = 0;
-      G4int                fNChannels      = 600;
-      G4int                fHCID           = -1;
-      SiPMHitsCollection * fHitsCollection = nullptr;
+      G4int                fCopyNoParent     = 0;
+      G4int                fNChannels        = 600;
+      G4int                fHCID             = -1;
+      SiPMHitsCollection * fHitsCollection   = nullptr;
+      bool                 fRecordAllPhotons = false;
 
    public:
       clas12::hits::RecoilScintEvent * fRecoilScintEvent = nullptr;

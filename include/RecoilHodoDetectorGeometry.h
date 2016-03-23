@@ -8,7 +8,7 @@
 #include "G4Material.hh"
 #include "G4LogicalBorderSurface.hh"
 
-class BeamTestSD;
+class SiPMSD;
 class RecoilScintSensitiveDetector;
 
 /** Recoil Chamber.
@@ -29,7 +29,7 @@ class RecoilHodoDetectorGeometry {
       RecoilScintSensitiveDetector * fScint1_det = nullptr;
       RecoilScintSensitiveDetector * fScint2_det = nullptr;
       
-      bool    fUseOpticalPhotons = false;
+      bool    fUseOpticalPhotons = true;
 
       G4ThreeVector       fScint1_pos;
       G4Material        * fScint1_mat   = nullptr;
@@ -46,28 +46,28 @@ class RecoilHodoDetectorGeometry {
       G4VSolid          * fPhotonDet1_solid = nullptr;
       G4LogicalVolume   * fPhotonDet1_log   = nullptr;
       G4VPhysicalVolume * fPhotonDet1_phys  = nullptr;
-      BeamTestSD        * fPhotonDet1_det   = nullptr;
+      SiPMSD            * fPhotonDet1_det   = nullptr;
 
       G4ThreeVector       fPhotonDet2_pos;
       G4Material        * fPhotonDet2_mat   = nullptr;
       G4VSolid          * fPhotonDet2_solid = nullptr;
       G4LogicalVolume   * fPhotonDet2_log   = nullptr;
       G4VPhysicalVolume * fPhotonDet2_phys  = nullptr;
-      BeamTestSD        * fPhotonDet2_det   = nullptr;
+      SiPMSD            * fPhotonDet2_det   = nullptr;
 
       G4ThreeVector       fPhotonDet3_pos ;
       G4Material        * fPhotonDet3_mat   = nullptr;
       G4VSolid          * fPhotonDet3_solid = nullptr;
       G4LogicalVolume   * fPhotonDet3_log   = nullptr;
       G4VPhysicalVolume * fPhotonDet3_phys  = nullptr;
-      BeamTestSD        * fPhotonDet3_det   = nullptr;
+      SiPMSD            * fPhotonDet3_det   = nullptr;
 
       G4ThreeVector       fPhotonDet4_pos;
       G4Material        * fPhotonDet4_mat   = nullptr;
       G4VSolid          * fPhotonDet4_solid = nullptr;
       G4LogicalVolume   * fPhotonDet4_log   = nullptr;
       G4VPhysicalVolume * fPhotonDet4_phys  = nullptr;
-      BeamTestSD        * fPhotonDet4_det   = nullptr;
+      SiPMSD            * fPhotonDet4_det   = nullptr;
 
       const int fNScint                 = 60;
       std::array<G4ThreeVector          , 60> fScint1_positions;

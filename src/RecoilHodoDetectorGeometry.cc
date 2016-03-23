@@ -44,7 +44,7 @@
 #include "G4VisAttributes.hh"
 #include "G4UserLimits.hh"
 #include "G4ExtrudedSolid.hh"
-#include "BeamTestSD.hh"
+#include "SiPMSD.hh"
 #include "RecoilScintSensitiveDetector.hh"
 
 
@@ -350,10 +350,10 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    G4VisAttributes   * fPhotonDet1_vis   = new G4VisAttributes(fPhotonDet1_color);
    fPhotonDet1_log->SetVisAttributes(fPhotonDet1_vis);
 
-   if(!fPhotonDet1_det) fPhotonDet1_det = new BeamTestSD("/PM1");
+   if(!fPhotonDet1_det) fPhotonDet1_det = new SiPMSD("/PM1");
    SDMan->AddNewDetector(fPhotonDet1_det);
    fPhotonDet1_log->SetSensitiveDetector(fPhotonDet1_det);
-
+   fPhotonDet1_det->SetCopyNoParent(1);
    // ------------------------------------------------------------------------
 
    if(fPhotonDet2_phys)  delete fPhotonDet2_phys;
@@ -366,9 +366,10 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    fPhotonDet2_phys  = new G4PVPlacement(0,fPhotonDet2_pos, fPhotonDet2_log, "fPhotonDet2_phys",fScint1_log,true,0,checkOverlaps);
    fPhotonDet2_log->SetVisAttributes(fPhotonDet1_vis);
 
-   if(!fPhotonDet2_det) fPhotonDet2_det = new BeamTestSD("/PM2");
+   if(!fPhotonDet2_det) fPhotonDet2_det = new SiPMSD("/PM2");
    SDMan->AddNewDetector(fPhotonDet2_det);
    fPhotonDet2_log->SetSensitiveDetector(fPhotonDet2_det);
+   fPhotonDet2_det->SetCopyNoParent(1);
 
    // ------------------------------------------------------------------------
    // Second scintillator photon detection surface 
@@ -393,9 +394,10 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    G4VisAttributes   * fPhotonDet3_vis   = new G4VisAttributes(fPhotonDet3_color);
    fPhotonDet3_log->SetVisAttributes(fPhotonDet3_vis);
 
-   if(!fPhotonDet3_det) fPhotonDet3_det = new BeamTestSD("/PM3");
+   if(!fPhotonDet3_det) fPhotonDet3_det = new SiPMSD("/PM3");
    SDMan->AddNewDetector(fPhotonDet3_det);
    fPhotonDet3_log->SetSensitiveDetector(fPhotonDet3_det);
+   fPhotonDet3_det->SetCopyNoParent(1);
 
    // ------------------------------------------------------------------------
 
@@ -409,9 +411,10 @@ void RecoilHodoDetectorGeometry::BuildLogicalVolumes()
    fPhotonDet4_phys  = new G4PVPlacement(0,fPhotonDet4_pos, fPhotonDet4_log, "fPhotonDet4_phys",fScint2_log,true,0,checkOverlaps);
    fPhotonDet4_log->SetVisAttributes(fPhotonDet3_vis);
 
-   if(!fPhotonDet4_det) fPhotonDet4_det = new BeamTestSD("/PM4");
+   if(!fPhotonDet4_det) fPhotonDet4_det = new SiPMSD("/PM4");
    SDMan->AddNewDetector(fPhotonDet4_det);
    fPhotonDet4_log->SetSensitiveDetector(fPhotonDet4_det);
+   fPhotonDet4_det->SetCopyNoParent(1);
 }
 //______________________________________________________________________________
 

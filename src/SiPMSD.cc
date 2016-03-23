@@ -65,7 +65,6 @@ G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    if( (pdgcode == 0) && is_OpticalPhoton ) {
       if( preStep->GetStepStatus() == fGeomBoundary ) {
 
-         //std::cout << " pdgcode " << pdgcode << " \n";
          int event_number = G4RunManager::GetRunManager()->GetCurrentRun()->GetNumberOfEvent();
          //int run_number   = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
          int run_number   = SimulationManager::GetInstance()->GetRunNumber();
@@ -102,26 +101,38 @@ G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
          // -------------------------------------------------
 
-         SiPMHit* newHit = new SiPMHit();
-         newHit->fChannel =   channel ;
-         newHit->SetStripNo(  channel );
-         newHit->SetPosition( pos );
-         newHit->SetMomentum( momentum );
-         newHit->SetEnergy(   aStep->GetPreStepPoint()->GetTotalEnergy() );
-         newHit->SetParticle( aStep->GetTrack()->GetDefinition() );
-         newHit->fLambda = lambda;
-         newHit->fTime   = time;
+         //double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
+         fRecoilScintEvent->fPhotonCounterHits[channel].fChannel = channel; // derp
+         fRecoilScintEvent->fPhotonCounterHits[channel].fCount++;
+         fRecoilScintEvent->fPhotonCounterHits[channel].fTime   += time;
+         fRecoilScintEvent->fPhotonCounterHits[channel].fLambda += lambda;
+         fRecoilScintEvent->fPhotonCounterHits[channel].fEnergy += total_energy;
+         fRecoilScintEvent->fPhotonCounterHits[channel].fMomentum += {px,py,pz};
+         fRecoilScintEvent->fPhotonCounterHits[channel].fPosition += {x,y,z};
 
-         fHitsCollection->insert( newHit );
-         //hitsCollection->insert( newHit );
+         if(fRecordAllPhotons) {
 
-         clas12::hits::PhotonHit * pHit = fRecoilScintEvent->AddPhotonHit(channel);
-         pHit->fChannel  = channel;
-         pHit->fTime     = time;
-         pHit->fLambda   = lambda;
-         pHit->fEnergy   = total_energy;
-         pHit->fPosition = {pos.x(),pos.y(),pos.z()};
-         pHit->fMomentum = {px,py,pz};
+            SiPMHit* newHit = new SiPMHit();
+            newHit->fChannel =   channel ;
+            newHit->SetStripNo(  channel );
+            newHit->SetPosition( pos );
+            newHit->SetMomentum( momentum );
+            newHit->SetEnergy(   aStep->GetPreStepPoint()->GetTotalEnergy() );
+            newHit->SetParticle( aStep->GetTrack()->GetDefinition() );
+            newHit->fLambda = lambda;
+            newHit->fTime   = time;
+
+            fHitsCollection->insert( newHit );
+            //hitsCollection->insert( newHit );
+
+            clas12::hits::PhotonHit * pHit = fRecoilScintEvent->AddPhotonHit(channel);
+            pHit->fChannel  = channel;
+            pHit->fTime     = time;
+            pHit->fLambda   = lambda;
+            pHit->fEnergy   = total_energy;
+            pHit->fPosition = {pos.x(),pos.y(),pos.z()};
+            pHit->fMomentum = {px,py,pz};
+         }
 
          // -------------------------------------------------
 
@@ -141,32 +152,44 @@ void SiPMSD::EndOfEvent(G4HCofThisEvent*)
    fRecoilScintEvent->fEventNumber = event_number;
    fRecoilScintEvent->fRunNumber   = run_number;
 
-   std::map<int,double> average_lambda ;
-   std::map<int,double> average_time   ;
-   std::map<int,int>    channel_count ;
-
-   int nhits = fHitsCollection->GetSize();
-   for( int i = 0; i < nhits; i++ ) {
-      SiPMHit * aHit = (*fHitsCollection)[i];
-      if(average_time.count(aHit->fChannel) == 0 ) {
-         average_time[aHit->fChannel]   =  0.0;
-         average_lambda[aHit->fChannel] =  0.0;
-         channel_count[aHit->fChannel]  =  0;
-      }
-
-      average_time[aHit->fChannel]   += aHit->fTime;
-      average_lambda[aHit->fChannel] += aHit->fLambda;
-      channel_count[aHit->fChannel]++  ;
+   for( auto& c : fRecoilScintEvent->fPhotonCounterHits){
+      double norm = 1.0/double(c.second.fCount);
+         c.second.fTime   *= norm;
+         c.second.fLambda *= norm;
+         c.second.fEnergy *= norm;
+         c.second.fMomentum *= norm;
+         c.second.fPosition *= norm;
    }
 
-   for(auto chan : average_time ) {
-      average_time[chan.first]   *= (1.0/double(channel_count[chan.first]));
-      average_lambda[chan.first] *= (1.0/double(channel_count[chan.first]));
+   if(fRecordAllPhotons) {
 
-      clas12::hits::RecoilScintHit * rHit = fRecoilScintEvent->AddHit(chan.first);
-      rHit->fTime   = average_time[chan.first]  ;
-      rHit->fLambda = average_lambda[chan.first];
-      rHit->fChannel = chan.first;
+      std::map<int,double> average_lambda ;
+      std::map<int,double> average_time   ;
+      std::map<int,int>    channel_count ;
+
+      int nhits = fHitsCollection->GetSize();
+      for( int i = 0; i < nhits; i++ ) {
+         SiPMHit * aHit = (*fHitsCollection)[i];
+         if(average_time.count(aHit->fChannel) == 0 ) {
+            average_time[aHit->fChannel]   =  0.0;
+            average_lambda[aHit->fChannel] =  0.0;
+            channel_count[aHit->fChannel]  =  0;
+         }
+
+         average_time[aHit->fChannel]   += aHit->fTime;
+         average_lambda[aHit->fChannel] += aHit->fLambda;
+         channel_count[aHit->fChannel]++  ;
+      }
+
+      for(auto chan : average_time ) {
+         average_time[chan.first]   *= (1.0/double(channel_count[chan.first]));
+         average_lambda[chan.first] *= (1.0/double(channel_count[chan.first]));
+
+         clas12::hits::RecoilScintHit * rHit = fRecoilScintEvent->AddHit(chan.first);
+         rHit->fTime   = average_time[chan.first]  ;
+         rHit->fLambda = average_lambda[chan.first];
+         rHit->fChannel = chan.first;
+      }
    }
 
 }
