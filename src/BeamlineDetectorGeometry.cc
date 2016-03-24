@@ -1,5 +1,6 @@
 #include "BeamlineDetectorGeometry.h"
 
+#include "c12sim.h"
 #include "G4Polycone.hh"
 #include "G4Tubs.hh"
 #include "G4NistManager.hh"
@@ -150,7 +151,7 @@ void BeamlineDetectorGeometry::BuildLogicalVolumes()
 G4VPhysicalVolume * BeamlineDetectorGeometry::PlacePhysicalVolume(G4LogicalVolume * mother)
 {
    parser.SetOverlapCheck(false);
-   parser.Read("beamline.gdml");
+   parser.Read(C12SIM_GDML_DIR "beamline.gdml");
 
    G4VPhysicalVolume * gdml_world_phys = parser.GetWorldVolume();
    G4LogicalVolume   * gdml_world_log = parser.GetWorldVolume()->GetLogicalVolume();
