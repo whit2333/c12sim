@@ -367,7 +367,8 @@ int main(int argc,char** argv)
 
    // run the piped commands
    for(auto cmd : piped_commands){
-       UImanager->ApplyCommand(G4String(cmd));
+      std::cout << cmd << std::endl;
+      UImanager->ApplyCommand(G4String(cmd));
    }
 
 
