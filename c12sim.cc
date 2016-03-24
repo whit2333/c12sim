@@ -1,6 +1,7 @@
 #include "c12sim.h"
 
 #include <cstdio>
+#include <vector>
 #include <memory>
 #include "getopt.h"
 
@@ -209,12 +210,20 @@ int main(int argc,char** argv)
       }
    }
 
+
    // here we assume the last argument is a macro file 
    if( optind < argc ) {
       has_macro_file = true;
    }
    for (int i = optind; i < argc; i++) {
       theRest        += argv[i];
+   }
+
+   // Get the piped commands
+   std::vector<std::string> piped_commands;
+   std::string lineInput;
+   while(std::getline(std::cin,lineInput)) {
+      piped_commands.push_back(lineInput);
    }
 
    check_field_maps();
@@ -335,33 +344,40 @@ int main(int argc,char** argv)
 
    // Process macro or start UI session
 
-   // batch mode
+   // Execute macro file if provoded otherwise run the default macro
    if( has_macro_file ) {
       G4String command = "/control/execute ";
       G4String fileName = argv[optind];
       UImanager->ApplyCommand(command+fileName);
+
    } else {
 
-      // interactive mode
       G4String command   = "/control/macroPath ";
       G4String mac_dir   = C12SIM_MACRO_DIR;
       G4String fileName = "init_default.mac";
 
-      std::cout << " executing " << command+mac_dir << std::endl;
+      //std::cout << " executing " << command+mac_dir << std::endl;
       UImanager->ApplyCommand(command+mac_dir);
-
       command = "/control/execute ";
-
       if( use_vis ) { 
-         std::cout << " executing " << command+fileName << std::endl;
+         //std::cout << " executing " << command+fileName << std::endl;
          UImanager->ApplyCommand(command+fileName);
       }
    }
+
+   // run the piped commands
+   for(auto cmd : piped_commands){
+       UImanager->ApplyCommand(G4String(cmd));
+   }
+
+
+   // run the set number of events
    if( number_of_events > 0) {
       G4String command = "/run/beamOn " + std::to_string(number_of_events);
       UImanager->ApplyCommand( command );
    }
 
+   // interactive mode
    if( is_interactive )  {
       ui->SessionStart();
       delete ui;
