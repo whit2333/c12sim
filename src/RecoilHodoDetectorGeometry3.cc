@@ -13,6 +13,7 @@
 #include "G4UserLimits.hh"
 #include "G4TwistedTrd.hh"
 #include "G4Trd.hh"
+#include "G4Trap.hh"
 #include "G4TwistedTrap.hh"
 #include "G4RotationMatrix.hh"
 #include "G4Transform3D.hh"
@@ -38,7 +39,6 @@
 #include "G4Tubs.hh"
 #include "G4Orb.hh"
 #include "G4Sphere.hh"
-#include "G4Trd.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
@@ -273,10 +273,15 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    double dy1 = fInnerRadius*tan(fScintDeltaTheta/2.0) - fScintWrapThickness;
    double dy2 = dy1 + fScint1Thickness*tan(fScintDeltaTheta/2.0);
 
-   fScint1_solid = new G4Trd("scint_keystone_solid",
-         fScintLength/2.0, fScintLength/2.0,// half-length along x at -dz and +dz
-         dy1, dy2,                                // half-length along y at -dz and +dz
-         fScint1Thickness/2.0 - fScintWrapThickness);
+   //fScint1_solid = new G4Trd("scint_keystone_solid",
+   //      fScintLength/2.0, fScintLength/2.0,// half-length along x at -dz and +dz
+   //      dy1, dy2,                                // half-length along y at -dz and +dz
+   //      fScint1Thickness/2.0 - fScintWrapThickness);
+   fScint1_solid = new G4Trap("scint_keystone_solid",
+         fScintLength/2.0, fScintLength/2.0,
+         dy1             , dy2,
+         fScint1Thickness/2.0 - fScintWrapThickness
+         );
    //G4VSolid * scint_box_solid      = new G4Box("scint_box_solid", fScintThickness/2.0, fScintWidth/2.0, fScintLength/2.0 );
    //fScint1_solid = new G4IntersectionSolid("fScint1_solid", scint_box_solid, scint_keystone_solid); 
 
@@ -309,7 +314,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    double dyy1 = (fInnerRadius + fScint1Thickness )*tan(fScintDeltaTheta/2.0) - fScintWrapThickness;
    double dyy2 = dyy1 + fScint2Thickness*tan(fScintDeltaTheta/2.0);
 
-   fScint2_solid = new G4Trd("scint_keystone_solid",
+   fScint2_solid = new G4Trap("scint_keystone_solid",
          fScint2Length/2.0-fScintWrapThickness,fScint2Length/2.0-fScintWrapThickness,// half-length along x at -dz and +dz
          dyy1, dyy2,                                // half-length along y at -dz and +dz
          fScint2Thickness/2.0 - fScintWrapThickness);
@@ -340,7 +345,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    if(fPhotonDet1_solid) delete fPhotonDet1_solid;
 
    fPhotonDet1_mat   = fScint1_mat;
-   fPhotonDet1_solid = new G4Trd("fPhotonDet1_solid",
+   fPhotonDet1_solid = new G4Trap("fPhotonDet1_solid",
          fPhotonDetThickness/2.0, fPhotonDetThickness/2.0, // half-length along x at -dz and +dz
          dy1-fScintWrapThickness, dy2-fScintWrapThickness, // half-length along y at -dz and +dz
          fScint1Thickness/2.0-fScintWrapThickness);

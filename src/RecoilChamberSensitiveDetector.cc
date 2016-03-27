@@ -82,10 +82,10 @@ G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableH
       int wire     = 0;//channel%112 + 1;
 
       // grouping is the placement of the sector/region
-      int grouping    = 0;//touchable->GetReplicaNumber(1);
-      int sector      = 0;//grouping/3+1;
-      int region      = 0;//grouping%3+1;
-      int super_layer = 0;//(channel/112)/6 + (grouping%3)*2 + 1;
+      int grouping    = 0;
+      int sector      = 0;
+      int region      = 0;
+      int super_layer = 0;
       int pdg         = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
       TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,time);
 

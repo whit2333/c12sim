@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <vector>
 #include <memory>
+#include <unistd.h>
 #include "getopt.h"
 
 #include "G4SystemOfUnits.hh"
@@ -221,9 +222,12 @@ int main(int argc,char** argv)
 
    // Get the piped commands
    std::vector<std::string> piped_commands;
-   std::string lineInput;
-   while(std::getline(std::cin,lineInput)) {
-      piped_commands.push_back(lineInput);
+   if(!isatty(STDIN_FILENO)) {
+      std::cout << "Reading piped commands...\n";
+      std::string lineInput;
+      while(std::getline(std::cin,lineInput)) {
+         piped_commands.push_back(lineInput);
+      }
    }
 
    check_field_maps();

@@ -126,7 +126,6 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    fRegionContainers_log[1]->SetVisAttributes(vs_odd);
    fRegionContainers_log[2]->SetVisAttributes(vs_odd);
 
-
    // ------------------------------
    // Regions
    fRegions_log[0] = new G4LogicalVolume(fRegions_solid[0], fGasMaterial, "DC_Region1_log_0");
@@ -244,6 +243,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
    const int TotalWires      = 6*6*6*112;
 
    // -----------------------------------------------------------------------------
+   if(fBuildWireUnitCells) {
    for( int super_layer = 1; super_layer <=6; super_layer++) {
 
       for( int layer = 1; layer<=6; layer++ ) {
@@ -348,6 +348,7 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
          }
       }
+   }
    }
 
 

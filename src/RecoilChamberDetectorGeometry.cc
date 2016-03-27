@@ -65,7 +65,11 @@ RecoilChamberDetectorGeometry::RecoilChamberDetectorGeometry()
       fLayerNwires[i]     = NWiresLay;
       fDeltaPhi[i]        = PhiWire;
       fLayerSteroAngle[i] = steAng*sign;
+      std::cout << " LayerRadius " << i << " : " << fLayerRadius[i] << std::endl;
+      std::cout << " Nwires      " << i << " : " << fLayerNwires[i] << std::endl;
+      std::cout << " delta phi   " << i << " : " << fDeltaPhi[i] << std::endl;
    }
+   fRCGeometry.Print();
 }
 //______________________________________________________________________________
 
@@ -205,6 +209,7 @@ void RecoilChamberDetectorGeometry::BuildUnitCells()
 {
 
    for(G4int tlay=0; tlay<fNLayers; tlay++){
+
       // Determine the radius of this layer of wires
       // The first layer is offset from the nominal inner radius by DeltaP
       G4double Rtlay = fLayerRadius[tlay];//(innerRadiusOfTheGasDetector + DeltaR + NsLay*DeltaR*tlay);
@@ -271,7 +276,8 @@ void  RecoilChamberDetectorGeometry::PlaceCells(G4LogicalVolume * mother, int la
    for(int i = 0; i<4; i++) {
       std::string wire_name = "wire_volume_" + std::to_string(wire_number) + "_part" + std::to_string(i);
       fWireVolume_log[layer][i]->SetSensitiveDetector(fSensitiveDetector);
-      fWireVolume_log[layer][i]->SetVisAttributes(vs);//G4VisAttributes::GetInvisible());
+      //fWireVolume_log[layer][i]->SetVisAttributes(vs);//G4VisAttributes::GetInvisible());
+      fWireVolume_log[layer][i]->SetVisAttributes(G4VisAttributes::GetInvisible());
 
       new G4PVPlacement(G4Transform3D(*(fWireVolume_rot[layer][i]),G4ThreeVector(0,0,0.)),
             fWireVolume_log[layer][i], wire_name,
