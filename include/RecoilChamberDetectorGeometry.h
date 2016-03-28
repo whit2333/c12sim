@@ -1,11 +1,11 @@
 #ifndef RecoilChamberDetectorGeometry_HH
 #define RecoilChamberDetectorGeometry_HH
 
-#include "G4SystemOfUnits.hh"
 #include <array>
+
+#include "G4SystemOfUnits.hh"
 #include "G4VSolid.hh"
 #include "G4LogicalVolume.hh"
-#include "G4Material.hh"
 #include "G4Material.hh"
 #include "RecoilChamberSensitiveDetector.h"
 #include "SensitiveRegionDetector.h"
@@ -27,11 +27,6 @@ class RecoilChamberDetectorGeometry {
       std::array<std::array<G4LogicalVolume*,  4 >, 8> fWireVolume_log;
       std::array<std::array<G4VPhysicalVolume*,4 >, 8> fWireVolume_phys;
       std::array<std::array<G4RotationMatrix* ,4 >, 8> fWireVolume_rot;
-
-      std::array<double,8>             fLayerRadius;
-      std::array<double,8>             fLayerNwires;
-      std::array<double,8>             fDeltaPhi;  
-      std::array<double,8>             fLayerSteroAngle;  
 
       clas12::geo::RCGeometry          fRCGeometry;
 
@@ -55,11 +50,10 @@ class RecoilChamberDetectorGeometry {
       G4double  spanningAngleOfTheWire = 360.*deg; 
       G4double  DeltaP                 = 2.0*mm; // *desired* wire separation around the circumference. 
                                                  // This number is only approximate if it does not divide the circumference
-
-      G4double  DeltaR   = 2.0*mm;
-      G4double  fNLayers = 7.0;//NTLay  = 1.0;//4.; // Number of T layers
-      G4double  NsLay  = 3.0;//5.; // Number of s layers  // wire planes (cylinders) per layer
-      G4double  steAng = 10.0*deg;
+      //G4double  DeltaR   = 2.0*mm;
+      //G4double  fNLayers = 7.0;//NTLay  = 1.0;//4.; // Number of T layers
+      //G4double  NsLay  = 3.0;//5.; // Number of s layers  // wire planes (cylinders) per layer
+      //G4double  steAng = 10.0*deg;
 
       G4Material* He10CO2;
       G4Material* HeiC4H10;
@@ -73,7 +67,6 @@ class RecoilChamberDetectorGeometry {
       RecoilChamberDetectorGeometry();
       ~RecoilChamberDetectorGeometry();
 
-      G4ThreeVector GetIntersectionPoint(const G4ThreeVector x0, const G4ThreeVector x1, const G4ThreeVector p0, const G4ThreeVector norm);
       void BuildLogicalVolumes();
       void BuildUnitCells();
       G4VSolid * BuildWireSolid(int layer, int radial_wire_number);

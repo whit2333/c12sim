@@ -407,9 +407,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Solenoid Geometry
    // ------------------------------------------------------------------------
-   fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
-   fSolenoid->BuildLogicalVolumes();
-   fSolenoid->PlacePhysicalVolume( world_log );
+   //fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
+   //fSolenoid->BuildLogicalVolumes();
+   //fSolenoid->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // Torus Geometry
