@@ -14,6 +14,7 @@
 #include "G4TwistedTrd.hh"
 #include "G4Trd.hh"
 #include "G4Trap.hh"
+#include "G4Tubs.hh"
 #include "G4TwistedTrap.hh"
 #include "G4RotationMatrix.hh"
 #include "G4Transform3D.hh"
@@ -89,6 +90,7 @@ RecoilHodoDetectorGeometry3::RecoilHodoDetectorGeometry3()
 
    fScint1_pos  = {0.0, 0.0, 0.0};
    fScint2_pos  = {0.0, 0.0, 0.0};
+   fContainer_pos = {0,0,0};
 
    //fSensitiveDetector = new RecoilScintSensitiveDetector("RecoilScint",6*6*6*112);
    //SDMan->AddNewDetector(fSensitiveDetector);
@@ -258,6 +260,28 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    fPhotonDet2_pos   = { -fScintLength/2.0 + fPhotonDetThickness/2.0,0.0, 0.0 };
    fPhotonDet3_pos   = { 0.0,0.0, fScint2Thickness/2.0 - fScintWrapThickness-fPhotonDetThickness/2.0};
    fPhotonDet4_pos   = fPhotonDet2_pos;
+
+   // ------------------------------------------------------------------------
+   // First layer scintillator bar  
+   // ------------------------------------------------------------------------
+   red       = 6.0/256.0;
+   green     = 200.0/256.0;
+   blue      = 6.0/256.0;
+   alpha     = 0.4;
+
+   if(fContainer_log)   delete fContainer_log;
+   if(fContainer_solid) delete fContainer_solid;
+
+   fContainer_solid = new G4Tubs("fContainer_solid", fInnerRadius, 
+         fInnerRadius + fScint1Thickness + fScint2Thickness, fScintLength/2.0,
+         0.0, CLHEP::twopi);
+   fContainer_mat   = nist->FindOrBuildMaterial("G4_AIR");
+   fContainer_log   = new G4LogicalVolume(fContainer_solid, fContainer_mat,"fContainer_log");
+
+   G4Colour            fContainer_color {red, green, blue, alpha };   // Gray 
+   G4VisAttributes   * fContainer_vis   = new G4VisAttributes(fContainer_color);
+   fContainer_vis->SetForceWireframe(true);
+   fContainer_log->SetVisAttributes(fContainer_vis);
 
    // ------------------------------------------------------------------------
    // First layer scintillator bar  
@@ -465,6 +489,14 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry3::PlacePhysicalVolume(
    G4String name       = "";
    int n_bars = fScint1_positions.size();
 
+
+   // -----------------------------------------------------------
+   name = "Hodoscope3Container";
+   G4VPhysicalVolume * phys = new G4PVPlacement( 0, G4ThreeVector(0,0,0), 
+            fContainer_log, name, mother, false, 0, checkOverlaps); 
+
+   // -----------------------------------------------------------
+
    for(int i = 0; i<fScint1_positions.size(); i++) {
 
       s1_pos.rotateZ(delta_phi);
@@ -476,9 +508,9 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry3::PlacePhysicalVolume(
       name                 = "fScint1_physicals_" + std::to_string(i);
       fScint1_physicals[i] = new G4PVPlacement(
             G4Transform3D(scint_rot,fScint1_positions[i]), 
-            fScint1_log, name, mother, false, i, checkOverlaps); 
+            fScint1_log, name, fContainer_log, false, i, checkOverlaps); 
       name = "fScint1_borders_" + std::to_string(i);
-      fScint1_borders[i]  = new G4LogicalBorderSurface(name, fScint1_physicals[i], mother_phys, OpSurface );
+      fScint1_borders[i]  = new G4LogicalBorderSurface(name, fScint1_physicals[i], phys, OpSurface );
 
       for(int j = 0; j<10; j++) {
          fScint2_positions[j][i] = fScint2_pos + s2_pos;
@@ -487,13 +519,13 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry3::PlacePhysicalVolume(
          name                 = "fScint2_physicals_" + std::to_string(i) + "_" + std::to_string(j);
          fScint2_physicals[j][i] = new G4PVPlacement(
                G4Transform3D(scint_rot,fScint2_positions[j][i]), 
-               fScint2_log, name, mother, false, i*10+j, checkOverlaps); 
+               fScint2_log, name, fContainer_log, false, i*10+j, checkOverlaps); 
          name = "fScint2_borders_" + std::to_string(i);
-         fScint2_borders[j][i]  = new G4LogicalBorderSurface(name, fScint2_physicals[j][i], mother_phys, OpSurface );
+         fScint2_borders[j][i]  = new G4LogicalBorderSurface(name, fScint2_physicals[j][i], phys, OpSurface );
       }
    }
 
-   return fScint1_physicals[0];
+   return phys;
 }
 //______________________________________________________________________________
 

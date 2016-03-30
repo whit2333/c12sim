@@ -32,6 +32,11 @@ class RecoilHodoDetectorGeometry3 {
       bool    fUseOpticalPhotons = true;
       double  fRefScint          = 1000.0/CLHEP::MeV;
 
+      G4ThreeVector       fContainer_pos;
+      G4Material        * fContainer_mat   = nullptr;
+      G4VSolid          * fContainer_solid = nullptr;
+      G4LogicalVolume   * fContainer_log   = nullptr;
+
       G4ThreeVector       fScint1_pos;
       G4Material        * fScint1_mat   = nullptr;
       G4VSolid          * fScint1_solid = nullptr;

@@ -184,7 +184,7 @@ G4VPhysicalVolume * RecoilChamberDetectorGeometry::PlaceParallelPhysicalVolume(G
 
          if( (!placed_one) ) {
 
-            PlaceCells( logicGasDetector, lay, double(wi)*PhiWire, wire_number );
+            //PlaceCells( logicGasDetector, lay, double(wi)*PhiWire, wire_number );
 
             //placed_one=true;
             //std::string wire_name = "wire_volume_" + std::to_string(wire_number);
