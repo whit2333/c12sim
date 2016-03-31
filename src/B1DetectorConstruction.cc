@@ -407,9 +407,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Solenoid Geometry
    // ------------------------------------------------------------------------
-   //fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
-   //fSolenoid->BuildLogicalVolumes();
-   //fSolenoid->PlacePhysicalVolume( world_log );
+   fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
+   fSolenoid->BuildLogicalVolumes();
+   fSolenoid->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // Torus Geometry
@@ -644,7 +644,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    int run_number = SimulationManager::GetInstance()->GetRunNumber();
    G4GDMLParser parser;
    G4String gdml_name = "data/log/c12geometry_" + std::to_string(run_number) + G4String(".gdml");
-   parser.Write(gdml_name,world_phys);
+   //parser.Write(gdml_name,world_phys);
 
    return world_phys;
 }

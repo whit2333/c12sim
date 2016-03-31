@@ -262,7 +262,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    fPhotonDet4_pos   = fPhotonDet2_pos;
 
    // ------------------------------------------------------------------------
-   // First layer scintillator bar  
+   // Container volume (air)
    // ------------------------------------------------------------------------
    red       = 6.0/256.0;
    green     = 200.0/256.0;
@@ -273,7 +273,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    if(fContainer_solid) delete fContainer_solid;
 
    fContainer_solid = new G4Tubs("fContainer_solid", fInnerRadius, 
-         fInnerRadius + fScint1Thickness + fScint2Thickness, fScintLength/2.0,
+         fInnerRadius + fScint1Thickness + fScint2Thickness + 2.0*cm, fScintLength/2.0,
          0.0, CLHEP::twopi);
    fContainer_mat   = nist->FindOrBuildMaterial("G4_AIR");
    fContainer_log   = new G4LogicalVolume(fContainer_solid, fContainer_mat,"fContainer_log");
