@@ -16,6 +16,7 @@
 #include "BeamlineDetectorGeometry.h"
 #include "MicromegasVertexTrackerDetectorGeometry.h"
 #include "SiliconVertexTrackerDetectorGeometry.h"
+#include "SiVertexTrackerDetectorGeometry.h"
 using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
 using SVTDetectorGeometry = SiliconVertexTrackerDetectorGeometry;
 
@@ -176,6 +177,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       MVTDetectorGeometry            * fMVT           = nullptr;
       SVTDetectorGeometry            * fSVT           = nullptr;
       ECDetectorGeometry             * fEC            = nullptr;
+      SiVertexTrackerDetectorGeometry * fSiVertexTracker = nullptr;
 
    protected:
       void DefineMaterials();

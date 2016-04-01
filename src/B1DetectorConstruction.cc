@@ -325,7 +325,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Drift chamber
    // ------------------------------------------------------------------------
-   std::cout << " Drift chamber construction \n";
+   //std::cout << " Drift chamber construction \n";
    //fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
    //fDriftChamber->BuildLogicalVolumes();
    //// Sectors
@@ -344,7 +344,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // HTCC  
    // ------------------------------------------------------------------------
-   std::cout << " HTCC construction \n";
+   //std::cout << " HTCC construction \n";
    //fHTCC = SimulationManager::GetInstance()->GetHTCCDetectorGeometry();
    //fHTCC->BuildLogicalVolumes();
    //fHTCC->SetGasIndexOfRefraction(false);
@@ -358,8 +358,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Electromagnetic Calorimeter (EC)
    // ------------------------------------------------------------------------
-   std::cout << " EC construction \n";
-   fEC = SimulationManager::GetInstance()->GetECDetectorGeometry();
+   //std::cout << " EC construction \n";
+   //fEC = SimulationManager::GetInstance()->GetECDetectorGeometry();
    //fEC->BuildLogicalVolumes();
    //// Sectors
    //for(int i = 1; i<=6; i++ ) {
@@ -367,15 +367,23 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //}
 
    // ------------------------------------------------------------------------
+   // SiVertexTracker
+   // ------------------------------------------------------------------------
+   std::cout << " Si Vertex Tracker construction \n";
+   fSiVertexTracker = SimulationManager::GetInstance()->GetSiVertexTrackerDetectorGeometry();
+   fSiVertexTracker->PlacePhysicalVolume( world_log );
+   std::cout << " done \n";
+
+   // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   std::cout << " Recoil chamber construction \n";
-   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
-   fRecoilChamber->He10CO2   = He10CO2;
-   fRecoilChamber->HeiC4H10  = HeiC4H10;
-   fRecoilChamber->Tungsten  = Tungsten; 
-   fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //std::cout << " Recoil chamber construction \n";
+   //fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   //fRecoilChamber->He10CO2   = He10CO2;
+   //fRecoilChamber->HeiC4H10  = HeiC4H10;
+   //fRecoilChamber->Tungsten  = Tungsten; 
+   //fRecoilChamber->Mylar     = Mylar;
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -395,13 +403,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //fRecoilHodo2->BuildLogicalVolumes();
    //fRecoilHodo2->PlacePhysicalVolume( world_log, world_phys);
 
-   std::cout << " Recoil Hodo construction ...\n";
-   std::cout << " RecoilHodoscopeDetectorGeometry3 \n";
-   std::cout << " This version consists of two layers of scintillator bars (one thin, one thick)\n";
-   std::cout << " However the outer layer is segmented and read from the outside with one SiPM\n";
-   fRecoilHodo3 = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry3();
-   fRecoilHodo3->BuildLogicalVolumes();
-   fRecoilHodo3->PlacePhysicalVolume( world_log, world_phys);
+   //std::cout << " Recoil Hodo construction ...\n";
+   //std::cout << " RecoilHodoscopeDetectorGeometry3 \n";
+   //std::cout << " This version consists of two layers of scintillator bars (one thin, one thick)\n";
+   //std::cout << " However the outer layer is segmented and read from the outside with one SiPM\n";
+   //fRecoilHodo3 = SimulationManager::GetInstance()->GetRecoilHodoDetectorGeometry3();
+   //fRecoilHodo3->BuildLogicalVolumes();
+   //fRecoilHodo3->PlacePhysicalVolume( world_log, world_phys);
 
 
    // ------------------------------------------------------------------------
@@ -473,21 +481,21 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Target
    // ------------------------------------------------------------------------
-   G4ThreeVector target_pos {target_posX, target_posY, target_posZ};
-   G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength/2.0, 0.0, 360.0*CLHEP::degree);
-   G4Material * target_mat = He_Target; //LH2;//Deuterium;
-   G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
-   new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
-         false,           //no boolean operation
-         0,               //copy number
-         true);  //overlaps checking
-   // Definition of visualisation attributes
-   // Instantiation of a set of visualization attributes with cyan colour
-   G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.,0.3));
-   // Set the forced wireframe style 
-   //TargetVisAtt->SetForceWireframe(true);
-   // Assignment of the visualization attributes to the logical volume
-   logicTarget->SetVisAttributes(TargetVisAtt);
+   //G4ThreeVector target_pos {target_posX, target_posY, target_posZ};
+   //G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength/2.0, 0.0, 360.0*CLHEP::degree);
+   //G4Material * target_mat = He_Target; //LH2;//Deuterium;
+   //G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
+   //new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
+   //      false,           //no boolean operation
+   //      0,               //copy number
+   //      true);  //overlaps checking
+   //// Definition of visualisation attributes
+   //// Instantiation of a set of visualization attributes with cyan colour
+   //G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.,0.3));
+   //// Set the forced wireframe style 
+   ////TargetVisAtt->SetForceWireframe(true);
+   //// Assignment of the visualization attributes to the logical volume
+   //logicTarget->SetVisAttributes(TargetVisAtt);
 
 
    // ------------------------------------------------------------------------
@@ -536,14 +544,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
             Kapton,              //its material
             "KaptonCylinder");   //its name
 
-   new G4PVPlacement(0,                     //no rotation
-         kapton_pos,              //at position
-         logicKapton,             //its logical volume
-         "KaptonCylinder",        //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   //new G4PVPlacement(0,                     //no rotation
+   //      kapton_pos,              //at position
+   //      logicKapton,             //its logical volume
+   //      "KaptonCylinder",        //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -563,14 +571,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
       new G4LogicalVolume(around,              //its solid
             He_ClearS,           //its material
             "ClearSpace");       //its name
-   new G4PVPlacement(0,                     //no rotation
-         around_pos,              //at position
-         logicAround,             //its logical volume
-         "ClearSpace",            //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   //new G4PVPlacement(0,                     //no rotation
+   //      around_pos,              //at position
+   //      logicAround,             //its logical volume
+   //      "ClearSpace",            //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -596,14 +604,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
             Mylar,                  //its material
             "OclKaptonCylinder");   //its name
 
-   new G4PVPlacement(0,                     //no rotation
-         Oclkapton_pos,              //at position
-         logicOclKapton,             //its logical volume
-         "OclKaptonCylinder",        //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   //new G4PVPlacement(0,                     //no rotation
+   //      Oclkapton_pos,              //at position
+   //      logicOclKapton,             //its logical volume
+   //      "OclKaptonCylinder",        //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -622,14 +630,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
       new G4LogicalVolume(okapton_cyl,          //its solid
             Mylar,                //its material
             "OKaptonCylinder");   //its name
-   new G4PVPlacement(0,                     //no rotation
-         okapton_pos,              //at position
-         logicOKapton,             //its logical volume
-         "OKaptonCylinder",        //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   //new G4PVPlacement(0,                     //no rotation
+   //      okapton_pos,              //at position
+   //      logicOKapton,             //its logical volume
+   //      "OKaptonCylinder",        //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour

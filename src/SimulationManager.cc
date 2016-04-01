@@ -39,6 +39,7 @@
 #include "BeamlineDetectorGeometry.h"
 #include "MicromegasVertexTrackerDetectorGeometry.h"
 #include "SiliconVertexTrackerDetectorGeometry.h"
+#include "SiVertexTrackerDetectorGeometry.h"
 
 using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
 using SVTDetectorGeometry = SiliconVertexTrackerDetectorGeometry;
@@ -257,6 +258,14 @@ ECDetectorGeometry * SimulationManager::GetECDetectorGeometry(){
       fECGeo = new ECDetectorGeometry();
    }
    return fECGeo;
+}
+//______________________________________________________________________________
+
+SiVertexTrackerDetectorGeometry * SimulationManager::GetSiVertexTrackerDetectorGeometry(){
+   if(!fSVTGeo) {
+      fSiVertexTrackerGeo = new SiVertexTrackerDetectorGeometry();
+   }
+   return fSiVertexTrackerGeo;
 }
 //______________________________________________________________________________
 

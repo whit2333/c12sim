@@ -33,6 +33,7 @@ class BeamlineDetectorGeometry;
 class SimulationMessenger;
 class MicromegasVertexTrackerDetectorGeometry;
 class SiliconVertexTrackerDetectorGeometry;
+class SiVertexTrackerDetectorGeometry;
 
 using MVTDetectorGeometry = MicromegasVertexTrackerDetectorGeometry;
 using SVTDetectorGeometry = SiliconVertexTrackerDetectorGeometry;
@@ -55,6 +56,7 @@ class SimulationManager {
       MVTDetectorGeometry           * fMVTGeo           = nullptr;
       SVTDetectorGeometry           * fSVTGeo           = nullptr;
       ECDetectorGeometry            * fECGeo            = nullptr;
+      SiVertexTrackerDetectorGeometry * fSiVertexTrackerGeo           = nullptr;
 
 
    public:
@@ -70,6 +72,7 @@ class SimulationManager {
       MVTDetectorGeometry           * GetMVTDetectorGeometry();
       SVTDetectorGeometry           * GetSVTDetectorGeometry();
       ECDetectorGeometry            * GetECDetectorGeometry();
+      SiVertexTrackerDetectorGeometry           * GetSiVertexTrackerDetectorGeometry();
 
    public:
       SimulationMessenger           * fSimulationMessenger;
