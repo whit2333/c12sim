@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+#cat @C12SIM_MACRO_DIR@/fastMC.mac <(cat)
+cat @C12SIM_MACRO_DIR@/fastMC.mac <(cat) | @CMAKE_INSTALL_PREFIX@/bin/c12sim "$@"
+
