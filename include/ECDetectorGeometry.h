@@ -149,25 +149,7 @@ class ECDetectorGeometry {
 
    public:
 
-      DriftChamberSensitiveDetector * fSensitiveDetector;
-      ECSensitiveDetector       * fSensitiveDetector2;
-
-      //G4VSolid * fRegion1_solid;
-      //G4VSolid * fRegion2_solid;
-      //G4VSolid * fRegion3_solid;
-
-      //G4VSolid * fClippingRegion1_solid;
-      //G4VSolid * fClippingRegion2_solid;
-      //G4VSolid * fClippingRegion3_solid;
-
-      //G4LogicalVolume * fRegion1_log;
-      //G4LogicalVolume * fRegion2_log;
-      //G4LogicalVolume * fRegion3_log;
-
-      //G4LogicalVolume * fEmptyRegion1_log;
-      //G4LogicalVolume * fEmptyRegion2_log;
-      //G4LogicalVolume * fEmptyRegion3_log;
-
+      ECSensitiveDetector       * fSensitiveDetector = nullptr;
 
       G4Material * fGasMaterial;
 

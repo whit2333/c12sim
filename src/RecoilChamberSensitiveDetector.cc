@@ -78,6 +78,7 @@ G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableH
 
       // layer/superlayer/wire comes from channel
       int channel  = touchable->GetReplicaNumber(0);
+      int trk_id   = aStep->GetTrack()->GetTrackID();
       int layer    = 0;//(channel/112)%6 + 1;
       int wire     = 0;//channel%112 + 1;
 
@@ -118,6 +119,7 @@ G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableH
             RecoilChamberParticleHit * part_hit = fRCHitsEvent->AddParticleHit();
             part_hit->fPDGCode            = pdg;
             part_hit->fChannel            = channel;
+            part_hit->fTrackID            = trk_id;
             part_hit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
             part_hit->fGlobalPosition     = global_4vec;
             part_hit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, Etot/GeV);

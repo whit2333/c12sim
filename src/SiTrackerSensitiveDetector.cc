@@ -83,6 +83,7 @@ G4bool SiTrackerSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHisto
       int lad  = touchable->GetReplicaNumber(3);
       int wire = 0;//touchable->GetReplicaNumber(4);
       int channel  = fSVTGeometry.GetChannelNumber(lad,Ti,Zi);
+      int trk_id      = aStep->GetTrack()->GetTrackID();
 
       //std::cout << "Ti  : " << Ti  << std::endl;
       ////std::cout << touchable->GetVolume(0)->GetName() << std::endl;
@@ -123,6 +124,7 @@ G4bool SiTrackerSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHisto
          if(Etot/MeV > 10.0) { 
             ParticleHit * part_hit = fSVTEvent->AddParticleHit();
             part_hit->fPDGCode            = pdg;
+            part_hit->fTrackID            = trk_id;
             part_hit->fChannel            = channel;
             part_hit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, time );
             part_hit->fGlobalPosition     = global_4vec;

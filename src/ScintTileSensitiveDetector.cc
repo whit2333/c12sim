@@ -75,6 +75,7 @@ G4bool ScintTileSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory
    if(!is_OpticalPhoton  ) 
    {
 
+      int trk_id      = aStep->GetTrack()->GetTrackID();
       int     channel  = touchable->GetReplicaNumber();
       double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
       fRecoilScintEvent->fScintChannelHits[channel].fChannel = channel; // derp
@@ -94,6 +95,7 @@ G4bool ScintTileSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory
 
          clas12::hits::ParticleHit * pHit = fRecoilScintEvent->AddParticleHit(channel);
          pHit->fPDGCode            = pdgcode;
+         pHit->fTrackID            = trk_id;
          pHit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, aTime );
          pHit->fGlobalPosition     = global_4vec;
          pHit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, total_energy);
