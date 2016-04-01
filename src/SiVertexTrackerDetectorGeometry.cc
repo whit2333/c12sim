@@ -23,6 +23,7 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4PVDivision.hh"
+#include "G4PVReplica.hh"
 
 
 SiVertexTrackerDetectorGeometry::SiVertexTrackerDetectorGeometry()
@@ -30,12 +31,12 @@ SiVertexTrackerDetectorGeometry::SiVertexTrackerDetectorGeometry()
    using namespace clas12::geo;
    using namespace CLHEP;
 
-   G4SDManager* SDMan = G4SDManager::GetSDMpointer();
+   //G4SDManager* SDMan = G4SDManager::GetSDMpointer();
+   fSensitiveDetector = nullptr;
+   //fSensitiveDetector = new SiTrackerSensitiveDetector("SiVertexTracker",6*6*6*112);
+   //SDMan->AddNewDetector(fSensitiveDetector);
 
-   fSensitiveDetector = new SiTrackerSensitiveDetector("SiVertexTracker",6*6*6*112);
-   SDMan->AddNewDetector(fSensitiveDetector);
-
-   fSiVertexTrackerGeometry.Print();
+   //fSiVertexTrackerGeometry.Print();
 
    G4NistManager* nist = G4NistManager::Instance();
    fAir_mat            = nist->FindOrBuildMaterial("G4_AIR");
@@ -109,13 +110,15 @@ void SiVertexTrackerDetectorGeometry::BuildLogicalVolumes()
       vs2->SetForceSolid(true);
       fLayerSi_log[i]->SetVisAttributes(vs2);
 
+      // ---------------------------------------------------------
       // Not this solid's dimensions will be changed by G4PVDivion
+      // Slice 
       solid_name     = "Si_slice_solid_";
       solid_name    += std::to_string(i);
 
       G4Box* slice_solid = new G4Box(solid_name.c_str(),
-            fSiVertexTrackerGeometry.fLayerSiThickness.at(i)/2.0,
-            fSiVertexTrackerGeometry.fTPixelPitch.at(i)/2.0,
+            fSiVertexTrackerGeometry.fLayerSiThickness.at(i)/2.0 - 0.5*um,
+            fSiVertexTrackerGeometry.fLayerWidth.at(i)/2.0,
             fSiVertexTrackerGeometry.fZPixelPitch.at(i)/2.0 );
 
       log_name     = "Si_slice_log_";
@@ -123,12 +126,12 @@ void SiVertexTrackerDetectorGeometry::BuildLogicalVolumes()
 
       G4LogicalVolume * slice_log = new G4LogicalVolume(slice_solid, fSi_mat, log_name.c_str(),0,0,0);
 
-      // Not this solid's dimensions will be changed by G4PVDivion
+      // pixel
       solid_name     = "Si_pixel_solid_";
       solid_name    += std::to_string(i);
 
       G4Box* pixel_solid = new G4Box(solid_name.c_str(),
-            fSiVertexTrackerGeometry.fLayerSiThickness.at(i)/2.0,
+            fSiVertexTrackerGeometry.fLayerSiThickness.at(i)/2.0 - 1.0*um,
             fSiVertexTrackerGeometry.fTPixelPitch.at(i)/2.0,
             fSiVertexTrackerGeometry.fZPixelPitch.at(i)/2.0 );
 
@@ -143,27 +146,53 @@ void SiVertexTrackerDetectorGeometry::BuildLogicalVolumes()
       div_name  = "Si_slice_division_";
       div_name += std::to_string(i);
 
-      G4PVDivision * Si_Z_div = new G4PVDivision(
+      //G4PVDivision * Si_Z_div = new G4PVDivision(
+      //      div_name.c_str(),
+      //      slice_log,
+      //      fLayerSi_log[i],
+      //      kZAxis,
+      //      fSiVertexTrackerGeometry.fZPixelPitch.at(i),
+      //      0 );
+      G4PVReplica * Si_Z_div = new G4PVReplica(
             div_name.c_str(),
             slice_log,
             fLayerSi_log[i],
             kZAxis,
+            fSiVertexTrackerGeometry.fNZPixels.at(i),
             fSiVertexTrackerGeometry.fZPixelPitch.at(i),
             0 );
+      Si_Z_div->SetCopyNo(i);
 
       div_name  = "Si_pixel_division_";
       div_name += std::to_string(i);
 
-      G4PVDivision * Si_T_div = new G4PVDivision(
+      if(!fSensitiveDetector) {
+         fSensitiveDetector = new SiTrackerSensitiveDetector("SiVertexTracker",6*6*6*112);
+         G4SDManager::GetSDMpointer()->AddNewDetector(fSensitiveDetector);
+      }
+      //slice_log->SetSensitiveDetector(fSensitiveDetector);
+      pixel_log->SetSensitiveDetector(fSensitiveDetector);
+
+      //G4PVDivision * Si_T_div = new G4PVDivision(
+      //      div_name.c_str(),
+      //      pixel_log,
+      //      slice_log,
+      //      kYAxis,
+      //      fSiVertexTrackerGeometry.fTPixelPitch.at(i),
+      //      0 );
+      G4PVReplica * Si_T_div = new G4PVReplica(
             div_name.c_str(),
             pixel_log,
             slice_log,
             kYAxis,
+            fSiVertexTrackerGeometry.fNTPixels.at(i),
             fSiVertexTrackerGeometry.fTPixelPitch.at(i),
             0 );
+      Si_T_div->SetCopyNo(i);
 
-      pixel_log->SetVisAttributes(G4VisAttributes::GetInvisible());
       slice_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+      pixel_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+
 
       // --------------------------------
       // phys name
@@ -175,8 +204,9 @@ void SiVertexTrackerDetectorGeometry::BuildLogicalVolumes()
             fLayerSi_log[i], 
             phys_name.c_str(),
             fLayerContainer_log[i],
-            false, 0, check_overlaps);
+            false, i, check_overlaps);
    }
+   fSiVertexTrackerGeometry.Print();
 
 }
 //______________________________________________________________________________

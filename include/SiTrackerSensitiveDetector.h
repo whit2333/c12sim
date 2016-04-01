@@ -16,6 +16,7 @@
 #include "SVTEvent.h"
 #include "Crate.h"
 #include "Module.h"
+#include "SiVertexTrackerGeometry.h"
 
 class G4HCofThisEvent;
 class G4TouchableHistory;
@@ -30,6 +31,7 @@ class SiTrackerSensitiveDetector : public G4VSensitiveDetector {
       bool   fCountAllPhotons;
       bool   fSavePhotonPositions;
 
+      eic::geo::SiVertexTrackerGeometry fSVTGeometry;
 
    public:
 

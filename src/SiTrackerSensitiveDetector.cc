@@ -77,9 +77,22 @@ G4bool SiTrackerSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHisto
 
 
       // layer/superlayer/wire comes from channel
-      int channel  = touchable->GetReplicaNumber(0);
-      int layer    = 0;//(channel/112)%6 + 1;
-      int wire     = 0;//channel%112 + 1;
+      int Ti   = touchable->GetReplicaNumber(0);
+      int Zi   = touchable->GetReplicaNumber(1);
+      int lay  = touchable->GetReplicaNumber(2);
+      int lad  = touchable->GetReplicaNumber(3);
+      int wire = 0;//touchable->GetReplicaNumber(4);
+      int channel  = fSVTGeometry.GetChannelNumber(lad,Ti,Zi);
+
+      //std::cout << "Ti  : " << Ti  << std::endl;
+      ////std::cout << touchable->GetVolume(0)->GetName() << std::endl;
+      //std::cout << "Zi  : " << Zi  << std::endl;
+      ////std::cout << touchable->GetVolume(1)->GetName() << std::endl;
+      //std::cout << "lad : " << lad << std::endl;
+      ////std::cout << touchable->GetVolume(2)->GetName() << std::endl;
+      //std::cout << "lay: " << lay << std::endl;
+      ////std::cout << touchable->GetVolume(3)->GetName() << std::endl;
+      //std::cout << "wire: " << wire << std::endl;
 
       // grouping is the placement of the sector/region
       int grouping    = 0;

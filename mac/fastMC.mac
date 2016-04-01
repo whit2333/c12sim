@@ -60,9 +60,5 @@
 /process/inactivate             nKiller
 /process/inactivate        OpAbsorption
 /process/inactivate          OpBoundary
-
-
-/run/beamOn 100
-
-
+/process/inactivate          Cerenkov
 

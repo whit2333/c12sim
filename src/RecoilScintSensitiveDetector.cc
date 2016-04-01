@@ -77,6 +77,7 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
    {
 
          int channel      = touchable->GetReplicaNumber();
+         int trk_id      = aStep->GetTrack()->GetTrackID();
 
          G4ThreeVector mom     = preStep->GetMomentum();
          G4ThreeVector pos_global = preStep->GetPosition();
@@ -89,7 +90,9 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
          TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,aTime);
 
          clas12::hits::ParticleHit * pHit = fRecoilScintEvent->AddParticleHit(channel);
+
          pHit->fPDGCode            = pdgcode;
+         pHit->fTrackID            = trk_id;
          pHit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, aTime );
          pHit->fGlobalPosition     = global_4vec;
          pHit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, total_energy);

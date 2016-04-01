@@ -36,7 +36,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
       fTree   = simManager->fOutputTree;
    }
 
-   if(event_number%10 == 0 )
+   if(event_number%100 == 0 )
    {
       SimulationManager * simManager = SimulationManager::GetInstance();
       std::cout  << " Begin of event " << event_number 
@@ -86,7 +86,7 @@ void B1EventAction::EndOfEventAction(const G4Event * event)
    //evtN++;
    //return;
 
-   if(event_number%1 == 0 )
+   if(event_number%1000 == 0 )
       std::cout <<  " End of Event " << event_number << " " << std::endl;
 
    // Increase event number. Notice: this is different than evt->GetEventID()

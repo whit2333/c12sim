@@ -154,6 +154,19 @@ endforeach()
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/data DESTINATION ${C12SIM_DEFAULT_EG_DIR}/.. )
 
+#------------------
+# bash scripts
+set(BASH_SCRIPT_FILES
+  fast-c12sim
+  )
+foreach(_script ${BASH_SCRIPT_FILES})
+   configure_file("bin/${_script}.in" "${PROJECT_BINARY_DIR}/bin/${_script}" @ONLY)
+   install(
+      FILES         ${PROJECT_BINARY_DIR}/bin/${_script}
+      PERMISSIONS  OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+      DESTINATION bin )
+endforeach()
+
 #-------------------
 
 ## Add all targets to the build-tree export set
