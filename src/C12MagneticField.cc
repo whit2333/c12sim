@@ -23,8 +23,12 @@ G4ThreeVector C12MagneticField::GetFieldValue( const G4double Point[4]) const
    using namespace CLHEP;
    TVector3 pos(Point[0]/cm, Point[1]/cm, Point[2]/cm);
    TVector3 B = {0.0,0.0,0.0};
-   if(fUseSolenoid) B += fSolenoidField.GetField(pos);
-   if(fUseToroid)   B += fToroidField.GetField(pos);
+   if(fUseSolenoid) {
+      B += (fScaleSolenoid*fSolenoidField.GetField(pos));
+   }
+   if(fUseToroid){
+      B += (fScaleToroid*fToroidField.GetField(pos));
+   }
    return G4ThreeVector(B.x()*tesla, B.y()*tesla, B.z()*tesla);
 }
 //______________________________________________________________________________

@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-#cat @C12SIM_MACRO_DIR@/fastMC.mac <(cat)
-cat @C12SIM_MACRO_DIR@/fastMC.mac <(cat) | @CMAKE_INSTALL_PREFIX@/bin/c12sim "$@"
+if [ -t 0 ] ; then
+   # no piped input
+   cat @C12SIM_MACRO_DIR@/fastMC.mac | @CMAKE_INSTALL_PREFIX@/bin/c12sim "$@"
+else
+   # piped input
+   cat @C12SIM_MACRO_DIR@/fastMC.mac <(cat) | @CMAKE_INSTALL_PREFIX@/bin/c12sim "$@"
+fi
 

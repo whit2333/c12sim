@@ -175,8 +175,10 @@ int main(int argc,char** argv)
                torus_field_sign = 1.0;
             } else {
                try {
+                  //std::cout << " argument " << optarg << std::endl;
                   torus_field_scale = std::stod( optarg );
                   if(torus_field_scale < 0 ) torus_field_sign = -1.0;
+                  torus_field_scale = std::abs(torus_field_scale);
                } catch (const std::invalid_argument& ia) {
                   std::cerr << "Invalid argument for torus field : " << optarg << '\n';
                   exit(0);
@@ -193,6 +195,7 @@ int main(int argc,char** argv)
                try {
                   solenoid_field_scale = std::stod( optarg );
                   if(solenoid_field_scale < 0 ) solenoid_field_sign = -1.0;
+                  solenoid_field_scale = std::abs(solenoid_field_scale);
                } catch (const std::invalid_argument& ia) {
                   std::cerr << "Invalid argument for solenoid field : " << optarg << '\n';
                   exit(0);
