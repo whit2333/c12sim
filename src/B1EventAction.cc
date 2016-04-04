@@ -25,8 +25,11 @@ B1EventAction::~B1EventAction()
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
+   // Clear the event
    fEdep = 0.;
    fCLAS12HitsEvent->Clear();
+
+   // Set the run and event numbers
    fCLAS12HitsEvent->fEventNumber            = event_number;
    fCLAS12HitsEvent->fHTCCEvent.fEventNumber = event_number;
    fTrajectoryVerticies->Clear();

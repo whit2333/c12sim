@@ -100,9 +100,9 @@ class SimulationManager {
 
       static SimulationManager* GetInstance();
 
-      static void Dispose();
+      //static void Dispose();
 
-      void SetRunNumber(int i) { fEvent->fRunNumber = i; }
+      void SetRunNumber(int i);// { fEvent->fRunNumber = i; }
       int  GetRunNumber() const { return fEvent->fRunNumber; }
 
       std::string OutputFileName() const ;

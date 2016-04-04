@@ -72,9 +72,9 @@ G4bool DriftChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHi
       int sec_chan    = touchable->GetReplicaNumber(0); 
       int sector      = touchable->GetReplicaNumber(2);
       int channel     = sec_chan + (sector-1)*NWiresPerSector;
-      int super_layer = clas12::geo::DCWire::GetSuperLayer(channel);
-      int layer       = clas12::geo::DCWire::GetLayer(channel);
-      int wire        = clas12::geo::DCWire::GetWire(channel);
+      int super_layer = clas12::hits::DCWire::GetSuperLayer(channel);
+      int layer       = clas12::hits::DCWire::GetLayer(channel);
+      int wire        = clas12::hits::DCWire::GetWire(channel);
       int region      = super_layer/2 + 1;
 
       //std::cout << " sec_chan " << sec_chan << std::endl;
