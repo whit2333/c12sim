@@ -382,13 +382,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   //std::cout << " Recoil chamber construction \n";
-   //fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
-   //fRecoilChamber->He10CO2   = He10CO2;
-   //fRecoilChamber->HeiC4H10  = HeiC4H10;
-   //fRecoilChamber->Tungsten  = Tungsten; 
-   //fRecoilChamber->Mylar     = Mylar;
-   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   std::cout << " Recoil chamber construction \n";
+   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   fRecoilChamber->He10CO2   = He10CO2;
+   fRecoilChamber->HeiC4H10  = HeiC4H10;
+   fRecoilChamber->Tungsten  = Tungsten; 
+   fRecoilChamber->Mylar     = Mylar;
+   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -508,12 +508,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength/2.0, 0.0, 360.0*CLHEP::degree);
    G4Material * target_mat = He_Target; //LH2;//Deuterium;
    G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
-   //new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
-   //      false,           //no boolean operation
-   //      0,               //copy number
-   //      true);  //overlaps checking
-   // Definition of visualisation attributes
-   // Instantiation of a set of visualization attributes with cyan colour
+   new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
+         false,           //no boolean operation
+         0,               //copy number
+         true);  //overlaps checking
+   //Definition of visualisation attributes
+   //Instantiation of a set of visualization attributes with cyan colour
    G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.,0.3));
    // Set the forced wireframe style 
    //TargetVisAtt->SetForceWireframe(true);
@@ -567,14 +567,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
             Kapton,              //its material
             "KaptonCylinder");   //its name
 
-   //new G4PVPlacement(0,                     //no rotation
-   //      kapton_pos,              //at position
-   //      logicKapton,             //its logical volume
-   //      "KaptonCylinder",        //its name
-   //      world_log,    //its mother  volume
-   //      false,                   //no boolean operation
-   //      0,                       //copy number
-   //      checkOverlaps);          //overlaps checking
+   new G4PVPlacement(0,                     //no rotation
+         kapton_pos,              //at position
+         logicKapton,             //its logical volume
+         "KaptonCylinder",        //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         true);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -594,14 +594,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
       new G4LogicalVolume(around,              //its solid
             He_ClearS,           //its material
             "ClearSpace");       //its name
-   //new G4PVPlacement(0,                     //no rotation
-   //      around_pos,              //at position
-   //      logicAround,             //its logical volume
-   //      "ClearSpace",            //its name
-   //      world_log,    //its mother  volume
-   //      false,                   //no boolean operation
-   //      0,                       //copy number
-   //      checkOverlaps);          //overlaps checking
+   new G4PVPlacement(0,                     //no rotation
+         around_pos,              //at position
+         logicAround,             //its logical volume
+         "ClearSpace",            //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         true);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -627,14 +627,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
             Mylar,                  //its material
             "OclKaptonCylinder");   //its name
 
-   //new G4PVPlacement(0,                     //no rotation
-   //      Oclkapton_pos,              //at position
-   //      logicOclKapton,             //its logical volume
-   //      "OclKaptonCylinder",        //its name
-   //      world_log,    //its mother  volume
-   //      false,                   //no boolean operation
-   //      0,                       //copy number
-   //      checkOverlaps);          //overlaps checking
+   new G4PVPlacement(0,                     //no rotation
+         Oclkapton_pos,              //at position
+         logicOclKapton,             //its logical volume
+         "OclKaptonCylinder",        //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         true);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -652,14 +652,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
          innerRadiusOfTheOKapton, outerRadiusOfTheOKapton, 
          hightOfTheOKapton, startAngleOfTheOKapton, spanningAngleOfTheOKapton);
    G4LogicalVolume* logicOKapton = new G4LogicalVolume(okapton_cyl, Mylar, "OKaptonCylinder");
-   //new G4PVPlacement(0,                     //no rotation
-   //      okapton_pos,              //at position
-   //      logicOKapton,             //its logical volume
-   //      "OKaptonCylinder",        //its name
-   //      world_log,    //its mother  volume
-   //      false,                   //no boolean operation
-   //      0,                       //copy number
-   //      checkOverlaps);          //overlaps checking
+   new G4PVPlacement(0,                     //no rotation
+         okapton_pos,              //at position
+         logicOKapton,             //its logical volume
+         "OKaptonCylinder",        //its name
+         world_log,    //its mother  volume
+         false,                   //no boolean operation
+         0,                       //copy number
+         true);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
