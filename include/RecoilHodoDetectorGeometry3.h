@@ -105,6 +105,7 @@ class RecoilHodoDetectorGeometry3 {
       double fScintDeltaTheta    = 6.0*CLHEP::degree; // angle subtended by bar 
 
 
+
    public:
       RecoilHodoDetectorGeometry3();
       ~RecoilHodoDetectorGeometry3();

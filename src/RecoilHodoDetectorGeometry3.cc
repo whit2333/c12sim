@@ -47,6 +47,7 @@
 #include "G4ExtrudedSolid.hh"
 #include "SiPMSD.hh"
 #include "RecoilScintSensitiveDetector.hh"
+#include "SteppingAction.hh"
 
 
 RecoilHodoDetectorGeometry3::RecoilHodoDetectorGeometry3()
@@ -236,7 +237,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
 
    BuildMaterials();
 
-   bool    checkOverlaps    = false;
+   bool    checkOverlaps    = true;
    int     natoms           = 0;
    int     ncomponents      = 0;
    double  A                = 0.0;
@@ -282,6 +283,13 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    G4VisAttributes   * fContainer_vis   = new G4VisAttributes(fContainer_color);
    fContainer_vis->SetForceWireframe(true);
    fContainer_log->SetVisAttributes(fContainer_vis);
+
+   auto user_stepping_action = const_cast<G4UserSteppingAction*>(G4RunManager::GetRunManager()->GetUserSteppingAction()) ;
+   auto stepping_action  = dynamic_cast<SteppingAction*>(user_stepping_action);
+   if( stepping_action ) {
+      stepping_action->fRecoilHodoscope_log = fContainer_log;
+   }
+
 
    // ------------------------------------------------------------------------
    // First layer scintillator bar  
@@ -457,7 +465,7 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry3::PlacePhysicalVolume(
       G4VPhysicalVolume * mother_phys,
       G4VPhysicalVolume * adjacent_phys  )
 {
-   bool checkOverlaps = false;
+   bool checkOverlaps = true;
 
    // scintillator surface
    const    G4int NUM           = 2;

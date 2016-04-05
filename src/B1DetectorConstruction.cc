@@ -31,7 +31,8 @@
 #include "HTCCDetectorGeometry.h"
 #include "G4ExtrudedSolid.hh"
 #include "G4GDMLParser.hh"
-
+#include "G4AutoDelete.hh"
+#include "G4ChordFinder.hh"
 
 B1DetectorConstruction::B1DetectorConstruction() : 
    G4VUserDetectorConstruction(), 
@@ -313,7 +314,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    world_mat   = nist->FindOrBuildMaterial("G4_AIR");
    if(!world_solid) world_solid = new G4Box( "World", 0.5*world_x, 0.5 * world_y, 0.5 * world_z );
-   if(!world_log)   world_log = new G4LogicalVolume( world_solid, world_mat, "world_log" );
+   if(!world_log)   world_log   = new G4LogicalVolume( world_solid, world_mat, "world_log" );
    if(!world_phys)  world_phys  = new G4PVPlacement( 0, G4ThreeVector(), world_log, "world_phys", 0, false, 0, checkOverlaps );
 
    G4Colour            world_color {red, green, blue, alpha }; 
@@ -321,6 +322,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //(*world_vis) = G4VisAttributes::GetInvisible();
    world_vis->SetForceWireframe(true);
    world_log->SetVisAttributes(world_vis);
+
+   //G4UserLimits* userLimits = new G4UserLimits(1.0*cm);
+   //world_log->SetUserLimits(userLimits);
+
 
    // ------------------------------------------------------------------------
    // Drift chamber
@@ -377,13 +382,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   std::cout << " Recoil chamber construction \n";
-   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
-   fRecoilChamber->He10CO2   = He10CO2;
-   fRecoilChamber->HeiC4H10  = HeiC4H10;
-   fRecoilChamber->Tungsten  = Tungsten; 
-   fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //std::cout << " Recoil chamber construction \n";
+   //fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   //fRecoilChamber->He10CO2   = He10CO2;
+   //fRecoilChamber->HeiC4H10  = HeiC4H10;
+   //fRecoilChamber->Tungsten  = Tungsten; 
+   //fRecoilChamber->Mylar     = Mylar;
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -414,7 +419,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    // ------------------------------------------------------------------------
    // Solenoid Geometry
-    ------------------------------------------------------------------------
+   // ------------------------------------------------------------------------
    fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
    fSolenoid->BuildLogicalVolumes();
    fSolenoid->PlacePhysicalVolume( world_log );
@@ -454,10 +459,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    //G4UniformMagField* magField = new G4UniformMagField(G4ThreeVector(0.,0.,fieldValue)); // create a field
    bool use_torus    = true;
    bool use_solenoid = true;
-   if( simMan->GetSolenoidFieldScale() == 0.0 ) use_solenoid = false;
-   if( simMan->GetToroidFieldScale()   == 0.0 ) use_torus = false;
+   if( simMan->GetSolenoidFieldScale() == 0.0 ){
+      use_solenoid = false;
+   }
+   if( simMan->GetToroidFieldScale()   == 0.0 ){
+      use_torus    = false;
+   }
    std::cout << " simMan->GetSolenoidFieldScale() = " << simMan->GetSolenoidFieldScale() << std::endl;
-   std::cout << " simMan->GetToroidFieldScale() = " << simMan->GetToroidFieldScale() << std::endl;
+   std::cout << " simMan->GetToroidFieldScale()   = " << simMan->GetToroidFieldScale()   << std::endl;
    C12MagneticField * magField = new C12MagneticField(
          use_torus,                     use_solenoid ,
          simMan->GetToroidFieldScale(), simMan->GetSolenoidFieldScale() );
@@ -465,20 +474,32 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
    fieldMgr->SetDetectorField(magField);
    fieldMgr->CreateChordFinder(magField);
+   //G4bool forceToAllDaughters = true;
+   //world_log->SetFieldManager(fieldMgr, forceToAllDaughters);
+
    // change the accuracy of volume intersection
-   //fieldMgr->GetChordFinder()->SetDeltaChord(acc_inter);
-   double pos[4] = {0.0,0.0,0.0,0.0};
-   G4ThreeVector myfield = magField->GetFieldValue(pos);
-   G4cout << "magnetic field at origin : ( " << myfield[0] << " , " << myfield[1] << " , " << G4BestUnit(myfield[2],"Magnetic flux density") << ")" << G4endl;;
 
    // Relative accuracy values:
    G4double minEps= 1.0e-6;  //   Minimum & value for smallest steps
    G4double maxEps= 1.0e-5;  //   Maximum & value for largest steps
 
+   fieldMgr->GetChordFinder()->SetDeltaChord(1.0e-5);
    fieldMgr->SetMinimumEpsilonStep( minEps );
    fieldMgr->SetMaximumEpsilonStep( maxEps );
-   fieldMgr->SetDeltaOneStep( 5.0e-6 * mm );  // 0.5 micrometer
+   fieldMgr->SetDeltaOneStep( 1.0e-6 * mm );  // 0.5 micrometer
    G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
+
+   // Register the field and its manager for deleting
+   //G4AutoDelete::Register(magField);
+   //G4AutoDelete::Register(fieldMgr);
+
+   double pos[4] = {0.0,0.0,0.0,0.0};
+   G4ThreeVector myfield = magField->GetFieldValue(pos);
+   G4cout << "magnetic field at origin : ( " 
+      << myfield[0] << " , " 
+      << myfield[1] << " , " 
+      << G4BestUnit(myfield[2],"Magnetic flux density") 
+      << ")" << G4endl;;
 
    // ------------------------------------------------------------------------
    // Target
@@ -487,10 +508,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    G4Tubs* target = new G4Tubs("target_solid", innerRadiusOfTheTarget,outerRadiusOfTheTarget, fTargetLength/2.0, 0.0, 360.0*CLHEP::degree);
    G4Material * target_mat = He_Target; //LH2;//Deuterium;
    G4LogicalVolume* logicTarget = new G4LogicalVolume(target, target_mat,"target_log");
-   new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
-         false,           //no boolean operation
-         0,               //copy number
-         true);  //overlaps checking
+   //new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
+   //      false,           //no boolean operation
+   //      0,               //copy number
+   //      true);  //overlaps checking
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
    G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.,0.3));
@@ -546,14 +567,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
             Kapton,              //its material
             "KaptonCylinder");   //its name
 
-   new G4PVPlacement(0,                     //no rotation
-         kapton_pos,              //at position
-         logicKapton,             //its logical volume
-         "KaptonCylinder",        //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   //new G4PVPlacement(0,                     //no rotation
+   //      kapton_pos,              //at position
+   //      logicKapton,             //its logical volume
+   //      "KaptonCylinder",        //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -573,14 +594,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
       new G4LogicalVolume(around,              //its solid
             He_ClearS,           //its material
             "ClearSpace");       //its name
-   new G4PVPlacement(0,                     //no rotation
-         around_pos,              //at position
-         logicAround,             //its logical volume
-         "ClearSpace",            //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   //new G4PVPlacement(0,                     //no rotation
+   //      around_pos,              //at position
+   //      logicAround,             //its logical volume
+   //      "ClearSpace",            //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -606,14 +627,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
             Mylar,                  //its material
             "OclKaptonCylinder");   //its name
 
-   new G4PVPlacement(0,                     //no rotation
-         Oclkapton_pos,              //at position
-         logicOclKapton,             //its logical volume
-         "OclKaptonCylinder",        //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   //new G4PVPlacement(0,                     //no rotation
+   //      Oclkapton_pos,              //at position
+   //      logicOclKapton,             //its logical volume
+   //      "OclKaptonCylinder",        //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -627,19 +648,18 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // Outisde Mylar layer
    // ------------------------------------------------------------------------
    G4ThreeVector okapton_pos = G4ThreeVector(target_posX, target_posY, target_posZ);
-   G4Tubs* okapton_cyl = new G4Tubs("OKaptonCylinder", innerRadiusOfTheOKapton, outerRadiusOfTheOKapton, hightOfTheOKapton, startAngleOfTheOKapton, spanningAngleOfTheOKapton);
-   G4LogicalVolume* logicOKapton =                         
-      new G4LogicalVolume(okapton_cyl,          //its solid
-            Mylar,                //its material
-            "OKaptonCylinder");   //its name
-   new G4PVPlacement(0,                     //no rotation
-         okapton_pos,              //at position
-         logicOKapton,             //its logical volume
-         "OKaptonCylinder",        //its name
-         world_log,    //its mother  volume
-         false,                   //no boolean operation
-         0,                       //copy number
-         checkOverlaps);          //overlaps checking
+   G4Tubs* okapton_cyl = new G4Tubs("OKaptonCylinder", 
+         innerRadiusOfTheOKapton, outerRadiusOfTheOKapton, 
+         hightOfTheOKapton, startAngleOfTheOKapton, spanningAngleOfTheOKapton);
+   G4LogicalVolume* logicOKapton = new G4LogicalVolume(okapton_cyl, Mylar, "OKaptonCylinder");
+   //new G4PVPlacement(0,                     //no rotation
+   //      okapton_pos,              //at position
+   //      logicOKapton,             //its logical volume
+   //      "OKaptonCylinder",        //its name
+   //      world_log,    //its mother  volume
+   //      false,                   //no boolean operation
+   //      0,                       //copy number
+   //      checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour

@@ -160,10 +160,10 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
 
    private:
 
-      G4Material        * world_mat   ;
-      G4VSolid          * world_solid ;
-      G4LogicalVolume   * world_log   ;
-      G4VPhysicalVolume * world_phys  ;
+      G4Material        * world_mat    = nullptr;
+      G4VSolid          * world_solid  = nullptr;
+      G4LogicalVolume   * world_log    = nullptr;
+      G4VPhysicalVolume * world_phys   = nullptr;
 
       HTCCDetectorGeometry           * fHTCC          = nullptr;
       RecoilChamberDetectorGeometry  * fRecoilChamber = nullptr;

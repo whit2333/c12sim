@@ -5,6 +5,7 @@
 #include "B1EventAction.hh"
 #include "B1SteppingAction.hh"
 #include "TrackingAction.hh"
+#include "SteppingAction.hh"
 
 
 B1ActionInitialization::B1ActionInitialization(G4int rn) : 
@@ -29,6 +30,8 @@ void B1ActionInitialization::Build() const
    SetUserAction(new TrackingAction);
    //SetUserAction(new B1PrimaryGeneratorAction);
    //SetUserAction(new SimplePrimaryGeneratorAction);
+   //
+   SetUserAction(new SteppingAction);
 
    SetUserAction(new B1RunAction(fRunNumber));
 
