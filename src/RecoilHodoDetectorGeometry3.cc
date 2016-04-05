@@ -465,7 +465,7 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry3::PlacePhysicalVolume(
       G4VPhysicalVolume * mother_phys,
       G4VPhysicalVolume * adjacent_phys  )
 {
-   bool checkOverlaps = true;
+   bool checkOverlaps = false;
 
    // scintillator surface
    const    G4int NUM           = 2;
