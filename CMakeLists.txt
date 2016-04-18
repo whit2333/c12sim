@@ -163,7 +163,7 @@ foreach(_script ${BASH_SCRIPT_FILES})
    configure_file("bin/${_script}.in" "${PROJECT_BINARY_DIR}/bin/${_script}" @ONLY)
    install(
       FILES         ${PROJECT_BINARY_DIR}/bin/${_script}
-      PERMISSIONS  OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+      PERMISSIONS  GROUP_EXECUTE  GROUP_READ OWNER_EXECUTE OWNER_WRITE OWNER_READ 
       DESTINATION bin )
 endforeach()
 

@@ -97,7 +97,7 @@ class RecoilHodoDetectorGeometry3 {
       double fScint2Length        = 3.0*CLHEP::cm;
 
       double fScint1Thickness     =  2.0*CLHEP::mm;
-      double fScint2Thickness     = 50.0*CLHEP::mm;
+      double fScint2Thickness     = 20.0*CLHEP::mm;
 
       double fPhotonDetThickness =  25.4*0.00002*CLHEP::mm;
 
