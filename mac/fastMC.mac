@@ -1,6 +1,7 @@
 /run/initialize
 
 #/process/inactivate      Transportation
+#/process/inactivate               Decay
 /process/inactivate                 msc
 /process/inactivate               hIoni
 /process/inactivate             ionIoni
@@ -20,7 +21,6 @@
 /process/inactivate     electronNuclear
 /process/inactivate     positronNuclear
 /process/inactivate         muonNuclear
-/process/inactivate               Decay
 /process/inactivate          hadElastic
 /process/inactivate    neutronInelastic
 /process/inactivate            nCapture
