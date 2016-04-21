@@ -24,7 +24,7 @@ ScintTileSensitiveDetector::ScintTileSensitiveDetector(G4String name) : G4VSensi
    fOpticalPhoton = G4ParticleTable::GetParticleTable()->FindParticle("opticalphoton");
 
    //SimulationManager * sim_manager  = SimulationManager::GetInstance();
-   //fRecoilScintEvent = &(sim_manager->fEvent->fRecoilScintEvent);
+   //fRecoilScintEvent = &(sim_manager->fEvent->fRHEvent);
 }
 //______________________________________________________________________________
 
