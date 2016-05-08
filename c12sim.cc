@@ -41,6 +41,7 @@ int main(int argc,char** argv)
 
    int          run_number        = 0;
    int          number_of_events  = -1;
+   int          event_start_offset = 0;
    std::string  input_file_name   = "";
    std::string  output_file_name  = "";
    std::string  output_tree_name  = "";
@@ -75,6 +76,7 @@ int main(int argc,char** argv)
       {"dir",         required_argument,  0, 'D'},
       {"treename",    required_argument,  0, 't'},
       {"events",      required_argument,  0, 'n'},
+      {"offset",      required_argument,  0, 'O'},
       {"help",        no_argument,        0, 'h'},
       {"init",        no_argument,        0, 'N'},
       {"field-dir",   no_argument,        0, 'f'},
@@ -88,7 +90,7 @@ int main(int argc,char** argv)
       {0,0,0,0}
    };
    while(iarg != -1) {
-      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:S:T:s:bhINfF", longopts, &index);
+      iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:O:S:T:s:bhINfF", longopts, &index);
 
       switch (iarg)
       {
@@ -120,6 +122,10 @@ int main(int argc,char** argv)
 
          case 'n':
             number_of_events = atoi( optarg );
+            break;
+
+         case 'O':
+            event_start_offset = atoi( optarg );
             break;
 
          case 'g':
@@ -326,7 +332,7 @@ int main(int argc,char** argv)
   
    // Primary generator
    if( simple_eg == 0 ) {
-      runManager->SetUserAction( new B1PrimaryGeneratorAction() );
+      runManager->SetUserAction( new B1PrimaryGeneratorAction(event_start_offset) );
    } else {
       runManager->SetUserAction( new SimplePrimaryGeneratorAction(simple_eg) );
    }

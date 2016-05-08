@@ -26,11 +26,13 @@ class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     std::ifstream             fInputLundFile;
     G4ParticleTable*          particleTable;
 
+    int              fStartEvent = 0;
+
   public:
 
     mutable clas12::sim::ThrownEvent  fThrownEvent;
 
-    B1PrimaryGeneratorAction();    
+    B1PrimaryGeneratorAction(int ev_start = 0);    
     virtual ~B1PrimaryGeneratorAction();
 
     // method from the base class

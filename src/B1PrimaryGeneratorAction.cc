@@ -15,8 +15,9 @@
 
 #include "dollar.hpp"
 
-B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAction(),
-   fParticleGun(0), fEnvelopeBox(0)
+B1PrimaryGeneratorAction::B1PrimaryGeneratorAction(int ev_start) : 
+   G4VUserPrimaryGeneratorAction(),
+   fParticleGun(0), fEnvelopeBox(0), fStartEvent(ev_start)
 {
    G4int n_particle = 1;
    fParticleGun  = new G4ParticleGun(n_particle);
@@ -31,6 +32,22 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAc
 
    //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
    fInputLundFile.open(SimulationManager::GetInstance()->InputFileName().c_str());
+   if( !(fInputLundFile.good()) ) {
+      std::cout << "Error: LUND file, " << SimulationManager::GetInstance()->InputFileName() << ", not found.\nAborting.\n";
+      std::exit(EXIT_FAILURE);
+   }
+
+   // Move to starting event
+   for(int i = 0; i<fStartEvent; i++){
+      fThrownEvent.ReadLundEvent(fInputLundFile);
+      if( fInputLundFile.eof() ) {
+         std::cout << "Error: LUND file, " 
+            << SimulationManager::GetInstance()->InputFileName() 
+            << ", contains only " << i  
+            << " events and starting event is set to " << fStartEvent << ".\nAborting.\n";
+         std::exit(EXIT_FAILURE);
+      }
+   }
 }
 //______________________________________________________________________________
 
@@ -42,68 +59,39 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 { $
-   //std::cout << " LUND FILE " << SimulationManager::GetInstance()->InputFileName() << "\n";
-   //if( !fInputLundFile.is_open() ) std::cout << " IS NOT OPEN\n";
 
-   if( fInputLundFile.is_open() ){
-      fThrownEvent.ReadLundEvent(fInputLundFile);
-      int npart = fThrownEvent.GetNParticles();
-      for(int i = 0; i<npart; i++){
-         TParticle * part = fThrownEvent.GetParticle(i);
-         int pdgcode = part->GetPdgCode();
-         //std::cout << "npart    " << npart << " i " << i << "\n";
-         //std::cout << "PDG CODE " << pdgcode << "\n";
-         //std::cout << "npart2   " << fThrownEvent.GetNParticles() << " i " << i << "\n";
-         G4ParticleDefinition* particle = particleTable->FindParticle(pdgcode);
-         fParticleGun->SetParticleDefinition(particle);
-         double KE =  part->Energy() - part->GetMass();
-         double ux = part->Px();
-         double uy = part->Py();
-         double uz = part->Pz();
-         double x0 = part->Vx()*cm;
-         double y0 = part->Vy()*cm;
-         double z0 = part->Vz()*cm;
-         fParticleGun->SetParticleEnergy( KE*GeV );
-         fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
-         fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-         fParticleGun->GeneratePrimaryVertex(anEvent);
-      } 
-      //fThrownEvent.Print();
-   
+   if( fInputLundFile.eof() ) {
+      std::cout << "Warning: Reached end of LUND file, " 
+         << SimulationManager::GetInstance()->InputFileName() 
+         << ". Rewinding to beginning.\n";
+      fInputLundFile.clear();                 // clear fail and eof bits
+      fInputLundFile.seekg(0, std::ios::beg); // back to the start!
    }
-   //else {
 
-   //   // Beam on target  
-   //   G4double envSizeXY = 2.0*mm;
-   //   G4double envSizeZ  = 0.0*cm;
-   //   //double phi    = 2.*CLHEP::pi* G4UniformRand();
-   //   //double theta  = 1.0*deg+60.0*deg*G4UniformRand();
-   //   ////double cosTheta = -1. + 2. * G4UniformRand();
-   //   //double cosTheta = TMath::Cos(theta);//1. * G4UniformRand();
-   //   //double sinTheta = TMath::Sin(theta);//sqrt(1. - cosTheta * cosTheta);
-   //   //double ux= sinTheta * cos(phi);
-   //   //double uy= sinTheta * sin(phi);
-   //   //double uz =cosTheta;
-
-   //   //if( G4UniformRand() < 1.0 ) {
-   //   //   G4ParticleDefinition* particle = particleTable->FindParticle("proton");
-   //   //   fParticleGun->SetParticleDefinition(particle);
-   //   //} else {
-   //   //   G4ParticleDefinition* particle = particleTable->FindParticle("e-");
-   //   //   fParticleGun->SetParticleDefinition(particle);
-   //   //}
-
-   //   //fParticleGun->SetParticleEnergy((3.5 + 0.1*G4UniformRand())*GeV); // kinetic energy (not total)
-   //   //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
-
-   //   G4double size = 1.0; 
-   //   G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
-   //   G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-   //   G4double z0 = -10.0*cm;
-
-   //   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-   //   fParticleGun->GeneratePrimaryVertex(anEvent);
-   //}
+   fThrownEvent.ReadLundEvent(fInputLundFile);
+   int npart = fThrownEvent.GetNParticles();
+   for(int i = 0; i<npart; i++) {
+      TParticle * part = fThrownEvent.GetParticle(i);
+      int pdgcode = part->GetPdgCode();
+      //std::cout << "npart    " << npart << " i " << i << "\n";
+      //std::cout << "PDG CODE " << pdgcode << "\n";
+      //std::cout << "npart2   " << fThrownEvent.GetNParticles() << " i " << i << "\n";
+      G4ParticleDefinition* particle = particleTable->FindParticle(pdgcode);
+      fParticleGun->SetParticleDefinition(particle);
+      double KE =  part->Energy() - part->GetMass();
+      double ux = part->Px();
+      double uy = part->Py();
+      double uz = part->Pz();
+      double x0 = part->Vx()*cm;
+      double y0 = part->Vy()*cm;
+      double z0 = part->Vz()*cm;
+      fParticleGun->SetParticleEnergy( KE*GeV );
+      fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
+      fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+      fParticleGun->GeneratePrimaryVertex(anEvent);
+   } 
+   //fThrownEvent.Print();
+   
 }
 //______________________________________________________________________________
 

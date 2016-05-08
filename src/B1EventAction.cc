@@ -22,7 +22,7 @@ B1EventAction::B1EventAction() : G4UserEventAction(), fEdep(0.)
 //______________________________________________________________________________
 
 B1EventAction::~B1EventAction()
-{}
+{ }
 //______________________________________________________________________________
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
@@ -85,11 +85,6 @@ void B1EventAction::EndOfEventAction(const G4Event * event)
    }
 
    fTree->Fill();
-
-   //if(evtN%10 == 0 )
-   //// Increase event number. Notice: this is different than evt->GetEventID()
-   //evtN++;
-   //return;
 
    if(event_number%1000 == 0 ) {
       std::cout <<  " End of Event " << event_number << " " << std::endl;
