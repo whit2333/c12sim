@@ -1,6 +1,7 @@
 #include "C12MagneticField.h"
 #include "TVector3.h"
 #include "CLHEP/Units/SystemOfUnits.h"
+#include "dollar.hpp"
 
 C12MagneticField::C12MagneticField(
       bool   use_toroid, bool use_solenoid,
@@ -19,7 +20,7 @@ C12MagneticField::~C12MagneticField()
 //______________________________________________________________________________
 
 G4ThreeVector C12MagneticField::GetFieldValue( const G4double Point[4]) const
-{
+{ $
    using namespace CLHEP;
    TVector3 pos(Point[0]/cm, Point[1]/cm, Point[2]/cm);
    TVector3 B = {0.0,0.0,0.0};

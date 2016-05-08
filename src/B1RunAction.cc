@@ -4,6 +4,7 @@
 #include "B1DetectorConstruction.hh"
 #include "B1Run.hh"
 #include "B1Analysis.hh"
+#include "dollar.hpp"
 
 #include "G4RunManager.hh"
 #include "G4LogicalVolumeStore.hh"
@@ -42,7 +43,7 @@ B1RunAction::~B1RunAction()
 //______________________________________________________________________________
 
 G4Run* B1RunAction::GenerateRun()
-{
+{ $
    //std::cout << " start B1RunAction::GenerateRun\n";
    std::cout << " Sensitive Detectors:\n";
    G4SDManager::GetSDMpointer()->ListTree();

@@ -21,7 +21,7 @@ if(NOT C12SIM_GDML_DIR )
 endif(NOT C12SIM_GDML_DIR )
 
 
-#set(CMAKE_CXX_FLAGS "-g3 ${CMAKE_CXX_FLAGS} ")
+set(CMAKE_CXX_FLAGS " -DDOLLAR_MAX_TRACES=20000 ${CMAKE_CXX_FLAGS} ")
 SET(C12SIM_LINK_LIBRARIES)
 
 #----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ message(" C12SIM_LINK_LIBRARIES = ${C12SIM_LINK_LIBRARIES} " )
 # NB: headers are included so they will show up in IDEs
 #
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_BINARY_DIR}/C12SIM.h)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hpp ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_BINARY_DIR}/C12SIM.h)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries

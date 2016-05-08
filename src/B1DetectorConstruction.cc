@@ -11,6 +11,7 @@
 #include "G4FieldManager.hh"
 #include "C12MagneticField.h"
 #include "G4TransportationManager.hh"
+#include "G4CachedMagneticField.hh"
 
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
@@ -471,22 +472,25 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
          use_torus,                     use_solenoid ,
          simMan->GetToroidFieldScale(), simMan->GetSolenoidFieldScale() );
 
+   G4double                 distanceConst = 2.5 * millimeter; 
+   G4MagneticField * pCachedMagField= new G4CachedMagneticField(  magField,  distanceConst); 
+
    G4FieldManager* fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-   fieldMgr->SetDetectorField(magField);
-   fieldMgr->CreateChordFinder(magField);
+   fieldMgr->SetDetectorField(pCachedMagField);
+   fieldMgr->CreateChordFinder(pCachedMagField);
    //G4bool forceToAllDaughters = true;
    //world_log->SetFieldManager(fieldMgr, forceToAllDaughters);
 
    // change the accuracy of volume intersection
 
    // Relative accuracy values:
-   G4double minEps= 1.0e-6;  //   Minimum & value for smallest steps
-   G4double maxEps= 1.0e-5;  //   Maximum & value for largest steps
+   G4double minEps = 1.0e-6;  //   Minimum & value for smallest steps
+   G4double maxEps = 1.0e-5;  //   Maximum & value for largest steps
 
-   fieldMgr->GetChordFinder()->SetDeltaChord(1.0e-5);
+   fieldMgr->GetChordFinder()->SetDeltaChord(0.001);//1.0e-5);
    fieldMgr->SetMinimumEpsilonStep( minEps );
    fieldMgr->SetMaximumEpsilonStep( maxEps );
-   fieldMgr->SetDeltaOneStep( 1.0e-6 * mm );  // 0.5 micrometer
+   fieldMgr->SetDeltaOneStep( 0.001);//1.0e-6 * mm );  // 0.5 micrometer
    G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
 
    // Register the field and its manager for deleting

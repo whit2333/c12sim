@@ -21,8 +21,8 @@
 #include "DriftChamberIonPairHit.h"
 #include "DriftChamberParticleHit.h"
 
+#include "dollar.hpp"
 
-//______________________________________________________________________________
 
 RecoilChamberSensitiveDetector::RecoilChamberSensitiveDetector(G4String name, G4int Nchan)
    : G4VSensitiveDetector(name), fNumberOfChannels(Nchan),
@@ -52,7 +52,7 @@ void RecoilChamberSensitiveDetector::Initialize(G4HCofThisEvent* hitsCollectionO
 //______________________________________________________________________________
 
 G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableHistory* )
-{
+{ $
 
    using namespace clas12::hits;
    using namespace CLHEP;

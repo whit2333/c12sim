@@ -3,7 +3,6 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
-//#include "B1PrimaryGeneratorAction.h"
 
 #include "TTree.h"
 #include "CLAS12HitsEvent.h"

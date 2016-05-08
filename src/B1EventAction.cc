@@ -1,6 +1,8 @@
 #include "B1EventAction.hh"
 #include "B1Run.hh"
 
+#include "dollar.hpp"
+
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4Trajectory.hh"
@@ -51,16 +53,16 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 //______________________________________________________________________________
 
 void B1EventAction::EndOfEventAction(const G4Event * event)
-{   
+{ $ 
 
    using namespace CLHEP;
    G4TrajectoryContainer * traj_container = event->GetTrajectoryContainer();
 
-   if( traj_container ) {
+   if( traj_container ) { $
       int n_traj = traj_container->entries();
       //std::cout << "Event has " << n_traj << " trajectores\n";
 
-      for(int i = 0; i<n_traj; i++ ) {
+      for(int i = 0; i<n_traj; i++ ) { $
 
          G4VTrajectory * traj = (*traj_container)[i];
          TParticle     * part =  new( (*fTrajectoryVerticies)[i] ) TParticle();
@@ -89,8 +91,9 @@ void B1EventAction::EndOfEventAction(const G4Event * event)
    //evtN++;
    //return;
 
-   if(event_number%1000 == 0 )
+   if(event_number%1000 == 0 ) {
       std::cout <<  " End of Event " << event_number << " " << std::endl;
+   }
 
    // Increase event number. Notice: this is different than evt->GetEventID()
    event_number++;

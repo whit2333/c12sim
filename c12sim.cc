@@ -5,6 +5,7 @@
 #include <memory>
 #include <unistd.h>
 #include "getopt.h"
+#include "dollar.hpp"
 
 #include "G4SystemOfUnits.hh"
 #ifdef G4MULTITHREADED
@@ -36,7 +37,7 @@
 //______________________________________________________________________________
 
 int main(int argc,char** argv)
-{
+{ $
 
    int          run_number        = 0;
    int          number_of_events  = -1;
@@ -390,6 +391,17 @@ int main(int argc,char** argv)
       ui->SessionStart();
       delete ui;
    }
+
+   std::string profiler_log_filename = "data/log/prof_c12sim_";
+   profiler_log_filename += std::to_string(run_number);
+   profiler_log_filename += ".md";
+   std::ofstream prof_log(profiler_log_filename);
+   std::cout << " ================================================\n";
+   std::cout << " dollar profiling:\n";
+   std::cout << " ================================================\n";
+   dollar::text(std::cout);
+   dollar::markdown(prof_log);
+   std::cout << " ================================================\n";
 
    // Job termination
    // Free the store: user actions, physics_list and detector_description are

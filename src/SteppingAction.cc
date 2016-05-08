@@ -24,6 +24,10 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
          track->SetTrackStatus(fStopAndKill);
       }
    }
+   if( track_length > 9.0*m ){
+      //std::cout << " killing track\n";
+      track->SetTrackStatus(fStopAndKill);
+   }
 }
 //______________________________________________________________________________
 

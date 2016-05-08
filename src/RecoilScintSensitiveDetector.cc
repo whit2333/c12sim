@@ -13,6 +13,8 @@
 #include "PhotonHit.h"
 #include "ParticleHit.h"
 
+#include "dollar.hpp"
+
 
 RecoilScintSensitiveDetector::RecoilScintSensitiveDetector(G4String name) : G4VSensitiveDetector(name)
 {
@@ -60,8 +62,7 @@ void RecoilScintSensitiveDetector::Initialize(G4HCofThisEvent* HCE)
 //______________________________________________________________________________
 
 G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
-
+{ $
    using namespace CLHEP;
    //G4StepPoint* preStep = aStep->GetPreStepPoint();
    //G4TouchableHistory* touchable = (G4TouchableHistory*)(preStep->GetTouchable());
