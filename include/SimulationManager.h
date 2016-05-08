@@ -102,6 +102,7 @@ class SimulationManager {
 
       //static void Dispose();
 
+      void SetEventNumber(int i);// { fEvent->fRunNumber = i; }
       void SetRunNumber(int i);// { fEvent->fRunNumber = i; }
       int  GetRunNumber() const { return fEvent->fRunNumber; }
 

@@ -78,6 +78,11 @@ void SimulationManager::SetRunNumber(int i) {
 }
 //______________________________________________________________________________
 
+void SimulationManager::SetEventNumber(int i) {
+   fEvent->SetEventNumber( i );
+}
+//______________________________________________________________________________
+
 SimulationManager* SimulationManager::GetInstance (  )
 {
    if ( fgSimulationManager == 0 )

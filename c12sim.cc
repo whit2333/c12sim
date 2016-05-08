@@ -126,6 +126,10 @@ int main(int argc,char** argv)
 
          case 'O':
             event_start_offset = atoi( optarg );
+            if(event_start_offset < 0 ) {
+               std::cout << "Error: -O, --offset is negative! Aborting.\n";
+               std::exit(EXIT_FAILURE);
+            }
             break;
 
          case 'g':
@@ -294,6 +298,8 @@ int main(int argc,char** argv)
 
    simManager->SetSolenoidFieldScale( solenoid_field_sign*solenoid_field_scale );
    simManager->SetToroidFieldScale( torus_field_sign*torus_field_scale );
+
+   simManager->SetEventNumber(event_start_offset);
 
 
    B1DetectorConstruction      * realWorld     = new B1DetectorConstruction();
@@ -495,6 +501,7 @@ void print_help() {
    std::cout << "    -n, --events=#           Causes the execution of the ui command \"/run/beamOn #\".\n";
    std::cout << "                             This happens just before exiting (in the case of batch mode) or returning to UI prompt.\n";
    std::cout << "                             Default is \"clas12sim\". Note this is just the file basename; use -D to set the directory \n";
+   std::cout << "    -O, --offset=#           Starting event offset.\n";
    std::cout << "    -D, --dir=NAME           Set the output directory. The default is \"data/rootfiles/\"\n";
    std::cout << "    -t, --treename=NAME      Set the output tree name. The default is \"clasdigi_hits\"\n";
    std::cout << "    -g, --gui=#              Set to 1 (default) to use qt gui or\n";
