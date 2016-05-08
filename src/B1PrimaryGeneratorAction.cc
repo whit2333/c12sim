@@ -60,22 +60,21 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 { $
 
+   fThrownEvent.ReadLundEvent(fInputLundFile);
    if( fInputLundFile.eof() ) {
       std::cout << "Warning: Reached end of LUND file, " 
          << SimulationManager::GetInstance()->InputFileName() 
          << ". Rewinding to beginning.\n";
       fInputLundFile.clear();                 // clear fail and eof bits
       fInputLundFile.seekg(0, std::ios::beg); // back to the start!
+      fThrownEvent.ReadLundEvent(fInputLundFile);
    }
 
-   fThrownEvent.ReadLundEvent(fInputLundFile);
    int npart = fThrownEvent.GetNParticles();
+   //std::cout << " npart = " << npart << std::endl;
    for(int i = 0; i<npart; i++) {
       TParticle * part = fThrownEvent.GetParticle(i);
       int pdgcode = part->GetPdgCode();
-      //std::cout << "npart    " << npart << " i " << i << "\n";
-      //std::cout << "PDG CODE " << pdgcode << "\n";
-      //std::cout << "npart2   " << fThrownEvent.GetNParticles() << " i " << i << "\n";
       G4ParticleDefinition* particle = particleTable->FindParticle(pdgcode);
       fParticleGun->SetParticleDefinition(particle);
       double KE =  part->Energy() - part->GetMass();
