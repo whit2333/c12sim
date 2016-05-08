@@ -252,10 +252,14 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
 
             // Has to be really long for some reason, otherwise there is a seg fault...
             G4double hex_length = WireLength(super_layer,layer,i) - 3.0*cm;
+            double small_subtraction = 1.0e-12*mm;
             double factor = 1.0/2.0;//TMath::Sqrt(3.0);//2.0;
             double zPlane[] = {-hex_length/2.0,hex_length/2.0};
             double rInner[] = {0.0,0.0};
-            double rOuter[] = {factor*LayerWireSpacing[super_layer-1], factor*LayerWireSpacing[super_layer-1] };
+            double rOuter[] = {
+               factor*LayerWireSpacing[super_layer-1] - small_subtraction,
+               factor*LayerWireSpacing[super_layer-1] - small_subtraction
+            };
 
             // This operation puts the hex tube in a box with the proper orientation ( with flat sides against in-row adjacent)
             //G4VSolid* unionMoved3 = new G4IntersectionSolid(Form("BoxCylinderMoved3%d",super_layer), subtraction_box3, unionMoved2,      yRot3, zTrans);
