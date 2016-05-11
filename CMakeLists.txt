@@ -21,7 +21,7 @@ if(NOT C12SIM_GDML_DIR )
 endif(NOT C12SIM_GDML_DIR )
 
 
-set(CMAKE_CXX_FLAGS " -DDOLLAR_MAX_TRACES=20000 ${CMAKE_CXX_FLAGS} ")
+set(CMAKE_CXX_FLAGS " -D$$= -DDOLLAR_MAX_TRACES=20000 ${CMAKE_CXX_FLAGS} ")
 SET(C12SIM_LINK_LIBRARIES)
 
 #----------------------------------------------------------------------------
