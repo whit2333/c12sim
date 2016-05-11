@@ -487,10 +487,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    G4double minEps = 1.0e-6;  //   Minimum & value for smallest steps
    G4double maxEps = 1.0e-5;  //   Maximum & value for largest steps
 
-   fieldMgr->GetChordFinder()->SetDeltaChord(0.00001);//1.0e-5);
+   fieldMgr->GetChordFinder()->SetDeltaChord(0.001);//1.0e-5);
    fieldMgr->SetMinimumEpsilonStep( minEps );
    fieldMgr->SetMaximumEpsilonStep( maxEps );
-   fieldMgr->SetDeltaOneStep( 0.00001);//1.0e-6 * mm );  // 0.5 micrometer
+   fieldMgr->SetDeltaOneStep( 0.001);//1.0e-6 * mm );  // 0.5 micrometer
    G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
 
    // Register the field and its manager for deleting
