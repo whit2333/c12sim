@@ -65,7 +65,8 @@ set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${CLHEP_LIBRARIES})
 ###################
 # ROOT
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
-set(ROOT_LIBS EG MathCore RIO Hist MathMore Graf Graf3d Gpad GX11 GeomPainter X3d Gviz3d RGL Eve EG Eve Foam GenVector Geom GLEW Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer EG)
+#set(ROOT_LIBS EG MathCore RIO Hist MathMore Graf Graf3d Gpad GX11 GeomPainter X3d Gviz3d RGL Eve EG Eve Foam GenVector Geom GLEW Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer EG)
+set(ROOT_LIBS EG MathCore RIO Hist MathMore Graf Graf3d Gpad GeomPainter Gviz3d RGL Eve EG Eve Foam GenVector Geom GLEW Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer EG)
 find_package(ROOT REQUIRED COMPONENTS ${ROOT_LIBS})
 message(" ROOT_USE_FILE = ${ROOT_USE_FILE} " )
 #include(${ROOT_USE_FILE})
@@ -105,6 +106,9 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hpp ${PROJECT_SOURCE_DIR}/incl
 add_executable(c12sim c12sim.cc ${sources} ${headers})
 target_link_libraries(c12sim ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES} ${ROOT_LIBRARIES})
 
+#add_executable(c12sim c12sim.cc ${sources} ${headers})
+#target_link_libraries(c12sim ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES} ${ROOT_LIBRARIES})
+
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
@@ -138,6 +142,7 @@ install(FILES ${MACROB1_SCRIPTS} DESTINATION "${CMAKE_INSTALL_PREFIX}/share/${PR
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 install(TARGETS c12sim DESTINATION bin)
+#install(TARGETS c12sim_wt DESTINATION bin)
 
 # ----------------------------------------------------------------------------
 # Configured files 
