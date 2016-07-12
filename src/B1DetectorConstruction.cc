@@ -383,13 +383,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   std::cout << " Recoil chamber construction \n";
-   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
-   fRecoilChamber->He10CO2   = He10CO2;
-   fRecoilChamber->HeiC4H10  = HeiC4H10;
-   fRecoilChamber->Tungsten  = Tungsten; 
-   fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //std::cout << " Recoil chamber construction \n";
+   //fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   //fRecoilChamber->He10CO2   = He10CO2;
+   //fRecoilChamber->HeiC4H10  = HeiC4H10;
+   //fRecoilChamber->Tungsten  = Tungsten; 
+   //fRecoilChamber->Mylar     = Mylar;
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -421,9 +421,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Solenoid Geometry
    // ------------------------------------------------------------------------
-   fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
-   fSolenoid->BuildLogicalVolumes();
-   fSolenoid->PlacePhysicalVolume( world_log );
+   //fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
+   //fSolenoid->BuildLogicalVolumes();
+   //fSolenoid->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // Torus Geometry
