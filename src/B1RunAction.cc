@@ -64,15 +64,15 @@ G4Run* B1RunAction::GenerateRun()
          "HitsEvent",
          "clas12::hits::CLAS12HitsEvent",
          &(simManager->fEvent)   );
-   simManager->fOutputTree->Branch(
+   /*simManager->fOutputTree->Branch(
          "TrajectoryVerticies",
-         &(simManager->fTrajectoryVerticies) );
+         &(simManager->fTrajectoryVerticies) );*/
 
 
    // ---------------------------------------------------------
    // Create the EG tree if it is a certain Primary generator
 
-   const G4VUserPrimaryGeneratorAction * gen_action = runManager->GetUserPrimaryGeneratorAction();
+   /*const G4VUserPrimaryGeneratorAction * gen_action = runManager->GetUserPrimaryGeneratorAction();
    if( const B1PrimaryGeneratorAction * prigen = dynamic_cast<const B1PrimaryGeneratorAction*>(gen_action) ) {
       simManager->fOutputTree->Branch(
             "PrimaryEvent",
@@ -84,7 +84,7 @@ G4Run* B1RunAction::GenerateRun()
             "PrimaryEvent",
             "clas12::sim::ThrownEvent",
             &(prigen->fThrownEvent)   );
-   }
+   }*/
 
 
    if( fRunConf ) delete fRunConf;
