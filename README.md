@@ -33,6 +33,8 @@ location as it only installs the binary and a shared data directory. The shared
 data (installed in share/c12sim) contains various default macros used for 
 visualization along with other useful examples.
 
+### Linux Install (Mac OS X see below)
+
 ### First install ClasDigi
 
     git clone https://github.com/whit2333/clasdigi.git
@@ -46,6 +48,28 @@ visualization along with other useful examples.
     mkdir c12sim_build
     cd c12sim_build
     make ../c12sim/. -DCMAKE_INSTALL_PREFIX=../c12run
+    make install
+
+### Run the simulation
+
+    cd ../c12run
+    ./bin/c12sim
+    
+### Mac OS X install
+    
+### First install ClasDigi
+
+    git clone https://github.com/mehrhart/clasdigi.git
+    mkdir clasdigi_build && cd clasdigi_build
+    cmake ../clasdigi/. -DCMAKE_INSTALL_PREFIX=$HOME -DClasDigi_DATA_DIR=/path/to/data/dir
+    make install
+
+### Then build and install c12sim
+
+    git clone git@gitlab.com:mehrhart/c12sim.git
+    mkdir c12sim_build
+    cd c12sim_build
+    make ../c12sim/. -DCMAKE_INSTALL_PREFIX=../c12run -DC12SIM_DATA_DIR=/path/to/data/dir
     make install
 
 ### Run the simulation
