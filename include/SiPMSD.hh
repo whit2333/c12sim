@@ -19,7 +19,7 @@ class SiPMSD : public G4VSensitiveDetector
       G4int                fNChannels        = 600;
       G4int                fHCID             = -1;
       SiPMHitsCollection * fHitsCollection   = nullptr;
-      bool                 fRecordAllPhotons = false;
+      bool                 fRecordAllPhotons = true;
 
    public:
       clas12::hits::RecoilScintEvent * fRecoilScintEvent = nullptr;
