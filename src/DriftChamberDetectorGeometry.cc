@@ -251,8 +251,8 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
          for(int i = 1; i<=112; i++ ) {
 
             // Has to be really long for some reason, otherwise there is a seg fault...
-            G4double hex_length = WireLength(super_layer,layer,i) - 3.0*cm;
-            double small_subtraction = 1.0e-12*mm;
+            G4double hex_length = WireLength(super_layer,layer,i) - 6.0*cm;
+            double small_subtraction = 2.0*mm;//1.0e-2*mm; // not so small?
             double factor = 1.0/2.0;//TMath::Sqrt(3.0);//2.0;
             double zPlane[] = {-hex_length/2.0,hex_length/2.0};
             double rInner[] = {0.0,0.0};
@@ -337,17 +337,17 @@ void DriftChamberDetectorGeometry::BuildLogicalVolumes()
                   check_overlaps ); // surface check
 
             // Only visualize some wires (otherwise painfully slow)
-            //if(TMath::Abs(channel%112-5) <= 5 ) {
-            //   if(super_layer%2 == 0 ) {
-            //      wire_log->SetVisAttributes(vs_even);
-            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            //   } else {
-            //      wire_log->SetVisAttributes(vs_odd);
-            //      //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            //   }
-            //}else {
+            if(TMath::Abs(channel%112-3) <= 5 ) {
+               if(super_layer%2 == 0 ) {
+                  wire_log->SetVisAttributes(vs_even);
+                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+               } else {
+                  wire_log->SetVisAttributes(vs_odd);
+                  //wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+               }
+            }else {
             wire_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-            //}
+            }
 
 
          }

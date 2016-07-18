@@ -335,7 +335,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
    fDriftChamber->BuildLogicalVolumes();
    // Sectors
-   for(int i = 1; i<=6; i++ ) {
+   for(int i = 1; i<=1; i++ ) {
       // Region I
       fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 1);
       //if(i==1) fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
