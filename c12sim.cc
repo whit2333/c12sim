@@ -257,11 +257,12 @@ int main(int argc,char** argv)
    // Detect interactive mode (if no arguments) and define UI session
    // Note third argument of G4UIExecutive can be ("qt", "xm", "win32", "gag", "tcsh", "csh")
    G4UIExecutive* ui = 0;
+  char* ex_name = "c12sim \0";
    if( is_interactive || use_gui ) {
       if( use_gui ) {
-         ui = new G4UIExecutive(argc, argv, "qt");
+         ui = new G4UIExecutive(1, &ex_name, "qt");
       } else {
-         ui = new G4UIExecutive(argc, argv, "tcsh");
+         ui = new G4UIExecutive(1, &ex_name, "tcsh");
       }
    }
 

@@ -72,7 +72,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
       //--Parameters of the target
       G4double   innerRadiusOfTheTarget = 0.0*mm;
       G4double   outerRadiusOfTheTarget = 6.*mm;
-      G4double   fTargetLength = 20.0*cm;//5.0*cm;
+      G4double   fTargetLength = 40.0*cm;//5.0*cm;
       G4double   startAngleOfTheTarget = 0.*deg;
       G4double   spanningAngleOfTheTarget = 360.*deg;
       G4double   target_posX = 0.*mm;

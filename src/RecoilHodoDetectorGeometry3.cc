@@ -441,22 +441,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    fPhotonDet3_log->SetSensitiveDetector(fPhotonDet3_det);
    fPhotonDet3_det->SetCopyNoParent(1);
 
-   // ------------------------------------------------------------------------
 
-   //if(fPhotonDet4_phys)  delete fPhotonDet4_phys;
-   //if(fPhotonDet4_log)   delete fPhotonDet4_log;
-   //if(fPhotonDet4_solid) delete fPhotonDet4_solid;
-
-   //fPhotonDet4_mat   = fScint2_mat;
-   //fPhotonDet4_solid = fPhotonDet3_solid;
-   //fPhotonDet4_log   = new G4LogicalVolume(fPhotonDet4_solid, fPhotonDet4_mat,"fPhotonDet4_log");
-   //fPhotonDet4_phys  = new G4PVPlacement(0,fPhotonDet4_pos, fPhotonDet4_log, "fPhotonDet4_phys",fScint2_log,true,0,checkOverlaps);
-   //fPhotonDet4_log->SetVisAttributes(fPhotonDet3_vis);
-
-   //if(!fPhotonDet4_det) fPhotonDet4_det = new SiPMSD("/PM4");
-   //SDMan->AddNewDetector(fPhotonDet4_det);
-   //fPhotonDet4_log->SetSensitiveDetector(fPhotonDet4_det);
-   //fPhotonDet4_det->SetCopyNoParent(1);
 }
 //______________________________________________________________________________
 
@@ -466,6 +451,15 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry3::PlacePhysicalVolume(
       G4VPhysicalVolume * adjacent_phys  )
 {
    bool checkOverlaps = false;
+
+   // ------------------------------------------------------------------------
+   std::cout << "------------------------------------------------------------------------\n";
+   std::cout << " RecoilHodoDetectorGeometry3 Scintillator Masses\n";
+   std::cout << " Scint1 (30cm strip)   : " << fScint1_log->GetMass()/CLHEP::kg << " kg\n";
+   std::cout << " Scint2 (3cm long tile): " << fScint2_log->GetMass()/CLHEP::kg << " kg\n";
+   std::cout << " Scint1 total mass     : "  << double(fScint1_positions.size())*fScint1_log->GetMass()/CLHEP::kg << " kg\n";
+   std::cout << " Scint2 total mass     : "  << double(fScint1_positions.size())*10.0*fScint2_log->GetMass()/CLHEP::kg << " kg\n";
+   std::cout << "------------------------------------------------------------------------\n";
 
    // scintillator surface
    const    G4int NUM           = 2;
