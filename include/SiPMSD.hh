@@ -20,12 +20,13 @@ class SiPMSD : public G4VSensitiveDetector
       G4int                fHCID             = -1;
       SiPMHitsCollection * fHitsCollection   = nullptr;
       bool                 fRecordAllPhotons = true;
-      //std::map<clas12::hits::PhotonCounterHit>  * fPhotonCounterHits0 = nullptr;
+
+      std::map<int,clas12::hits::PhotonCounterHit>  * fPhotonCounterHits0 = nullptr;
       //std::map<clas12::hits::PhotonCounterHit>  * fPhotonCounterHits1 = nullptr;
       //std::map<clas12::hits::PhotonCounterHit>  * fPhotonCounterHitsTile = nullptr;
 
    public:
-      clas12::hits::RecoilScintEvent * fRecoilScintEvent = nullptr;
+      clas12::hits::RecoilScintEvent * fRHEvent = nullptr;
 
       G4ParticleDefinition * fOpticalPhoton = nullptr;
 
