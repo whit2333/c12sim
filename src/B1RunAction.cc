@@ -64,6 +64,10 @@ G4Run* B1RunAction::GenerateRun()
          "HitsEvent",
          "clas12::hits::CLAS12HitsEvent",
          &(simManager->fEvent)   );
+   simManager->fOutputTree->Branch(
+         "Test_RHEvent",
+         "clas12::hits::RecoilScintEvent",
+         &(simManager->fEvent->fRHEvent)   );
    /*simManager->fOutputTree->Branch(
          "TrajectoryVerticies",
          &(simManager->fTrajectoryVerticies) );*/

@@ -28,17 +28,25 @@ SiPMSD::~SiPMSD()
 {}
 //______________________________________________________________________________
 
+void SiPMSD::SetGroupNumber(int i)
+{
+    SimulationManager * simManager = SimulationManager::GetInstance();
+    fPhotonCounterHits0 = simManager->fEvent->fRecoilScintEvent->fPhotonCounters0;
+    //fPhotonCounterHits = simManager->fEvent->fRecoilScintEvent->fPhotonCounters[i];
+    //fPhotonCounterHits = simManager->fEvent->fRecoilScintEvent->fPhotonCounters[i];
+}
+
 void SiPMSD::Initialize(G4HCofThisEvent* HCE)
 {
-   if(!fRecoilScintEvent) {
-      SimulationManager * simManager = SimulationManager::GetInstance();
-      fRecoilScintEvent    = new clas12::hits::RecoilScintEvent();
-      simManager->fOutputTree->Branch(
-            Form("%s_%s",SensitiveDetectorName.data(),collectionName[0].data()),
-            "clas12::hits::RecoilScintEvent",
-            &fRecoilScintEvent   );
-   }
-   fRecoilScintEvent->Clear();
+   //if(!fRecoilScintEvent) {
+   //   SimulationManager * simManager = SimulationManager::GetInstance();
+   //   fRecoilScintEvent    = new clas12::hits::RecoilScintEvent();
+   //   simManager->fOutputTree->Branch(
+   //         Form("%s_%s",SensitiveDetectorName.data(),collectionName[0].data()),
+   //         "clas12::hits::RecoilScintEvent",
+   //         &fRecoilScintEvent   );
+   //}
+   //fRecoilScintEvent->Clear();
 
    fHitsCollection = new SiPMHitsCollection( SensitiveDetectorName, collectionName[0] ); 
    if(fHCID<0) {
@@ -102,13 +110,13 @@ G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
          // -------------------------------------------------
 
          //double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
-         fRecoilScintEvent->fPhotonCounterHits[channel].fChannel = channel; // derp
-         fRecoilScintEvent->fPhotonCounterHits[channel].fCount++;
-         fRecoilScintEvent->fPhotonCounterHits[channel].fTime   += time;
-         fRecoilScintEvent->fPhotonCounterHits[channel].fLambda += lambda;
-         fRecoilScintEvent->fPhotonCounterHits[channel].fEnergy += total_energy;
-         fRecoilScintEvent->fPhotonCounterHits[channel].fMomentum += {px,py,pz};
-         fRecoilScintEvent->fPhotonCounterHits[channel].fPosition += {x,y,z};
+         fPhotonCounterHits0.fChannel = channel; // derp
+         fPhotonCounterHits0.fCount++;
+         fPhotonCounterHits0.fTime   += time;
+         fPhotonCounterHits0.fLambda += lambda;
+         fPhotonCounterHits0.fEnergy += total_energy;
+         fPhotonCounterHits0.fMomentum += {px,py,pz};
+         fPhotonCounterHits0.fPosition += {x,y,z};
 
          if(fRecordAllPhotons) {
 

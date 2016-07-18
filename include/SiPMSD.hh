@@ -20,6 +20,9 @@ class SiPMSD : public G4VSensitiveDetector
       G4int                fHCID             = -1;
       SiPMHitsCollection * fHitsCollection   = nullptr;
       bool                 fRecordAllPhotons = true;
+      //std::map<clas12::hits::PhotonCounterHit>  * fPhotonCounterHits0 = nullptr;
+      //std::map<clas12::hits::PhotonCounterHit>  * fPhotonCounterHits1 = nullptr;
+      //std::map<clas12::hits::PhotonCounterHit>  * fPhotonCounterHitsTile = nullptr;
 
    public:
       clas12::hits::RecoilScintEvent * fRecoilScintEvent = nullptr;
@@ -29,6 +32,7 @@ class SiPMSD : public G4VSensitiveDetector
    public:
       SiPMSD(G4String name);
       virtual ~SiPMSD();
+      void SetGroupNumber(int i);
 
       void  SetCopyNoParent(int i) { fCopyNoParent = i; } 
       G4int GetCopyNoParent() const {return fCopyNoParent; }
