@@ -37,10 +37,10 @@ void ScintTileSensitiveDetector::Initialize(G4HCofThisEvent* HCE)
    if(!fRecoilScintEvent) {
       SimulationManager * simManager = SimulationManager::GetInstance();
       fRecoilScintEvent    = new clas12::hits::RecoilScintEvent();
-      simManager->fOutputTree->Branch(
-            Form("%s_%s",SensitiveDetectorName.data(),collectionName[0].data()),
-            "clas12::hits::RecoilScintEvent",
-            &fRecoilScintEvent   );
+      //simManager->fOutputTree->Branch(
+      //      Form("%s_%s",SensitiveDetectorName.data(),collectionName[0].data()),
+      //      "clas12::hits::RecoilScintEvent",
+      //      &fRecoilScintEvent   );
    }
    fRecoilScintEvent->Clear();
 

@@ -60,14 +60,19 @@ G4Run* B1RunAction::GenerateRun()
    simManager->fOutputFile->cd();
 
    simManager->fOutputTree = new TTree(simManager->fOutputTreeName.c_str(),"Clas12 simulation output");
+
+   std::cout << " tree created\n";
+
    simManager->fOutputTree->Branch(
          "HitsEvent",
          "clas12::hits::CLAS12HitsEvent",
          &(simManager->fEvent)   );
+   std::cout << " b1 created\n";
    simManager->fOutputTree->Branch(
          "Test_RHEvent",
          "clas12::hits::RecoilScintEvent",
          &(simManager->fEvent->fRHEvent)   );
+   std::cout << " b2 created\n";
    /*simManager->fOutputTree->Branch(
          "TrajectoryVerticies",
          &(simManager->fTrajectoryVerticies) );*/

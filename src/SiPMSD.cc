@@ -20,6 +20,9 @@ SiPMSD::SiPMSD(G4String name) : G4VSensitiveDetector(name)
    collectionName.insert( HCname = "SiPM_Hits" );
    fHCID = -1;
 
+   SimulationManager * simManager = SimulationManager::GetInstance();
+   fRHEvent = &(simManager->fEvent->fRHEvent);
+
    fOpticalPhoton = G4ParticleTable::GetParticleTable()->FindParticle("opticalphoton");
 }
 //______________________________________________________________________________
@@ -28,13 +31,18 @@ SiPMSD::~SiPMSD()
 {}
 //______________________________________________________________________________
 
-void SiPMSD::SetGroupNumber(int i)
+void SiPMSD::SetGroup(int i)
 {
-    SimulationManager * simManager = SimulationManager::GetInstance();
-    fPhotonCounterHits0 = &(simManager->fEvent->fRHEvent.fPhotonCounterHits0);
-    //fPhotonCounterHits = simManager->fEvent->fRHEvent->fPhotonCounters[i];
-    //fPhotonCounterHits = simManager->fEvent->fRHEvent->fPhotonCounters[i];
+   SimulationManager * simManager = SimulationManager::GetInstance();
+   if(i == 0) {
+      fPhotonCounterHits = &(simManager->fEvent->fRHEvent.fPhotonCounterHits0);
+   } else if( i == 1 ) {
+      fPhotonCounterHits = &(simManager->fEvent->fRHEvent.fPhotonCounterHits1);
+   } else {
+      fPhotonCounterHits = &(simManager->fEvent->fRHEvent.fPhotonCounterHitsTile);
+   }
 }
+//______________________________________________________________________________
 
 void SiPMSD::Initialize(G4HCofThisEvent* HCE)
 {
@@ -110,13 +118,13 @@ G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
          // -------------------------------------------------
 
          //double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
-         (*fPhotonCounterHits0)[channel].fChannel = channel; // derp
-         (*fPhotonCounterHits0)[channel].fCount++;
-         (*fPhotonCounterHits0)[channel].fTime   += time;
-         (*fPhotonCounterHits0)[channel].fLambda += lambda;
-         (*fPhotonCounterHits0)[channel].fEnergy += total_energy;
-         (*fPhotonCounterHits0)[channel].fMomentum += {px,py,pz};
-         (*fPhotonCounterHits0)[channel].fPosition += {x,y,z};
+         (*fPhotonCounterHits)[channel].fChannel = channel; // derp
+         (*fPhotonCounterHits)[channel].fCount++;
+         (*fPhotonCounterHits)[channel].fTime   += time;
+         (*fPhotonCounterHits)[channel].fLambda += lambda;
+         (*fPhotonCounterHits)[channel].fEnergy += total_energy;
+         (*fPhotonCounterHits)[channel].fMomentum += {px,py,pz};
+         (*fPhotonCounterHits)[channel].fPosition += {x,y,z};
 
          if(fRecordAllPhotons) {
 
@@ -160,7 +168,7 @@ void SiPMSD::EndOfEvent(G4HCofThisEvent*)
    fRHEvent->fEventNumber = event_number;
    fRHEvent->fRunNumber   = run_number;
 
-   for( auto& c : fRHEvent->fPhotonCounterHits0){
+   for( auto& c : (*fPhotonCounterHits)){
       double norm = 1.0/double(c.second.fCount);
          c.second.fTime   *= norm;
          c.second.fLambda *= norm;

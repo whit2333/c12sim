@@ -389,6 +389,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
 
    if(!fPhotonDet1_det) fPhotonDet1_det = new SiPMSD("/PM1");
    SDMan->AddNewDetector(fPhotonDet1_det);
+   fPhotonDet1_det->SetGroup(0);
    fPhotonDet1_log->SetSensitiveDetector(fPhotonDet1_det);
    fPhotonDet1_det->SetCopyNoParent(1);
    // ------------------------------------------------------------------------
@@ -405,6 +406,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
 
    if(!fPhotonDet2_det) fPhotonDet2_det = new SiPMSD("/PM2");
    SDMan->AddNewDetector(fPhotonDet2_det);
+   fPhotonDet2_det->SetGroup(1);
    fPhotonDet2_log->SetSensitiveDetector(fPhotonDet2_det);
    fPhotonDet2_det->SetCopyNoParent(1);
 
@@ -438,6 +440,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
 
    if(!fPhotonDet3_det) fPhotonDet3_det = new SiPMSD("/PM3");
    SDMan->AddNewDetector(fPhotonDet3_det);
+   fPhotonDet3_det->SetGroup(2);
    fPhotonDet3_log->SetSensitiveDetector(fPhotonDet3_det);
    fPhotonDet3_det->SetCopyNoParent(1);
 
