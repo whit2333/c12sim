@@ -64,9 +64,9 @@ G4Run* B1RunAction::GenerateRun()
          "HitsEvent",
          "clas12::hits::CLAS12HitsEvent",
          &(simManager->fEvent)   );
-   simManager->fOutputTree->Branch(
+   /*simManager->fOutputTree->Branch(
          "TrajectoryVerticies",
-         &(simManager->fTrajectoryVerticies) );
+         &(simManager->fTrajectoryVerticies) );*/
 
 
    // ---------------------------------------------------------

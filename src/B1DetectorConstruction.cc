@@ -331,21 +331,21 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Drift chamber
    // ------------------------------------------------------------------------
-   std::cout << " Drift chamber construction \n";
-   fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
-   fDriftChamber->BuildLogicalVolumes();
+   //std::cout << " Drift chamber construction \n";
+   //fDriftChamber = SimulationManager::GetInstance()->GetDriftDetectorGeometry();
+   //fDriftChamber->BuildLogicalVolumes();
    // Sectors
-   for(int i = 1; i<=1; i++ ) {
+   //for(int i = 1; i<=6; i++ ) {
       // Region I
-      fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 1);
+      //fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 1);
       //if(i==1) fDriftChamber->PlacePhysicalVolume( world_log, i, 1);
       // Region II
-      fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 2);
+      //fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 2);
       //fDriftChamber->PlacePhysicalVolume( world_log, i, 2);
       // Region III
-      fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 3);
+      //fDriftChamber->PlaceParallelPhysicalVolume( world_log, i, 3);
       //fDriftChamber->PlacePhysicalVolume( world_log, i, 3);
-   }
+   //}
 
    // ------------------------------------------------------------------------
    // HTCC  
@@ -364,13 +364,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Electromagnetic Calorimeter (EC)
    // ------------------------------------------------------------------------
-   std::cout << " EC construction \n";
-   fEC = SimulationManager::GetInstance()->GetECDetectorGeometry();
-   fEC->BuildLogicalVolumes();
+   //std::cout << " EC construction \n";
+   //fEC = SimulationManager::GetInstance()->GetECDetectorGeometry();
+   //fEC->BuildLogicalVolumes();
    // Sectors
-   for(int i = 1; i<=6; i++ ) {
-      fEC->PlaceParallelPhysicalVolume( world_log, i, 1);
-   }
+   //for(int i = 1; i<=6; i++ ) {
+   //   fEC->PlaceParallelPhysicalVolume( world_log, i, 1);
+   //}
 
    // ------------------------------------------------------------------------
    // EIC SiVertexTracker
@@ -383,13 +383,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Recoil Chamber
    // ------------------------------------------------------------------------
-   std::cout << " Recoil chamber construction \n";
-   fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
-   fRecoilChamber->He10CO2   = He10CO2;
-   fRecoilChamber->HeiC4H10  = HeiC4H10;
-   fRecoilChamber->Tungsten  = Tungsten; 
-   fRecoilChamber->Mylar     = Mylar;
-   fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
+   //std::cout << " Recoil chamber construction \n";
+   //fRecoilChamber = SimulationManager::GetInstance()->GetRecoilDetectorGeometry();
+   //fRecoilChamber->He10CO2   = He10CO2;
+   //fRecoilChamber->HeiC4H10  = HeiC4H10;
+   //fRecoilChamber->Tungsten  = Tungsten; 
+   //fRecoilChamber->Mylar     = Mylar;
+   //fRecoilChamber->PlaceParallelPhysicalVolume( world_log);
 
 
    // ------------------------------------------------------------------------
@@ -421,9 +421,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    // ------------------------------------------------------------------------
    // Solenoid Geometry
    // ------------------------------------------------------------------------
-   fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
-   fSolenoid->BuildLogicalVolumes();
-   fSolenoid->PlacePhysicalVolume( world_log );
+   //fSolenoid = SimulationManager::GetInstance()->GetSolenoidDetectorGeometry();
+   //fSolenoid->BuildLogicalVolumes();
+   //fSolenoid->PlacePhysicalVolume( world_log );
 
    // ------------------------------------------------------------------------
    // Torus Geometry
