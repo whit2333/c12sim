@@ -69,7 +69,7 @@ G4Run* B1RunAction::GenerateRun()
          &(simManager->fEvent)   );
    std::cout << " b1 created\n";
    simManager->fOutputTree->Branch(
-         "Test_RHEvent",
+         "RHEvent",
          "clas12::hits::RecoilScintEvent",
          &(simManager->fEvent->fRHEvent)   );
    std::cout << " b2 created\n";
