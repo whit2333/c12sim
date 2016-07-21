@@ -27,6 +27,11 @@ class SiPMSD : public G4VSensitiveDetector
       clas12::hits::RecoilScintEvent * fRHEvent = nullptr;
 
       G4ParticleDefinition * fOpticalPhoton = nullptr;
+      G4ParticleDefinition * fNeutron       = nullptr;
+
+      G4int                fNeutronCount     = 0;
+      G4double             fNeutronEnergyDep = 0.0; // Accumulated E-dep from neutrons
+      G4double             fNeutronEnergy    = 0.0; // Accumulated neutron energy flux
 
    public:
       SiPMSD(G4String name);

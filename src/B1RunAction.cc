@@ -1,10 +1,12 @@
 #include "B1RunAction.hh"
+
 #include "B1PrimaryGeneratorAction.hh"
 #include "SimplePrimaryGeneratorAction.hh"
 #include "B1DetectorConstruction.hh"
 #include "B1Run.hh"
 #include "B1Analysis.hh"
 #include "dollar.hpp"
+#include "SiPMSD.hh"
 
 #include "G4RunManager.hh"
 #include "G4LogicalVolumeStore.hh"
@@ -177,6 +179,7 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
    //      << G4endl
    //      << "--------------------End of Local Run------------------------";
    //}
+   //}
 
    using namespace clas12::DAQ;
 
@@ -197,6 +200,15 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
    //Crate           * crate         = daq_manager->GetCrate(0);
    //Module<Scaler>  * scaler_module = crate->GetCrateModule<Scaler>(2);
    //scaler_module->Print("v");
+
+   auto SD_man = G4SDManager::GetSDMpointer();
+   SiPMSD* pm     = dynamic_cast<SiPMSD*>(SD_man->FindSensitiveDetector("/PM3"));
+   if(pm) {
+      std::cout << "Tile Scintillator neutron dose:" << std::endl;
+      std::cout << "  neutron  count: " << pm->fNeutronCount << std::endl;
+      std::cout << "          energy: " << pm->fNeutronEnergy << std::endl;
+      std::cout << "      energy dep: " << pm->fNeutronEnergyDep << std::endl;
+   }
 
 
    simManager->fOutputTree->Write();

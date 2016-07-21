@@ -24,6 +24,7 @@ SiPMSD::SiPMSD(G4String name) : G4VSensitiveDetector(name)
    fRHEvent = &(simManager->fEvent->fRHEvent);
 
    fOpticalPhoton = G4ParticleTable::GetParticleTable()->FindParticle("opticalphoton");
+   fNeutron       = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
 }
 //______________________________________________________________________________
 
@@ -66,10 +67,7 @@ void SiPMSD::Initialize(G4HCofThisEvent* HCE)
 
 G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-
    using namespace CLHEP;
-   //G4StepPoint* preStep = aStep->GetPreStepPoint();
-   //G4TouchableHistory* touchable = (G4TouchableHistory*)(preStep->GetTouchable());
 
    G4StepPoint        * preStep   = aStep->GetPreStepPoint();
    G4TouchableHistory * touchable = (G4TouchableHistory*)(preStep->GetTouchable());
@@ -77,6 +75,7 @@ G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
    // check if the particle type is Optical Photon
    bool is_OpticalPhoton = (aStep->GetTrack()->GetDefinition() == fOpticalPhoton);
+   bool is_neutron       = (aStep->GetTrack()->GetDefinition() == fNeutron);
 
    if( (pdgcode == 0) && is_OpticalPhoton ) {
       if( preStep->GetStepStatus() == fGeomBoundary ) {
@@ -153,6 +152,14 @@ G4bool SiPMSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
          // -------------------------------------------------
 
          aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+      }
+   } else if(is_neutron) {
+      if( preStep->GetStepStatus() == fGeomBoundary ) {
+         //double        total_energy   = aStep->GetPreStepPoint()->GetTotalEnergy()/MeV;
+         double        kinetic_energy = aStep->GetPreStepPoint()->GetKineticEnergy()/MeV;
+         fNeutronCount++; 
+         fNeutronEnergyDep += aStep->GetTotalEnergyDeposit()/MeV;
+         fNeutronEnergy    += kinetic_energy;
       }
    }
    return true;
