@@ -24,6 +24,7 @@
 #include "B1EventAction.hh"
 #include "TSystem.h"
 #include "G4TrackingManager.hh"
+#include "rang.hpp"
 
 
 using ss = std::stringstream;
@@ -183,7 +184,11 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
    using namespace clas12::DAQ;
 
-   G4cout << "\e[1m=================== \e[41mEND RUN #" << fRunNumber << "\e[49m===================\e[0m" << G4endl;
+   std::cout << rang::style::bold << rang::fg::red << rang::bg::black;
+
+   std::cout << "=================== END RUN #" << fRunNumber << "===================" << std::endl;
+
+   std::cout << rang::style::reset ;
 
    SimulationManager * simManager = SimulationManager::GetInstance();
 
