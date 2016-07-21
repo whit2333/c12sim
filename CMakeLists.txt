@@ -163,6 +163,7 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/data DESTINATION ${C12SIM_DEFAULT_EG_DIR
 # bash scripts
 set(BASH_SCRIPT_FILES
   fast-c12sim
+  simple_eg_macro
   )
 foreach(_script ${BASH_SCRIPT_FILES})
    configure_file("bin/${_script}.in" "${PROJECT_BINARY_DIR}/bin/${_script}" @ONLY)

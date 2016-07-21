@@ -1,0 +1,60 @@
+#!/bin/bash
+set -eou pipefail
+
+particle="proton"
+momentum="100"
+mass="938"
+usage="$0 -p PARTICLE -P MOMENTUM_IN_MEV -t THETA_IN_DEG -T DELTA_THETA"
+commands=""
+events=1000
+theta=70
+deltatheta=0.1
+
+
+while getopts "p:E:P:m:t:T:n:vhd" options; do
+  case $options in
+    p ) particle=$OPTARG ;;
+    P ) momentum=$OPTARG ;;
+    m ) mass=$OPTARG ;;
+    n ) events=$OPTARG ;;
+    t ) theta=$OPTARG ;;
+    T ) deltatheta=$OPTARG ;;
+    h ) echo -e $usage ; exit 0;;
+    \? ) echo -e $usage
+         exit 1;;
+    * ) echo -e $usage ;
+          exit 1;;
+  esac
+done
+shift $(($OPTIND - 1)) # $1 is now the first non-option argument, $2 the second, etc
+
+case $particle in
+   "proton"   ) mass=938 ;;
+   "deuteron" ) mass=1876 ;;
+   "triton"   ) mass=2809 ;;
+   "He3"      ) mass=2809 ;;
+   "alpha"    ) mass=3728 ;;
+   * ) mass=0 ;;
+esac
+
+
+KE=$(echo "scale=4; sqrt($mass * $mass + $momentum * $momentum) - $mass" | bc -l)
+th_min=$(echo "scale=3; $theta - $deltatheta" | bc -l)
+th_max=$(echo "scale=3; $theta + $deltatheta" | bc -l)
+
+echo "/run/initialize"
+echo "/gps/particle    ${particle}"
+echo "/gps/pos/type    Volume"
+echo "/gps/pos/shape   Cylinder"
+echo "/gps/pos/centre  0 0 0 cm"
+echo "/gps/pos/halfz   10   cm"
+echo "/gps/pos/radius   0.1 mm"
+echo "/gps/ang/type     iso"
+echo "/gps/ang/mintheta ${th_min} deg"
+echo "/gps/ang/maxtheta ${th_max} deg"
+echo "/gps/ang/minphi  -180 deg"
+echo "/gps/ang/maxphi   180 deg"
+echo "/gps/ene/type    Mono"
+echo "/gps/ene/mono  $KE MeV"
+echo "/run/beamOn ${events}"
+
