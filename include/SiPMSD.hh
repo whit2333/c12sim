@@ -3,8 +3,9 @@
 
 #include "G4VSensitiveDetector.hh"
 #include "SiPMHit.hh"
-#include <array>
 #include "RecoilScintEvent.h"
+#include <array>
+#include <map>
 
 class G4Step;
 class G4HCofThisEvent;
@@ -36,6 +37,7 @@ class SiPMSD : public G4VSensitiveDetector
    public:
       SiPMSD(G4String name);
       virtual ~SiPMSD();
+
       void SetGroup(int i);
 
       void  SetCopyNoParent(int i) { fCopyNoParent = i; } 

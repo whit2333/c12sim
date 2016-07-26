@@ -88,9 +88,9 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
 
       int     channel  = touchable->GetReplicaNumber();
       double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
-      fRecoilScintEvent->fScintChannelHits[channel].fChannel = channel; // derp
-      fRecoilScintEvent->fScintChannelHits[channel].fSteps++;
-      fRecoilScintEvent->fScintChannelHits[channel].fEDep += e_dep;
+      //fRecoilScintEvent->fScintChannelHits[channel].fChannel = channel; // derp
+      //fRecoilScintEvent->fScintChannelHits[channel].fSteps++;
+      //fRecoilScintEvent->fScintChannelHits[channel].fEDep += e_dep;
    }
 
    return true;

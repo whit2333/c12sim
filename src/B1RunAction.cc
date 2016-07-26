@@ -65,11 +65,10 @@ G4Run* B1RunAction::GenerateRun()
    simManager->fOutputTree = new TTree(simManager->fOutputTreeName.c_str(),"Clas12 simulation output");
 
    std::cout << " tree created\n";
-
-   simManager->fOutputTree->Branch(
-         "HitsEvent",
-         "clas12::hits::CLAS12HitsEvent",
-         &(simManager->fEvent)   );
+   //simManager->fOutputTree->Branch(
+   //      "HitsEvent",
+   //      "clas12::hits::CLAS12HitsEvent",
+   //      &(simManager->fEvent)   );
    std::cout << " b1 created\n";
    simManager->fOutputTree->Branch(
          "RHEvent",
