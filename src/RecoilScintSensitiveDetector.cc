@@ -26,8 +26,8 @@ RecoilScintSensitiveDetector::RecoilScintSensitiveDetector(G4String name) : G4VS
 
    fOpticalPhoton = G4ParticleTable::GetParticleTable()->FindParticle("opticalphoton");
 
-   SimulationManager * sim_manager  = SimulationManager::GetInstance();
-   fRecoilScintEvent = &(sim_manager->fEvent->fRHEvent);
+   SimulationManager * simManager  = SimulationManager::GetInstance();
+   fRHEvent = &(simManager->fEvent->fRHEvent);
 }
 //______________________________________________________________________________
 
@@ -35,9 +35,37 @@ RecoilScintSensitiveDetector::~RecoilScintSensitiveDetector()
 {}
 //______________________________________________________________________________
 
+void RecoilScintSensitiveDetector::SetGroup(int i)
+{
+   SimulationManager * simManager = SimulationManager::GetInstance();
+   //if(!fRHEvent) {
+      // This should really never happen
+     // std::cout << "warning ScintTileSensitiveDetector::SetGroup() created RHEvent!!\n";
+      //fRHEvent    = new clas12::hits::RecoilScintEvent();
+   //}
+   //fRHEvent->Clear();
+   if(i==0) {
+      // bar
+      fScintChannelHits = &(simManager->fEvent->fRHEvent.fScintChannelHitsBar);
+   } else  if(i==1) {
+      // tile
+      fScintChannelHits = &(simManager->fEvent->fRHEvent.fScintChannelHitsTile);
+   } else {
+      std::cout << "ScintTileSensitiveDetector::SetGroup(" << i << ") : unknown group!\n";
+      std::cout << "  assuming tile hit....\n";
+      fScintChannelHits = &(simManager->fEvent->fRHEvent.fScintChannelHitsTile);
+   }
+}
+//______________________________________________________________________________
+
 void RecoilScintSensitiveDetector::Initialize(G4HCofThisEvent* HCE)
 {
-   fRecoilScintEvent->Clear();
+   
+   if(!fRHEvent){
+     SimulationManager * simManager = SimulationManager::GetInstance();
+     fRHEvent = new clas12::hits::RecoilScintEvent();
+   }
+   fRHEvent->Clear();
 
    hitsCollection = new RecoilScintHitsCollection( SensitiveDetectorName, collectionName[0] ); 
    if(HCID<0) {
@@ -74,7 +102,7 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
          double        aTime        = aStep->GetTrack()->GetGlobalTime()/CLHEP::ns;
          TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,aTime);
 
-         clas12::hits::ParticleHit * pHit = fRecoilScintEvent->AddParticleHit(channel);
+         clas12::hits::ParticleHit * pHit = fRHEvent->AddParticleHit(channel);
 
          pHit->fPDGCode            = pdgcode;
          pHit->fTrackID            = trk_id;
@@ -88,9 +116,9 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
 
       int     channel  = touchable->GetReplicaNumber();
       double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
-      //fRecoilScintEvent->fScintChannelHits[channel].fChannel = channel; // derp
-      //fRecoilScintEvent->fScintChannelHits[channel].fSteps++;
-      //fRecoilScintEvent->fScintChannelHits[channel].fEDep += e_dep;
+      (*fScintChannelHits)[channel].fChannel = channel; // derp
+      (*fScintChannelHits)[channel].fSteps++;
+      (*fScintChannelHits)[channel].fEDep += e_dep;
    }
 
    return true;
@@ -102,8 +130,8 @@ void RecoilScintSensitiveDetector::EndOfEvent(G4HCofThisEvent*)
    int event_number = G4RunManager::GetRunManager()->GetCurrentRun()->GetNumberOfEvent();
    int run_number   = SimulationManager::GetInstance()->GetRunNumber();
 
-   fRecoilScintEvent->fEventNumber = event_number;
-   fRecoilScintEvent->fRunNumber   = run_number;
+   fRHEvent->fEventNumber = event_number;
+   fRHEvent->fRunNumber   = run_number;
 }
 //______________________________________________________________________________
 

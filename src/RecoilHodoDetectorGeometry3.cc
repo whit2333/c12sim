@@ -329,6 +329,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
 
    if(!fScint1_det) fScint1_det = new RecoilScintSensitiveDetector("/recoil_scint1");
    G4SDManager* SDMan = G4SDManager::GetSDMpointer();
+   fScint1_det->SetGroup(0);
    SDMan->AddNewDetector(fScint1_det);
    fScint1_log->SetSensitiveDetector(fScint1_det);
 
@@ -359,10 +360,11 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
    G4UserLimits * fScint2_limits = new G4UserLimits(0.5*mm);
    fScint2_log->SetUserLimits(fScint2_limits);
 
-   //if(!fScint1_det) fScint1_det = new RecoilScintSensitiveDetector("/recoil_scint1");
+   if(!fScint2_det) fScint2_det = new RecoilScintSensitiveDetector("/recoil_scint2");
    //G4SDManager* SDMan = G4SDManager::GetSDMpointer();
-   //SDMan->AddNewDetector(fScint1_det);
-   fScint2_log->SetSensitiveDetector(fScint1_det);
+   fScint2_det->SetGroup(1);
+   SDMan->AddNewDetector(fScint2_det);
+   fScint2_log->SetSensitiveDetector(fScint2_det);
 
    // ------------------------------------------------------------------------
    // First scintillator photon detection surface 
