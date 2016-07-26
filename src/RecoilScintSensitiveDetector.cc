@@ -38,12 +38,12 @@ RecoilScintSensitiveDetector::~RecoilScintSensitiveDetector()
 void RecoilScintSensitiveDetector::SetGroup(int i)
 {
    SimulationManager * simManager = SimulationManager::GetInstance();
-   //if(!fRHEvent) {
+   if(!fRHEvent) {
       // This should really never happen
-     // std::cout << "warning ScintTileSensitiveDetector::SetGroup() created RHEvent!!\n";
-      //fRHEvent    = new clas12::hits::RecoilScintEvent();
-   //}
-   //fRHEvent->Clear();
+      std::cout << "warning ScintTileSensitiveDetector::SetGroup() created RHEvent!!\n";
+      fRHEvent    = new clas12::hits::RecoilScintEvent();
+   }
+   fRHEvent->Clear();
    if(i==0) {
       // bar
       fScintChannelHits = &(simManager->fEvent->fRHEvent.fScintChannelHitsBar);
