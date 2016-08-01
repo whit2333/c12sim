@@ -1,5 +1,5 @@
 #include "RecoilScintSensitiveDetector.hh"
-#include "RecoilScintHit.hh"
+//#include "RecoilScintHit.hh"
 #include "G4Step.hh"
 #include "G4Track.hh"
 #include "G4HCofThisEvent.hh"
@@ -40,7 +40,7 @@ void RecoilScintSensitiveDetector::SetGroup(int i)
    SimulationManager * simManager = SimulationManager::GetInstance();
    if(!fRHEvent) {
       // This should really never happen
-      std::cout << "warning ScintTileSensitiveDetector::SetGroup() created RHEvent!!\n";
+      std::cout << "warning RecoilScintSensitiveDetector::SetGroup() created RHEvent!!\n";
       fRHEvent    = new clas12::hits::RecoilScintEvent();
    }
    fRHEvent->Clear();
@@ -51,7 +51,7 @@ void RecoilScintSensitiveDetector::SetGroup(int i)
       // tile
       fScintChannelHits = &(simManager->fEvent->fRHEvent.fScintChannelHitsTile);
    } else {
-      std::cout << "ScintTileSensitiveDetector::SetGroup(" << i << ") : unknown group!\n";
+      std::cout << "RecoilScintSensitiveDetector::SetGroup(" << i << ") : unknown group!\n";
       std::cout << "  assuming tile hit....\n";
       fScintChannelHits = &(simManager->fEvent->fRHEvent.fScintChannelHitsTile);
    }
