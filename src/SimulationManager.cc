@@ -28,8 +28,8 @@
 
 #include "c12sim.h"
 #include "RecoilChamberDetectorGeometry.h"
-#include "RecoilHodoDetectorGeometry.h"
-#include "RecoilHodoDetectorGeometry2.h"
+//#include "RecoilHodoDetectorGeometry.h"
+//#include "RecoilHodoDetectorGeometry2.h"
 #include "RecoilHodoDetectorGeometry3.h"
 #include "DriftChamberDetectorGeometry.h"
 #include "ECDetectorGeometry.h"
@@ -193,20 +193,20 @@ RecoilChamberDetectorGeometry * SimulationManager::GetRecoilDetectorGeometry(){
 }
 //______________________________________________________________________________
 
-RecoilHodoDetectorGeometry * SimulationManager::GetRecoilHodoDetectorGeometry(){
-   if(!fRecoilHodoGeo) {
-      fRecoilHodoGeo = new RecoilHodoDetectorGeometry();
-   }
-   return fRecoilHodoGeo;
-}
-//______________________________________________________________________________
-RecoilHodoDetectorGeometry2 * SimulationManager::GetRecoilHodoDetectorGeometry2(){
-   if(!fRecoilHodoGeo2) {
-      fRecoilHodoGeo2 = new RecoilHodoDetectorGeometry2();
-   }
-   return fRecoilHodoGeo2;
-}
-//______________________________________________________________________________
+//RecoilHodoDetectorGeometry * SimulationManager::GetRecoilHodoDetectorGeometry(){
+//   if(!fRecoilHodoGeo) {
+//      fRecoilHodoGeo = new RecoilHodoDetectorGeometry();
+//   }
+//   return fRecoilHodoGeo;
+//}
+////______________________________________________________________________________
+//RecoilHodoDetectorGeometry2 * SimulationManager::GetRecoilHodoDetectorGeometry2(){
+//   if(!fRecoilHodoGeo2) {
+//      fRecoilHodoGeo2 = new RecoilHodoDetectorGeometry2();
+//   }
+//   return fRecoilHodoGeo2;
+//}
+////______________________________________________________________________________
 
 RecoilHodoDetectorGeometry3 * SimulationManager::GetRecoilHodoDetectorGeometry3(){
    if(!fRecoilHodoGeo3) {

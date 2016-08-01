@@ -43,19 +43,6 @@ B1DetectorConstruction::B1DetectorConstruction() :
    fHasBeenBuilt(false)
 {
    fMessenger = new B1DetectorMessenger(this);
-
-   world_mat        = 0;
-   world_solid      = 0;
-   world_log        = 0;
-   world_phys       = 0;
-
-   fDriftChamber  = 0;//new DriftChamberDetectorGeometry();
-   fRecoilChamber = 0;
-   fRecoilHodo = 0;
-   fHTCC          = 0;
-   fSolenoid      = 0;
-   fTorus         = 0;
-   fBeamline      = 0;
 }
 //___________________________________________________________________
 

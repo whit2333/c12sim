@@ -30,8 +30,8 @@ void B1OpticalPhysics::ConstructParticle()
 
 void B1OpticalPhysics::ConstructProcess()
 {
-    G4cout << "B1OpticalPhysics:: Add Optical Physics Processes"
-           << G4endl;
+   // G4cout << "B1OpticalPhysics:: Add Optical Physics Processes"
+   //        << G4endl;
 
   //fB1Process = new G4OpB1();
   fScintProcess = new G4Scintillation();
