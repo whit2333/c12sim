@@ -202,9 +202,12 @@ void RecoilHodoDetectorGeometry3::BuildMaterials()
    a = 12.01*g/mole;
    density   = 1.032*g/cm3;
    G4Element* elC  = new G4Element("Carbon"  , "C",  6.0, a);
-   fScint1_mat = new G4Material("Scintillator", density, 2);
-   fScint1_mat->AddElement(elC, 9);
-   fScint1_mat->AddElement(elH, 10);
+   fScint1_mat = G4Material::GetMaterial("Scintillator",  /*print warning?*/ false);
+   if( !fScint1_mat ) {
+      fScint1_mat = new G4Material("Scintillator", density, 2);
+      fScint1_mat->AddElement(elC, 9);
+      fScint1_mat->AddElement(elH, 10);
+   }
 
    G4MaterialPropertiesTable* Scnt_MPT = new G4MaterialPropertiesTable();
    Scnt_MPT->AddProperty("FASTCOMPONENT", emissionSpectrum[1].data(), emissionSpectrum[2].data(), emissionSpectrum[1].size());
@@ -237,7 +240,7 @@ void RecoilHodoDetectorGeometry3::BuildLogicalVolumes()
 
    BuildMaterials();
 
-   bool    checkOverlaps    = true;
+   bool    checkOverlaps    = false;
    int     natoms           = 0;
    int     ncomponents      = 0;
    double  A                = 0.0;
@@ -458,13 +461,13 @@ G4VPhysicalVolume * RecoilHodoDetectorGeometry3::PlacePhysicalVolume(
    bool checkOverlaps = false;
 
    // ------------------------------------------------------------------------
-   std::cout << "------------------------------------------------------------------------\n";
-   std::cout << " RecoilHodoDetectorGeometry3 Scintillator Masses\n";
-   std::cout << " Scint1 (30cm strip)   : " << fScint1_log->GetMass()/CLHEP::kg << " kg\n";
-   std::cout << " Scint2 (3cm long tile): " << fScint2_log->GetMass()/CLHEP::kg << " kg\n";
-   std::cout << " Scint1 total mass     : "  << double(fScint1_positions.size())*fScint1_log->GetMass()/CLHEP::kg << " kg\n";
-   std::cout << " Scint2 total mass     : "  << double(fScint1_positions.size())*10.0*fScint2_log->GetMass()/CLHEP::kg << " kg\n";
-   std::cout << "------------------------------------------------------------------------\n";
+   //std::cout << "------------------------------------------------------------------------\n";
+   //std::cout << " RecoilHodoDetectorGeometry3 Scintillator Masses\n";
+   //std::cout << " Scint1 (30cm strip)   : " << fScint1_log->GetMass()/CLHEP::kg << " kg\n";
+   //std::cout << " Scint2 (3cm long tile): " << fScint2_log->GetMass()/CLHEP::kg << " kg\n";
+   //std::cout << " Scint1 total mass     : " << double(fScint1_positions.size())*fScint1_log->GetMass()/CLHEP::kg << " kg\n";
+   //std::cout << " Scint2 total mass     : " << double(fScint1_positions.size())*10.0*fScint2_log->GetMass()/CLHEP::kg << " kg\n";
+   //std::cout << "------------------------------------------------------------------------\n";
 
    // scintillator surface
    const    G4int NUM           = 2;

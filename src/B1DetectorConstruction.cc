@@ -173,7 +173,7 @@ void B1DetectorConstruction::DefineMaterials()
    G4double d_He = (a_noUnit*pre_noUnit)/(0.0821*tempe_noUnit)*kg/m3; //0.164*kg/m3 at 1 atm;
    He_ClearS = new G4Material("He_ClearS", d_He, ncomponents=1, kStateGas,temperature,pressure);
    He_ClearS->AddElement(elHe, fractionmass=1.);
-   G4cout << "He density is " << d_He/(kg/m3) << "." << G4endl;
+   //G4cout << "He density is " << d_He/(kg/m3) << "." << G4endl;
 
    // -----------------------------------------------
    // Xenon
@@ -186,7 +186,7 @@ void B1DetectorConstruction::DefineMaterials()
    Xe_varPT = new G4Material("Xe", density, ncomponents=1,
          kStateGas,temperature,pressure);
    Xe_varPT->AddElement(elXe, fractionmass=1.);
-   G4cout << "Xe density is " << density/(kg/m3) << "." << G4endl;
+   //G4cout << "Xe density is " << density/(kg/m3) << "." << G4endl;
 
    // -----------------------------------------------
    // iso-Butane
@@ -200,7 +200,7 @@ void B1DetectorConstruction::DefineMaterials()
    isobutane = new G4Material("isoC4H10",d_iC4H10,ncomponents=2,kStateGas,temperature,pressure);
    isobutane->AddElement(C,4);
    isobutane->AddElement(H,10);
-   G4cout << "Isobutane density is " << density/(kg/m3) << "." << G4endl;
+   //G4cout << "Isobutane density is " << density/(kg/m3) << "." << G4endl;
 
 
    // -----------------------------------------------
@@ -251,7 +251,7 @@ void B1DetectorConstruction::DefineMaterials()
          kStateGas,temperature,pressure);
    CO2->AddElement(C,1);
    CO2->AddElement(O,2);
-   G4cout << "C02 density is " << d_CO2/(kg/m3) << "." << G4endl;
+   //G4cout << "C02 density is " << d_CO2/(kg/m3) << "." << G4endl;
 
    // -----------------------------------------------
    // Gas mixtures
@@ -261,14 +261,14 @@ void B1DetectorConstruction::DefineMaterials()
    He10CO2 = new G4Material("He10CO2"  , density, ncomponents=2);
    He10CO2->AddElement(elHe, fractionmass = 0.9);
    He10CO2->AddMaterial(CO2,    fractionmass = 0.1);
-   G4cout << "He10C02 density is " << density/(kg/m3) << "." << G4endl;
+   //G4cout << "He10C02 density is " << density/(kg/m3) << "." << G4endl;
 
    // 90% He - 10% iC4H10
    density = (d_He*90./100. + d_iC4H10*10./100.);
    HeiC4H10 = new G4Material("HeC4H10"  , density, ncomponents=2);
    HeiC4H10->AddElement(elHe,   fractionmass = 0.9);
    HeiC4H10->AddMaterial(isobutane, fractionmass = 0.1);
-   G4cout << "HeiC4H10 density is " << density/(kg/m3) << "." << G4endl;
+   //G4cout << "HeiC4H10 density is " << density/(kg/m3) << "." << G4endl;
 
 }
 //______________________________________________________________________________
@@ -466,8 +466,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    if( simMan->GetToroidFieldScale()   == 0.0 ){
       use_torus    = false;
    }
-   std::cout << " simMan->GetSolenoidFieldScale() = " << simMan->GetSolenoidFieldScale() << std::endl;
-   std::cout << " simMan->GetToroidFieldScale()   = " << simMan->GetToroidFieldScale()   << std::endl;
+   //std::cout << " simMan->GetSolenoidFieldScale() = " << simMan->GetSolenoidFieldScale() << std::endl;
+   //std::cout << " simMan->GetToroidFieldScale()   = " << simMan->GetToroidFieldScale()   << std::endl;
    C12MagneticField * magField = new C12MagneticField(
          use_torus,                     use_solenoid ,
          simMan->GetToroidFieldScale(), simMan->GetSolenoidFieldScale() );
@@ -491,7 +491,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fieldMgr->SetMinimumEpsilonStep( minEps );
    fieldMgr->SetMaximumEpsilonStep( maxEps );
    fieldMgr->SetDeltaOneStep( 0.001);//1.0e-6 * mm );  // 0.5 micrometer
-   G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
+   //G4cout << "EpsilonStep: set min= " << minEps << " max= " << maxEps << G4endl;
 
    // Register the field and its manager for deleting
    //G4AutoDelete::Register(magField);
@@ -499,11 +499,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
    double pos[4] = {0.0,0.0,0.0,0.0};
    G4ThreeVector myfield = magField->GetFieldValue(pos);
-   G4cout << "magnetic field at origin : ( " 
-      << myfield[0] << " , " 
-      << myfield[1] << " , " 
-      << G4BestUnit(myfield[2],"Magnetic flux density") 
-      << ")" << G4endl;;
+   //G4cout << "magnetic field at origin : ( " 
+   //   << myfield[0] << " , " 
+   //   << myfield[1] << " , " 
+   //   << G4BestUnit(myfield[2],"Magnetic flux density") 
+   //   << ")" << G4endl;;
 
    // ------------------------------------------------------------------------
    // Target
@@ -515,7 +515,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    new G4PVPlacement(0, target_pos,   logicTarget,  "Target_phys", world_log,    
          false,           //no boolean operation
          0,               //copy number
-         true);  //overlaps checking
+         checkOverlaps);  //overlaps checking
    //Definition of visualisation attributes
    //Instantiation of a set of visualization attributes with cyan colour
    G4VisAttributes * TargetVisAtt = new G4VisAttributes(G4Colour(1.,1.,1.,0.3));
@@ -578,7 +578,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
          world_log,    //its mother  volume
          false,                   //no boolean operation
          0,                       //copy number
-         true);          //overlaps checking
+         checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -605,7 +605,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
          world_log,    //its mother  volume
          false,                   //no boolean operation
          0,                       //copy number
-         true);          //overlaps checking
+         checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -638,7 +638,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
          world_log,    //its mother  volume
          false,                   //no boolean operation
          0,                       //copy number
-         true);          //overlaps checking
+         checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour
@@ -663,7 +663,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
          world_log,    //its mother  volume
          false,                   //no boolean operation
          0,                       //copy number
-         true);          //overlaps checking
+         checkOverlaps);          //overlaps checking
 
    // Definition of visualisation attributes
    // Instantiation of a set of visualization attributes with cyan colour

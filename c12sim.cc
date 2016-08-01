@@ -351,10 +351,13 @@ int main(int argc,char** argv)
 
    // Initialize visualization
    //
-   G4VisManager* visManager = new G4VisExecutive;
-   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
-   // G4VisManager* visManager = new G4VisExecutive("Quiet");
-   visManager->Initialize();
+   G4VisManager* visManager = nullptr;//new G4VisExecutive;
+   if(use_vis) {
+      visManager = new G4VisExecutive("Quiet");
+      // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
+      // G4VisManager* visManager = new G4VisExecutive("Quiet");
+      visManager->Initialize();
+   }
 
    // Get the pointer to the User Interface manager
    G4UImanager* UImanager = G4UImanager::GetUIpointer();
@@ -405,6 +408,8 @@ int main(int argc,char** argv)
       delete ui;
    }
 
+   if(use_vis) delete visManager;
+   delete runManager;
    std::string profiler_log_filename = "data/log/prof_c12sim_";
    profiler_log_filename += std::to_string(run_number);
    profiler_log_filename += ".md";
@@ -421,8 +426,6 @@ int main(int argc,char** argv)
    // owned and deleted by the run manager, so they should not be deleted 
    // in the main() program !
 
-   delete visManager;
-   delete runManager;
 }
 //______________________________________________________________________________
 

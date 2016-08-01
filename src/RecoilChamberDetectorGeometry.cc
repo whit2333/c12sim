@@ -34,7 +34,7 @@ RecoilChamberDetectorGeometry::RecoilChamberDetectorGeometry()
    fSensitiveDetector = new RecoilChamberSensitiveDetector("RecoilChamber",6*6*6*112);
    SDMan->AddNewDetector(fSensitiveDetector);
 
-   fRCGeometry.Print();
+   //fRCGeometry.Print();
 }
 //______________________________________________________________________________
 
@@ -160,7 +160,7 @@ G4VPhysicalVolume * RecoilChamberDetectorGeometry::PlaceParallelPhysicalVolume(G
       new G4LogicalVolume(gasDetector, HeiC4H10, "GasDetectorPara_log");            
 
    G4VPhysicalVolume * gasDetector_phys = new G4PVPlacement(0, gasDetector_pos, logicGasDetector, 
-         "gasDetectorPara_phys", mother, false, 0, true);            
+         "gasDetectorPara_phys", mother, false, 0, check_overlaps);            
 
    G4VisAttributes * GasDetectorVisAtt = new G4VisAttributes(G4Colour(0.3,0.1,0.1));
    GasDetectorVisAtt->SetForceWireframe(true);
