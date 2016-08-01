@@ -466,6 +466,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    if( simMan->GetToroidFieldScale()   == 0.0 ){
       use_torus    = false;
    }
+   if( use_torus || use_solenoid ) {
+      std::cout << "Loading Field Maps... (this may take a minute) \n";
+   }
    //std::cout << " simMan->GetSolenoidFieldScale() = " << simMan->GetSolenoidFieldScale() << std::endl;
    //std::cout << " simMan->GetToroidFieldScale()   = " << simMan->GetToroidFieldScale()   << std::endl;
    C12MagneticField * magField = new C12MagneticField(
