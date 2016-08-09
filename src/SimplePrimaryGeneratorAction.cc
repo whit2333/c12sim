@@ -86,9 +86,9 @@ void SimplePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //fParticleGun->SetParticleDefinition(particle);
       auto root_PDGparticle = part->GetPDG();
       auto g4_particle  = fParticleGun->GetParticleDefinition();
-      if(!root_PDGparticle) {
-        //std::cout << " TDatabasePDG does not have the particle \"" << g4_particle->GetParticleName() << "\" in the database.\n";
-      }
+      //if(!root_PDGparticle) {
+      //  std::cout << " TDatabasePDG does not have the particle \"" << g4_particle->GetParticleName() << "\" in the database.\n";
+      //}
 
       fParticleGun->GeneratePrimaryVertex(anEvent);
 
