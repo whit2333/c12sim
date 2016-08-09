@@ -23,7 +23,7 @@ SimplePrimaryGeneratorAction::SimplePrimaryGeneratorAction(int pdgcode) :
    fThrownEvent.Clear();
    fThrownEvent.AddParticle();
    TParticle * part = fThrownEvent.GetParticle(0);
-   part->SetPdgCode(pdgcode);
+   part->SetPdgCode(12389072345789634);
 
    fParticleGun  = new G4GeneralParticleSource();
    // default particle kinematic
@@ -84,11 +84,19 @@ void SimplePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //int pdgcode = part->GetPdgCode();
       //G4ParticleDefinition* particle = particleTable->FindParticle(pdgcode);
       //fParticleGun->SetParticleDefinition(particle);
+      auto root_PDGparticle = part->GetPDG();
+      auto g4_particle  = fParticleGun->GetParticleDefinition();
+      if(!root_PDGparticle) {
+        //std::cout << " TDatabasePDG does not have the particle \"" << g4_particle->GetParticleName() << "\" in the database.\n";
+      }
 
       fParticleGun->GeneratePrimaryVertex(anEvent);
-      int pdgcode = fParticleGun->GetParticleDefinition()->GetPDGEncoding();
 
-      double mass          = part->GetMass();
+      int pdgcode = g4_particle->GetPDGEncoding();
+
+      double mass          = g4_particle->GetPDGMass()/GeV;
+      //std::cout << " Mass = " << mass << std::endl;
+      //double mass          = part->GetMass();
       double E_kin         = fParticleGun->GetParticleEnergy()/GeV;
       double E_tot         = (E_kin+mass);
       double p_rand        = TMath::Sqrt( E_tot*E_tot - mass*mass );
@@ -102,6 +110,7 @@ void SimplePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       TLorentzVector P4vec = {pvec.x(),pvec.y(),pvec.z(),E_tot}; 
       part->SetPdgCode(pdgcode);
+      part->SetCalcMass(mass);
       part->SetMomentum(P4vec);
       part->SetProductionVertex(TLorentzVector(pos.x()/cm,pos.y()/cm,pos.z()/cm, 0.0));
 
