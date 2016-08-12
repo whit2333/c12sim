@@ -43,6 +43,7 @@ void RecoilScintSensitiveDetector::SetGroup(int i)
       std::cout << "warning RecoilScintSensitiveDetector::SetGroup() created RHEvent!!\n";
       fRHEvent    = new clas12::hits::RecoilScintEvent();
    }
+   fGroup = i;
    fRHEvent->Clear();
    if(i==0) {
       // bar
@@ -87,38 +88,45 @@ G4bool RecoilScintSensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHisto
    // check if the particle type is Optical Photon
    bool is_OpticalPhoton = (aStep->GetTrack()->GetDefinition() == fOpticalPhoton);
 
-   if( preStep->GetStepStatus() == fGeomBoundary ) {
+   if( !is_OpticalPhoton ) {
 
-         int channel      = touchable->GetReplicaNumber();
-         int trk_id      = aStep->GetTrack()->GetTrackID();
+     if( preStep->GetStepStatus() == fGeomBoundary ) {
 
-         G4ThreeVector mom     = preStep->GetMomentum();
-         G4ThreeVector pos_global = preStep->GetPosition();
+       int channel      = touchable->GetReplicaNumber();
+       int trk_id      = aStep->GetTrack()->GetTrackID();
 
-         G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
-         G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
+       G4ThreeVector mom     = preStep->GetMomentum();
+       G4ThreeVector pos_global = preStep->GetPosition();
 
-         double        total_energy = aStep->GetPreStepPoint()->GetTotalEnergy()/GeV;
-         double        aTime        = aStep->GetTrack()->GetGlobalTime()/CLHEP::ns;
-         TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,aTime);
+       G4TouchableHistory * touchable  = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
+       G4ThreeVector pos = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_global);
 
-         clas12::hits::ParticleHit * pHit = fRHEvent->AddParticleHit(channel);
+       double        total_energy = aStep->GetPreStepPoint()->GetTotalEnergy()/GeV;
+       double        aTime        = aStep->GetTrack()->GetGlobalTime()/CLHEP::ns;
+       TLorentzVector global_4vec(pos_global.x()/cm,pos_global.y()/cm,pos_global.z()/cm,aTime);
 
-         pHit->fPDGCode            = pdgcode;
-         pHit->fTrackID            = trk_id;
-         pHit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, aTime );
-         pHit->fGlobalPosition     = global_4vec;
-         pHit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, total_energy);
+       clas12::hits::ParticleHit * pHit = nullptr;
+       if( fGroup == 0 ) {
+         // Bar
+         pHit = fRHEvent->AddParticleHitBar(channel);
+       } else {
+         // Tile
+         pHit = fRHEvent->AddParticleHitTile(channel);
+       }
 
-   }
+       pHit->fPDGCode            = pdgcode;
+       pHit->fTrackID            = trk_id;
+       pHit->fPosition           = TLorentzVector(pos.x()/cm, pos.y()/cm, pos.z()/cm, aTime );
+       pHit->fGlobalPosition     = global_4vec;
+       pHit->fMomentum           = TLorentzVector(mom.x()/GeV, mom.y()/GeV, mom.z()/GeV, total_energy);
 
-   if(!is_OpticalPhoton  ) {
+     }
 
-      int     channel  = touchable->GetReplicaNumber();
-      double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
-      (*fScintChannelHits)[channel].fChannel = channel; // derp
-      (*fScintChannelHits)[channel].fSteps++;
-      (*fScintChannelHits)[channel].fEDep += e_dep;
+     int     channel  = touchable->GetReplicaNumber();
+     double  e_dep    = aStep->GetTotalEnergyDeposit()/GeV;
+     (*fScintChannelHits)[channel].fChannel = channel; // derp
+     (*fScintChannelHits)[channel].fSteps++;
+     (*fScintChannelHits)[channel].fEDep += e_dep;
    }
 
    return true;

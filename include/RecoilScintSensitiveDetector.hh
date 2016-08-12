@@ -19,6 +19,8 @@ class RecoilScintSensitiveDetector : public G4VSensitiveDetector
       G4int HCID;
       RecoilScintHitsCollection *hitsCollection;
 
+      int fGroup = 0;
+
    public:
 
       clas12::hits::RecoilScintEvent * fRHEvent = nullptr;
