@@ -4,15 +4,21 @@ set -eou pipefail
 particle="proton"
 momentum="100"
 mass="938"
-usage="$0 -p PARTICLE -P MOMENTUM_IN_MEV -t THETA_IN_DEG -T DELTA_THETA"
+usage="$0 -p PARTICLE -d ENERGY_DISTRIBUTION -e MOMENTUM_MIN_IN_MEV -E MOMENTUM_MAX_IN_MEV -P MOMENTUM_IN_MEV_MONO_ONLY -t THETA_IN_DEG -T DELTA_THETA -n EVENT"
 commands=""
 events=1000
 theta=70
 deltatheta=0.1
+energydist=mono
+energymin=1
+energymax=1000
 
 
-while getopts "p:E:P:m:t:T:n:vhd" options; do
+while getopts "d:e:E:p:P:m:t:T:n:vhd" options; do
   case $options in
+    d ) energydist=$OPTARG ;;
+    e ) energymin=$OPTARG ;;
+    E ) energymax=$OPTARG ;;
     p ) particle=$OPTARG ;;
     P ) momentum=$OPTARG ;;
     m ) mass=$OPTARG ;;
@@ -39,6 +45,8 @@ esac
 
 
 KE=$(echo "scale=4; sqrt($mass * $mass + $momentum * $momentum) - $mass" | bc -l)
+KEMIN=$(echo "scale=4; sqrt($mass * $mass + $energymin * $energymin) - $mass" | bc -l)
+KEMAX=$(echo "scale=4; sqrt($mass * $mass + $energymax * $energymax) - $mass" | bc -l)
 th_min=$(echo "scale=3; $theta - $deltatheta" | bc -l)
 th_max=$(echo "scale=3; $theta + $deltatheta" | bc -l)
 
@@ -57,7 +65,13 @@ echo "/gps/ang/mintheta ${th_min_real} deg"
 echo "/gps/ang/maxtheta ${th_max_real} deg"
 echo "/gps/ang/minphi  -180 deg"
 echo "/gps/ang/maxphi   180 deg"
-echo "/gps/ene/type    Mono"
-echo "/gps/ene/mono  $KE MeV"
+echo "/gps/ene/type    ${energydist}"
+if [ $energydist = "mono" ]
+then
+  echo "/gps/ene/mono $KE MeV"
+else
+  echo "/gps/ene/min $KEMIN MeV"
+  echo "/gps/ene/max $KEMAX MeV"
+fi
 echo "/run/beamOn ${events}"
 
