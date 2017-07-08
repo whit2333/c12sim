@@ -52,15 +52,15 @@ set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES})
 
 ###################
 # CLHEP
-set (CLHEP_CONFIG_DEBUG 1)
-find_package(CLHEP     REQUIRED)
-#  CLHEP_INCLUDE_DIRS - include directories for CLHEP
-#  CLHEP_DEFINITIONS  - compile definitions needed to use CLHEP
-#  CLHEP_LIBRARIES    - libraries to link against
-include_directories(${CLHEP_INCLUDE_DIRS})
-add_definitions(${CLHEP_DEFINITIONS})
-#message(" CLHEP_DEFINITIONS = ${CLHEP_DEFINITIONS} " )
-set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${CLHEP_LIBRARIES})
+#set (CLHEP_CONFIG_DEBUG 1)
+#find_package(CLHEP     REQUIRED)
+##  CLHEP_INCLUDE_DIRS - include directories for CLHEP
+##  CLHEP_DEFINITIONS  - compile definitions needed to use CLHEP
+##  CLHEP_LIBRARIES    - libraries to link against
+#include_directories(${CLHEP_INCLUDE_DIRS})
+#add_definitions(${CLHEP_DEFINITIONS})
+##message(" CLHEP_DEFINITIONS = ${CLHEP_DEFINITIONS} " )
+#set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${CLHEP_LIBRARIES})
 
 ###################
 # ROOT

@@ -4,12 +4,20 @@ set -eou pipefail
 particle="proton"
 momentum="100"
 mass="938"
-usage="$0 -p PARTICLE -d ENERGY_DISTRIBUTION -e MOMENTUM_MIN_IN_MEV -E MOMENTUM_MAX_IN_MEV -P MOMENTUM_IN_MEV_MONO_ONLY -t THETA_IN_DEG -T DELTA_THETA -n EVENT"
+usage="$0 [options] \n\
+  -p PARTICLE \n\
+  -d ENERGY_DISTRIBUTION \n\
+  -e MOMENTUM_MIN_IN_MEV/c \n\
+  -E MOMENTUM_MAX_IN_MEV/c \n\
+  -P MOMENTUM_IN_MEV_MONO_ONLY \n\
+  -t THETA_IN_DEG \n\
+  -T DELTA_THETA \n\
+  -n EVENT\n"
 commands=""
 events=1000
 theta=70
 deltatheta=0.1
-energydist=mono
+energydist=linear
 energymin=1
 energymax=1000
 
@@ -69,6 +77,12 @@ echo "/gps/ene/type    ${energydist}"
 if [ $energydist = "mono" ]
 then
   echo "/gps/ene/mono $KE MeV"
+elif [ $energydist = "linear" ] 
+then 
+  echo "/gps/ene/min $KEMIN MeV"
+  echo "/gps/ene/max $KEMAX MeV"
+  echo "/gps/ene/gradient 0"
+  echo "/gps/ene/intercept 1"
 else
   echo "/gps/ene/min $KEMIN MeV"
   echo "/gps/ene/max $KEMAX MeV"
