@@ -32,6 +32,9 @@ void B1OpticalPhysics::ConstructProcess()
 {
    // G4cout << "B1OpticalPhysics:: Add Optical Physics Processes"
    //        << G4endl;
+// pointer to the particle table
+  auto theParticleTable = G4ParticleTable::GetParticleTable();
+  auto aParticleIterator = theParticleTable->GetIterator();
 
   //fB1Process = new G4OpB1();
   fScintProcess = new G4Scintillation();
