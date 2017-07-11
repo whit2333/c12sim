@@ -43,6 +43,7 @@ done
 shift $(($OPTIND - 1)) # $1 is now the first non-option argument, $2 the second, etc
 
 case $particle in
+   "kaon+"   ) mass=497 ;;
    "proton"   ) mass=938 ;;
    "deuteron" ) mass=1876 ;;
    "triton"   ) mass=2809 ;;

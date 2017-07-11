@@ -58,6 +58,9 @@ G4bool RecoilChamberSensitiveDetector::ProcessHits ( G4Step* aStep, G4TouchableH
    using namespace CLHEP;
    //G4Track * theTrack = aStep->GetTrack();
    double step_length = aStep->GetStepLength()/cm;
+   double delta_E     = aStep->GetDeltaEnergy()/MeV; // KE loss http://www.apc.univ-paris7.fr/~franco/g4doxy/html/classG4Step.html#3e36f2a875f13f913e445b7c333c05f5
+   fRCHitsEvent->fTotalTrackLength += step_length;
+   fRCHitsEvent->fTotalDeltaE      += delta_E;
 
    bool ion_pair   = does_step_create_ion_pair( step_length );
    bool first_step = false; //aStep->IsFirstStepInVolume();
