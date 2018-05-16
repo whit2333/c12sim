@@ -8,11 +8,11 @@
 #include "dollar.hpp"
 
 #include "G4SystemOfUnits.hh"
-#ifdef G4MULTITHREADED
-#include "G4MTRunManager.hh"
-#else
+//#ifdef G4MULTITHREADED
+//#include "G4MTRunManager.hh"
+//#else
 #include "G4RunManager.hh"
-#endif
+//#endif
 #include "G4UImanager.hh"
 #include "G4UIQt.hh"
 #include "G4UIterminal.hh"
@@ -277,11 +277,11 @@ int main(int argc,char** argv)
    CLHEP::HepRandom::setTheSeed(seed);
 
    // Construct the default run manager
-#ifdef G4MULTITHREADED
-   G4MTRunManager* runManager = new G4MTRunManager;
-#else
+//#ifdef G4MULTITHREADED
+//   G4MTRunManager* runManager = new G4MTRunManager;
+//#else
    G4RunManager* runManager = new G4RunManager;
-#endif
+//#endif
 
    SimulationManager * simManager = SimulationManager::GetInstance();
    if( input_file_name.size() != 0 ) {
