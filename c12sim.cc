@@ -486,12 +486,12 @@ void download_field_maps()
    std::cout << "c12sim field map directory : " C12SIM_DATA_DIR << std::endl;
    if( ! fexists(C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat") ) {
       std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat" << std::endl;
-      exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
+      exec(" mkdir -p " C12SIM_DATA_DIR " ; cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
    }
    if( ! fexists(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat") ) {
       std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat" << std::endl;
-      std::cout << " cd " C12SIM_DATA_DIR "\n";
-      //exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
+      //std::cout << " cd " C12SIM_DATA_DIR "\n";
+      exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
    }
 }
 //______________________________________________________________________________
