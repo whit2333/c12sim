@@ -490,7 +490,8 @@ void download_field_maps()
    }
    if( ! fexists(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat") ) {
       std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat" << std::endl;
-      exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
+      std::cout << " cd " C12SIM_DATA_DIR "\n";
+      //exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
    }
 }
 //______________________________________________________________________________
