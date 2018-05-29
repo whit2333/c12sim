@@ -1,6 +1,7 @@
 #include "c12sim.h"
 
 #include <cstdio>
+#include <fstream>
 #include <vector>
 #include <memory>
 #include <unistd.h>
@@ -89,6 +90,7 @@ int main(int argc,char** argv)
       {"simple", required_argument,  0, 's'},
       {0,0,0,0}
    };
+   bool should_exit = false;
    while(iarg != -1) {
       iarg = getopt_long(argc, argv, "o:h:g:t:D:r:V:i:R:n:O:S:T:s:bhINfF", longopts, &index);
 
@@ -162,7 +164,7 @@ int main(int argc,char** argv)
 
          case 'h':
             print_help();
-            exit(0);
+            should_exit = true;
             break;
 
          case 'f':
@@ -172,7 +174,7 @@ int main(int argc,char** argv)
 
          case 'F':
             download_field_maps();
-            exit(0);
+            std::quick_exit(0);
             break;
 
          case 'R':
@@ -224,6 +226,7 @@ int main(int argc,char** argv)
             break;
       }
    }
+   if(should_exit) return 0;
 
 
    // here we assume the last argument is a macro file 
@@ -474,25 +477,64 @@ void check_field_maps()
    }
    if(failed) {
       std::cerr << "Use \"c12sim --dl-field-maps\" to download and install the field maps" << std::endl;
-      exit(0);
+      std::quick_exit(0);
    }
 }
 
+std::ifstream::pos_type filesize(const char* filename)
+{
+    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+    return in.tellg(); 
+}
 void download_field_maps()
 {
+   const int dir_err = system("mkdir -p "C12SIM_DATA_DIR);
+   if (-1 == dir_err) {
+     printf("Error creating directory!n");
+     exit(1);
+   }
+   std::cout << "c12sim field map directory : " C12SIM_DATA_DIR << std::endl;
    //wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat
    //wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
+   bool dl_solenoid = false;
+   bool dl_toroid   = false;
+   const unsigned int solenoid_file_size = 31037896;
+   const unsigned int toroid_file_size   = 31037896;
 
-   std::cout << "c12sim field map directory : " C12SIM_DATA_DIR << std::endl;
-   if( ! fexists(C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat") ) {
-      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat" << std::endl;
-      exec(" mkdir -p " C12SIM_DATA_DIR " ; cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat && pwd && ls -lrth ");
+   //std::cout << " solenoid file size : " << filesize(C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat") << "\n";
+   //std::cout << " toroid   file size : " << filesize(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat") << "\n";
+
+   if ((!fexists(C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat")) ||
+       (filesize(C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat")) < solenoid_file_size) {
+     dl_solenoid = true;
    }
-   if( ! fexists(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat") ) {
-      std::cout << " Downloading  http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat" << std::endl;
-      //std::cout << " cd " C12SIM_DATA_DIR "\n";
-      exec(" cd " C12SIM_DATA_DIR " ; wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat && pwd && ls -lrth ");
+   if ((!fexists(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat")) ||
+       (filesize(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat")) < toroid_file_size) {
+     dl_toroid = true;
    }
+
+   if (dl_solenoid) {
+     std::cout << " Downloading  "
+                  "http://clasweb.jlab.org/12gev/field_maps/"
+                  "clas12SolenoidFieldMap.dat"
+               << std::endl;
+     exec(" mkdir -p " C12SIM_DATA_DIR " ; cd " C12SIM_DATA_DIR " ; wget "
+          "http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat "
+          "-O clas12SolenoidFieldMap.dat ");
+   }
+
+   if (dl_toroid) {
+     std::cout << " Downloading  "
+                  "http://clasweb.jlab.org/12gev/field_maps/"
+                  "clas12TorusOriginalMap.dat"
+               << std::endl;
+     // std::cout << " cd " C12SIM_DATA_DIR "\n";
+     exec(" cd " C12SIM_DATA_DIR " ; wget "
+          "http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat "
+          "-O clas12TorusOriginalMap.dat ");
+   }
+   std::cout << " solenoid file size : " << filesize(C12SIM_DATA_DIR "/clas12SolenoidFieldMap.dat") << "\n";
+   std::cout << " toroid   file size : " << filesize(C12SIM_DATA_DIR "/clas12TorusOriginalMap.dat") << "\n";
 }
 //______________________________________________________________________________
 
