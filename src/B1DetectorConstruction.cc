@@ -35,6 +35,10 @@
 #include "G4AutoDelete.hh"
 #include "G4ChordFinder.hh"
 
+#ifdef USE_CADMESH
+#include "CADMesh.hh"
+#endif
+
 B1DetectorConstruction::B1DetectorConstruction() : 
    G4VUserDetectorConstruction(), 
    world_x( 15.0*m ),
@@ -404,6 +408,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
    fRecoilHodo3->BuildLogicalVolumes();
    fRecoilHodo3->PlacePhysicalVolume( world_log, world_phys);
 
+#ifdef USE_CADMESH
+   auto alert_frame_mesh = CADMesh::TessellatedMesh::FromPLY(ClasDigi_SHARE_DIR "/alert/geometry_files/alert_frame.ply");
+   alert_frame_mesh->SetScale( mm );
+   alert_frame_mesh->SetOffset( chamber_port_flange_offset );
+   auto alert_frame_solid = alert_frame_mesh->GetSolid();
+#endif
 
    // ------------------------------------------------------------------------
    // Solenoid Geometry

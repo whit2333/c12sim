@@ -6,20 +6,21 @@ SET(C12SIM_MINOR_VERSION 0)
 SET(C12SIM_PATCH_VERSION 0)
 set(C12SIM_VERSION ${C12SIM_MAJOR_VERSION}.${C12SIM_MINOR_VERSION}.${C12SIM_PATCH_VERSION})
 
-SET(C12SIM_MACRO_DIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME} )
 
+SET(SHARE_DIR_NAME c12sim)
+SET(MACRO_DIR      share/${SHARE_DIR_NAME})
+SET(GEOMETRY_DIR   share/${SHARE_DIR_NAME}/geometry_files)
+
+SET(C12SIM_MACRO_DIR ${CMAKE_INSTALL_PREFIX}/${MACRO_DIR} )
+SET(C12SIM_GEOMETRY_DIR ${CMAKE_INSTALL_PREFIX}/${GEOMETRY_DIR} )
 
 if(NOT C12SIM_DEFAULT_EG_DIR )
-   SET(C12SIM_DEFAULT_EG_DIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data )
+   SET(C12SIM_DEFAULT_EG_DIR ${CMAKE_INSTALL_PREFIX}/share/${SHARE_DIR_NAME}/data )
 endif(NOT C12SIM_DEFAULT_EG_DIR )
 
 if(NOT C12SIM_GDML_DIR )
-   SET(C12SIM_GDML_DIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data/gdml )
+   SET(C12SIM_GDML_DIR ${C12SIM_GEOMETRY_DIR})
 endif(NOT C12SIM_GDML_DIR )
-
-#set(CMAKE_CXX_FLAGS " -D$$= -DDOLLAR_MAX_TRACES=20000 ${CMAKE_CXX_FLAGS} ")
-set(CMAKE_CXX_FLAGS " -D$= ${CMAKE_CXX_FLAGS} ")
-SET(C12SIM_LINK_LIBRARIES)
 
 #----------------------------------------------------------------------------
 # Dependencies
@@ -40,36 +41,29 @@ endif()
 include(${Geant4_USE_FILE})
 set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${Geant4_LIBRARIES})
 
+# CADMesh
+find_package(cadmesh )
+if(NOT cadmesh_FOUND)
+  message("cadmesh NOT FOUND")
+endif()
+
 ###################
 # ClasDigi
 find_package(ClasDigi REQUIRED)
-#include(${ClasDigi_USE_FILE})
 include_directories(${ClasDigi_INCLUDE_DIRS})
 set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES})
 if(ClasDigi_DATA_DIR )
   SET(C12SIM_DATA_DIR ${ClasDigi_DATA_DIR})
 endif(ClasDigi_DATA_DIR)
 if(NOT C12SIM_DATA_DIR )
-   SET(C12SIM_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/noarch/data)
+   SET(C12SIM_DATA_DIR ${CMAKE_INSTALL_PREFIX}/${SHARE_DIR_NAME}/noarch/data)
 endif(NOT C12SIM_DATA_DIR )
-
-###################
-# CLHEP
-#set (CLHEP_CONFIG_DEBUG 1)
-#find_package(CLHEP     REQUIRED)
-##  CLHEP_INCLUDE_DIRS - include directories for CLHEP
-##  CLHEP_DEFINITIONS  - compile definitions needed to use CLHEP
-##  CLHEP_LIBRARIES    - libraries to link against
-#include_directories(${CLHEP_INCLUDE_DIRS})
-#add_definitions(${CLHEP_DEFINITIONS})
-##message(" CLHEP_DEFINITIONS = ${CLHEP_DEFINITIONS} " )
-#set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${CLHEP_LIBRARIES})
 
 ###################
 # ROOT
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 #set(ROOT_LIBS EG MathCore RIO Hist MathMore Graf Graf3d Gpad GX11 GeomPainter X3d Gviz3d RGL Eve EG Eve Foam GenVector Geom GLEW Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer EG)
-set(ROOT_LIBS EG MathCore RIO Hist MathMore Graf Graf3d Gpad GeomPainter Gviz3d RGL Eve EG Eve Foam GenVector Geom GLEW Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer EG)
+set(ROOT_LIBS EG MathCore RIO Hist MathMore Graf Graf3d Gpad GeomPainter Gviz3d RGL Eve EG Eve Foam GenVector Geom Gui HistPainter MathCore Matrix MLP Net Physics Spectrum Thread Tree TreeViewer EG)
 find_package(ROOT REQUIRED COMPONENTS ${ROOT_LIBS})
 message(" ROOT_USE_FILE = ${ROOT_USE_FILE} " )
 #include(${ROOT_USE_FILE})
@@ -79,19 +73,20 @@ set(C12SIM_LINK_LIBRARIES ${C12SIM_LINK_LIBRARIES} ${ROOT_LIBS})
 message(" ROOT_LIBRARIES = ${ROOT_LIBRARIES} " )
 message(" ROOT_LIBRARY_DIR = ${ROOT_LIBRARY_DIR} " )
 
+#######################
+# CADMesh (optional)
+find_package(cadmesh)
 
 link_directories(
    ${ClasDigi_LIBRARY_DIR}
    ${CLHEP_LIBRARY_DIR}
    ${ROOT_LIBRARY_DIR}
 )
-
+#
 include_directories(
    ${PROJECT_SOURCE_DIR}/include
    ${PROJECT_BINARY_DIR})
 
-###################
-message(" C12SIM_LINK_LIBRARIES = ${C12SIM_LINK_LIBRARIES} " )
 # End of dependencies
 #----------------------------------------------------------------------------
 
@@ -100,17 +95,137 @@ message(" C12SIM_LINK_LIBRARIES = ${C12SIM_LINK_LIBRARIES} " )
 # Locate sources and headers for this project
 # NB: headers are included so they will show up in IDEs
 #
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hpp ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_BINARY_DIR}/C12SIM.h)
+#file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
+#file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hpp ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_BINARY_DIR}/C12SIM.h)
+
+set(sources 
+  #src/c12sim_help.cc
+  src/helper_functions.cc
+  src/B1ActionInitialization.cc
+  src/B1Analysis.cc
+  src/B1DetectorConstruction.cc
+  src/B1DetectorMessenger.cc
+  src/B1EventAction.cc
+  src/B1OpticalPhysics.cc
+  src/B1ParallelWorldConstruction.cc
+  src/B1PrimaryGeneratorAction.cc
+  src/B1RunAction.cc
+  src/B1Run.cc
+  src/B1SteppingAction.cc
+  src/BeamlineDetectorGeometry.cc
+  src/BeamOnTargetPrimaryGeneratorAction.cc
+  src/BeamTestHit.cc
+  src/BeamTestSD.cc
+  src/C12MagneticField.cc
+  src/DriftChamberDetectorGeometry.cc
+  src/DriftChamberSensitiveDetector.cc
+  src/ECDetectorGeometry.cc
+  src/ECSensitiveDetector.cc
+  src/FakeSD.cc
+  src/FakeSDHit.cc
+  src/GPSConfig.cc
+  src/HTCCDetectorGeometry.cc
+  src/HTCCSensitiveDetector.cc
+  src/MicromegasVertexTrackerDetectorGeometry.cc
+  src/PMTArraySensitiveDetector.cc
+  src/RecoilChamberDetectorGeometry.cc
+  src/RecoilChamberSensitiveDetector.cc
+  src/RecoilHodoDetectorGeometry3.cc
+  src/RecoilScintSensitiveDetector.cc
+  src/ScintHit.cc
+  src/SensitiveRegionDetector.cc
+  src/SiliconVertexTrackerDetectorGeometry.cc
+  src/SimplePrimaryGeneratorAction.cc
+  src/SimulationManager.cc
+  src/SimulationMessenger.cc
+  src/SiPMHit.cc
+  src/SiPMSD.cc
+  src/SiTrackerSensitiveDetector.cc
+  src/SiVertexTrackerDetectorGeometry.cc
+  src/SolenoidDetectorGeometry.cc
+  src/SteppingAction.cc
+  src/TorusDetectorGeometry.cc
+  src/TrackingAction.cc
+  )
+set(headers
+  include/B1ActionInitialization.hh
+  include/B1Analysis.hh
+  include/B1DetectorConstruction.hh
+  include/B1DetectorMessenger.hh
+  include/B1EventAction.hh
+  include/B1OpticalPhysics.hh
+  include/B1ParallelWorldConstruction.hh
+  include/B1PrimaryGeneratorAction.hh
+  include/B1RunAction.hh
+  include/B1Run.hh
+  include/B1SteppingAction.hh
+  include/BeamlineDetectorGeometry.h
+  include/BeamOnTargetPrimaryGeneratorAction.hh
+  include/BeamTestHit.hh
+  include/BeamTestSD.hh
+  include/C12MagneticField.h
+  #include/c12sim_help.h
+  #include/clipp.h
+  include/dollar.hpp
+  include/DriftChamberDetectorGeometry.h
+  include/DriftChamberSensitiveDetector.h
+  include/ECDetectorGeometry.h
+  include/ECSensitiveDetector.h
+  include/FakeSD.hh
+  include/FakeSDHit.hh
+  include/GPSConfig.hh
+  include/HTCCDetectorGeometry.h
+  include/HTCCSensitiveDetector.h
+  include/MicromegasVertexTrackerDetectorGeometry.h
+  include/PMTArraySensitiveDetector.h
+  include/rang.hpp
+  include/RecoilChamberDetectorGeometry.h
+  include/RecoilChamberSensitiveDetector.h
+  include/RecoilHodoDetectorGeometry3.h
+  include/RecoilScintHit.hh
+  include/RecoilScintSensitiveDetector.hh
+  include/ScintHit.hh
+  include/ScintTileDetectorGeometry.hh
+  include/SensitiveRegionDetector.h
+  include/SiliconVertexTrackerDetectorGeometry.h
+  include/SimplePrimaryGeneratorAction.hh
+  include/SimulationManager.h
+  include/SimulationMessenger.h
+  include/SiPMHit.hh
+  include/SiPMSD.hh
+  include/SiTrackerSensitiveDetector.h
+  include/SiVertexTrackerDetectorGeometry.h
+  include/SolenoidDetectorGeometry.h
+  include/SteppingAction.hh
+  include/TorusDetectorGeometry.h
+  include/TrackingAction.hh
+  )
+
+#${PROJECT_BINARY_DIR}/C12SIM.h
+include_directories(${PROJECT_BINARY_DIR})
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(c12sim c12sim.cc ${sources} ${headers})
-target_link_libraries(c12sim ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES} ${ROOT_LIBRARIES})
 
+add_executable(c12sim c12sim.cc ${sources} )
+
+target_link_libraries(c12sim 
+  PRIVATE ${Geant4_LIBRARIES}
+  PRIVATE ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES} ${ROOT_LIBRARIES}
+  PRIVATE ${cadmesh_LIBRARIES}
+  )
+target_include_directories(c12sim 
+  PRIVATE ${CADMESH_INCLUDE_DIRS} 
+  )
+target_compile_definitions(c12sim
+  PRIVATE $<$<BOOL:${${cadmesh_FOUND}}>:USE_CADMESH>
+)
 #add_executable(c12sim c12sim.cc ${sources} ${headers})
 #target_link_libraries(c12sim ${C12SIM_LINK_LIBRARIES} ${ClasDigi_LIBRARIES} ${ROOT_LIBRARIES})
+
+target_compile_features(c12sim 
+  PRIVATE cxx_std_14)
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
@@ -210,6 +325,7 @@ export(TARGETS c12sim FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 #install(EXPORT ${PROJECT_NAME}Targets DESTINATION
 #  "${INSTALL_CMAKE_DIR}" COMPONENT dev)
 
+message("C12SIM_LINK_LIBRARIES = ${C12SIM_LINK_LIBRARIES} " )
 message("C12SIM_MAJOR_VERSION    ${C12SIM_MAJOR_VERSION}")
 message("C12SIM_MINOR_VERSION    ${C12SIM_MINOR_VERSION}")
 message("C12SIM_PATCH_VERSION    ${C12SIM_PATCH_VERSION}")
