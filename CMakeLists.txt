@@ -100,7 +100,7 @@ include_directories(
 
 set(sources 
   #src/c12sim_help.cc
-  src/helper_functions.cc
+  #src/helper_functions.cc
   src/B1ActionInitialization.cc
   src/B1Analysis.cc
   src/B1DetectorConstruction.cc
@@ -123,7 +123,7 @@ set(sources
   src/ECSensitiveDetector.cc
   src/FakeSD.cc
   src/FakeSDHit.cc
-  src/GPSConfig.cc
+  #src/GPSConfig.cc
   src/HTCCDetectorGeometry.cc
   src/HTCCSensitiveDetector.cc
   src/MicromegasVertexTrackerDetectorGeometry.cc
@@ -173,7 +173,7 @@ set(headers
   include/ECSensitiveDetector.h
   include/FakeSD.hh
   include/FakeSDHit.hh
-  include/GPSConfig.hh
+  #include/GPSConfig.hh
   include/HTCCDetectorGeometry.h
   include/HTCCSensitiveDetector.h
   include/MicromegasVertexTrackerDetectorGeometry.h
